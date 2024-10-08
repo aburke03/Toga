@@ -9,11 +9,46 @@ const Register = () => {
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
+  const [retypePassword, setRetypePassword] = useState(''); 
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [secureText, setSecureText] = useState(true); // For show/hide password
-  const [isValidEmail, setIsValidEmail] = useState(true); // To track if the email is valid
+  const [secureText, setSecureText] = useState(true); 
+  const [passwordsMatch, setPasswordsMatch] = useState(true); 
+  const [isValidEmail, setIsValidEmail] = useState(true); 
+  const [passwordValid, setPasswordValid] = useState(false); 
+
+  // Password validation logic
+  const validatePassword = (password: string) => {
+    setPassword(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*_?]/.test(password);
+    const hasMinLength = password.length >= 8;
+
+    setPasswordValid(hasUppercase && hasSpecialChar && hasMinLength);
+  };
+
+  // Validate the email input in real-time
+  const validateEmail = (email: string) => {
+    setEmailAddress(email);
+    if (email === '') {
+      setIsValidEmail(true); // Don't show error if email is empty
+    } else if (email.endsWith('@lsu.edu')) {
+      setIsValidEmail(true);
+    } else {
+      setIsValidEmail(false);
+    }
+  };
+
+  // Handle retyping password and checking for a match
+  const handleRetypePassword = (text: string) => {
+    setRetypePassword(text);
+    if (text !== password && text.length > 0) {
+      setPasswordsMatch(false);
+    } else {
+      setPasswordsMatch(true);
+    }
+  };
 
   const onSignUpPress = async () => {
     if (!isLoaded) {
@@ -31,7 +66,6 @@ const Register = () => {
       // Send verification Email
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
 
-      // change the UI to verify the email address
       setPendingVerification(true);
     } catch (err: any) {
       alert(err.errors[0].message);
@@ -40,7 +74,6 @@ const Register = () => {
     }
   };
 
-  // Verify the email address
   const onPressVerify = async () => {
     if (!isLoaded) {
       return;
@@ -57,18 +90,6 @@ const Register = () => {
       alert(err.errors[0].message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Validate the email input in real-time
-  const validateEmail = (email: string) => {
-    setEmailAddress(email);
-    if (email === '') {
-      setIsValidEmail(true); // Don't show error if email is empty
-    } else if (email.endsWith('@lsu.edu')) {
-      setIsValidEmail(true);
-    } else {
-      setIsValidEmail(false);
     }
   };
 
@@ -94,11 +115,11 @@ const Register = () => {
             <View style={styles.passwordContainer}>
               <TextInput
                 placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
+                onChangeText={validatePassword}
                 secureTextEntry={secureText}
                 style={styles.inputField}
                 placeholderTextColor={'grey'}
+                textContentType='none'
               />
               <TouchableOpacity
                 style={styles.toggleButton}
@@ -107,8 +128,32 @@ const Register = () => {
                 <Text>{secureText ? 'Show' : 'Hide'}</Text>
               </TouchableOpacity>
             </View>
-
-            <Button onPress={onSignUpPress} title="Sign up" color={'#6c47ff'} disabled={!isValidEmail} />
+            <TextInput
+              placeholder="Retype Password"
+              onChangeText={handleRetypePassword}
+              secureTextEntry
+              style={styles.inputField}
+              placeholderTextColor={'grey'}
+              textContentType='none'
+            />
+            {!passwordsMatch && retypePassword.length > 0 && (
+              <Text style={styles.errorText}>Passwords must match</Text>
+            )}
+            {!passwordValid && password.length > 0 && (
+              <View style={styles.passwordRequirements}>
+                <Text style={styles.errorText}>• Passwords must be at least 8 characters</Text>
+                <Text style={styles.errorText}>• Passwords must contain at least 1 uppercase letter</Text>
+                <Text style={styles.errorText}>• Passwords must contain at least 1 special character: !@#$%^&*_?</Text>
+              </View>
+            )}
+            <Button
+              onPress={onSignUpPress}
+              title="Sign up"
+              color={'#6c47ff'}
+              disabled={
+                !passwordValid || !passwordsMatch || !isValidEmail || !password || !retypePassword
+              }
+            />
           </>
         )}
 
@@ -121,7 +166,7 @@ const Register = () => {
                 style={styles.inputField}
                 onChangeText={setCode}
                 placeholderTextColor={'grey'}
-                keyboardType='numeric'
+                keyboardType="numeric"
               />
             </View>
             <Button onPress={onPressVerify} title="Verify Email" color={'#6c47ff'} />
@@ -171,6 +216,9 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+  },
+  passwordRequirements: {
+    marginVertical: 8,
   },
 });
 
