@@ -1,7 +1,7 @@
 import { useSignIn } from '@clerk/clerk-expo';
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Button, Pressable, Text, Alert, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, TextInput, Button, Pressable, Text, Alert, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native'; // Import Image component
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const Login = () => {
@@ -36,7 +36,13 @@ const Login = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Spinner visible={loading} />
-          
+
+        {/* Placeholder image on login screen */}
+        <Image 
+          source={require('../../assets/images/toga.png')}  
+          style={styles.image} 
+          resizeMode="contain" 
+        />
         <TextInput
           autoCapitalize="none"
           placeholder="geauxtigers@lsu.edu"
@@ -45,16 +51,15 @@ const Login = () => {
           style={styles.inputField}
           placeholderTextColor={'grey'}
         />
-
         <View style={styles.passwordContainer}>
           <TextInput
             autoCapitalize="none"
             placeholder="Password"
-            value={password}
             onChangeText={setPassword}
             secureTextEntry={secureText}
             style={styles.inputField}
             placeholderTextColor={'grey'}
+            textContentType='none'
           />
           <TouchableOpacity
             style={styles.toggleButton}
@@ -63,9 +68,7 @@ const Login = () => {
             <Text>{secureText ? 'Show' : 'Hide'}</Text>
           </TouchableOpacity>
         </View>
-
         <Button onPress={onSignInPress} title="Login" color={'#6c47ff'} />
-
         <Link href="/reset" asChild>
           <Pressable style={styles.button}>
             <Text>Forgot password?</Text>
@@ -86,6 +89,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+  },
+  image: {
+    width: '100%',
+    height: undefined, 
+    aspectRatio: 1, 
+    marginBottom: 50, 
   },
   inputField: {
     marginVertical: 4,
