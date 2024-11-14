@@ -1,18 +1,47 @@
-import { StyleSheet } from 'react-native';
-import React from 'react';
+import {Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import React, {useState} from 'react';
+import Closet from "@/components/Closet";
+import Bookmarked from "@/components/Bookmarked";
+import TryOn from "@/components/TryOn";
+import Purchasing from "@/components/Purchasing";
+import Selling from "@/components/Selling";
 
 const Chat = () => {
+    const [content, setContent] = useState(<Purchasing />);
+    const [currState, setCurrState] = useState("purchasing");
 
+
+    function changeContent(route: string) {
+        setCurrState(route);
+        switch (route) {
+            case 'purchasing':
+                setContent(<Purchasing />);
+                break;
+            case 'selling':
+                setContent(<Selling />);
+                break;
+        }
+    }
     return (
-        <></>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.topNav}>
+                    <Pressable style={currState === "purchasing" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("purchasing")}>
+                        <Text style={styles.topNavButtonText}>Purchasing</Text>
+                    </Pressable>
+                    <Pressable style={currState === "selling" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("selling")}>
+                        <Text style={styles.topNavButtonText}>Selling</Text>
+                    </Pressable>
+                </View>
+                {content}
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        padding: 40,
     },
     inputField: {
         marginVertical: 4,
@@ -23,6 +52,34 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#fff',
     },
+    topNav: {
+        flexDirection: 'row',
+        width: '100%',
+        padding: 0,
+        justifyContent: 'space-between',
+        backgroundColor: '#fff',
+    },
+    topNavButton: {
+        paddingTop: 50,
+        padding: 0,
+        alignSelf: 'center',
+        borderBottomWidth: 1,
+        borderColor: '#828282',
+        flex: 1,
+    },
+    topNavButtonSelected: {
+        paddingTop: 50,
+        padding: 0,
+        alignSelf: 'center',
+        borderBottomWidth: 2,
+        borderColor: '#000000',
+        flex: 1,
+    },
+    topNavButtonText: {
+        fontSize: 18,
+        textAlign: 'center',
+        padding: 10,
+    }
 });
 
 export default Chat;

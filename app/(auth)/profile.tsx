@@ -13,7 +13,6 @@ const Profile = () => {
     setCurrState(route);
     switch (route) {
       case 'closet':
-        console.log("Clicked");
         setContent(<Closet />);
         break;
       case 'bookmarked':
