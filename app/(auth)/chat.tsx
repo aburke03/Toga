@@ -1,8 +1,5 @@
 import {Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import React, {useState} from 'react';
-import Closet from "@/components/Closet";
-import Bookmarked from "@/components/Bookmarked";
-import TryOn from "@/components/TryOn";
 import Purchasing from "@/components/Purchasing";
 import Selling from "@/components/Selling";
 
