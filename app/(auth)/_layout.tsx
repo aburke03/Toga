@@ -37,6 +37,24 @@ const TabsPage = () => {
         }}
         redirect={!isSignedIn}
       />
+        <Tabs.Screen
+            name="events"
+            options={{
+                headerTitle: 'Events',
+                tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" size={size} color={color} />,
+                tabBarLabel: 'Events',
+            }}
+            redirect={!isSignedIn}
+        />
+        <Tabs.Screen
+            name="chat"
+            options={{
+                headerTitle: 'Chats',
+                tabBarIcon: ({ color, size }) => <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />,
+                tabBarLabel: 'Chats',
+            }}
+            redirect={!isSignedIn}
+        />
       <Tabs.Screen
         name="profile"
         options={{
