@@ -1,6 +1,7 @@
 import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@clerk/clerk-expo';
+import EventCard from "@/components/EventCard";
 
 const Profile = () => {
   const { user } = useUser();
@@ -26,7 +27,6 @@ const Profile = () => {
         <Text style={{ textAlign: 'center' }}>
           Good morning {user?.firstName} {user?.lastName}!
         </Text>
-
         <TextInput
           placeholder="First Name"
           value={firstName || ''}
