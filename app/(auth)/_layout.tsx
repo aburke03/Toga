@@ -31,16 +31,16 @@ const TabsPage = () => {
       <Tabs.Screen
         name="home"
         options={{
-          headerTitle: 'Home',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} />,
-          tabBarLabel: 'Home',
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} />,
+            tabBarLabel: 'Home',
         }}
         redirect={!isSignedIn}
       />
         <Tabs.Screen
             name="events"
             options={{
-                headerTitle: 'Events',
+                headerShown: false,
                 tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" size={size} color={color} />,
                 tabBarLabel: 'Events',
             }}
@@ -49,7 +49,7 @@ const TabsPage = () => {
         <Tabs.Screen
             name="chat"
             options={{
-                headerTitle: 'Chats',
+                headerShown: false,
                 tabBarIcon: ({ color, size }) => <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />,
                 tabBarLabel: 'Chats',
             }}
@@ -58,10 +58,9 @@ const TabsPage = () => {
       <Tabs.Screen
         name="profile"
         options={{
-          headerTitle: 'My Profile',
-          tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
-          tabBarLabel: 'My Profile',
-          headerRight: () => <LogoutButton />,
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
+            tabBarLabel: 'My Profile',
         }}
         redirect={!isSignedIn}
       />

@@ -1,47 +1,45 @@
-import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable} from 'react-native';
 import React, { useState } from 'react';
-import { useUser } from '@clerk/clerk-expo';
-import EventCard from "@/components/EventCard";
+import Closet from "@/components/Closet";
+import TryOn from "@/components/TryOn";
+import Bookmarked from "@/components/Bookmarked";
 
 const Profile = () => {
-  const { user } = useUser();
-  const [firstName, setFirstName] = useState(user?.firstName);
-  const [lastName, setLastName] = useState(user?.lastName);
+  const [content, setContent] = useState(<Closet />)
+  const [currState, setCurrState] = useState("closet")
 
-  const onSaveUser = async () => {
-    try {
-      // Update the user's first and last name (Needs further testing)
-      const result = await user?.update({
-        firstName: firstName!,
-        lastName: lastName!,
-      });
-      console.log('🚀 ~ file: profile.tsx:16 ~ onSaveUser ~ result:', result);
-    } catch (e) {
-      console.log('🚀 ~ file: profile.tsx:18 ~ onSaveUser ~ e', JSON.stringify(e));
+
+  function changeContent(route: string) {
+    setCurrState(route);
+    switch (route) {
+      case 'closet':
+        console.log("Clicked");
+        setContent(<Closet />);
+        break;
+      case 'bookmarked':
+        setContent(<Bookmarked />);
+        break;
+      case 'tryOn':
+        setContent(<TryOn />);
+        break;
     }
-  };
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>
-          Good morning {user?.firstName} {user?.lastName}!
-        </Text>
-        <TextInput
-          placeholder="First Name"
-          value={firstName || ''}
-          onChangeText={setFirstName}
-          style={styles.inputField}
-          placeholderTextColor={'grey'}
-        />
-        <TextInput
-          placeholder="Last Name"
-          value={lastName || ''}
-          onChangeText={setLastName}
-          style={styles.inputField}
-          placeholderTextColor={'grey'}
-        />
-        <Button onPress={onSaveUser} title="Update account" color={'#6c47ff'} />
+        <View style={styles.topNav}>
+          <Pressable style={currState === "closet" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("closet")}>
+            <Text style={styles.topNavButtonText}>Your Closet</Text>
+          </Pressable>
+          <Pressable style={currState === "bookmarked" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("bookmarked")}>
+            <Text style={styles.topNavButtonText}>Bookmarked</Text>
+          </Pressable>
+          <Pressable style={currState === "tryOn" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("tryOn")}>
+            <Text style={styles.topNavButtonText}>Virtual Try-On</Text>
+          </Pressable>
+        </View>
+        {content}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -50,8 +48,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 40,
   },
   inputField: {
     marginVertical: 4,
@@ -62,6 +58,34 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
   },
+  topNav: {
+    flexDirection: 'row',
+    width: '100%',
+    padding: 0,
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+  },
+  topNavButton: {
+    paddingTop: 50,
+    padding: 0,
+    alignSelf: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#828282',
+    flex: 1,
+  },
+  topNavButtonSelected: {
+    paddingTop: 50,
+    padding: 0,
+    alignSelf: 'center',
+    borderBottomWidth: 2,
+    borderColor: '#000000',
+    flex: 1,
+  },
+  topNavButtonText: {
+    fontSize: 18,
+    textAlign: 'center',
+    padding: 10,
+  }
 });
 
 export default Profile;
