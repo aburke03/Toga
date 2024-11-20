@@ -1,5 +1,6 @@
 import {Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import React, {useState} from 'react';
+import { CartIcon } from './../cart';
 import Purchasing from "@/components/Purchasing";
 import Selling from "@/components/Selling";
 
@@ -22,6 +23,7 @@ const Chat = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
+                <CartIcon />
                 <View style={styles.topNav}>
                     <Pressable style={currState === "purchasing" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("purchasing")}>
                         <Text style={styles.topNavButtonText}>Purchasing</Text>

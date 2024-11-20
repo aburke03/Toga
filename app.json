@@ -7,19 +7,19 @@
     "icon": "./assets/images/toga.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/images/toga.png"
+      "icon": "./assets/images/toga.png",
+      "infoPlist": {
+        "NSAllowsArbitraryLoads": true
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/toga.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": ["INTERNET"]
       }
     },
     "web": {
