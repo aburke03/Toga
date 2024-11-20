@@ -3,6 +3,7 @@ import { Text } from 'react-native-ui-lib';
 import React from 'react';
 import {EventCarousel} from "@/components/EventCarousel";
 import ClothingCard from "@/components/ClothingCard";
+import FilterBar from "@/components/FilterBar";
 
 const Home = () => {
 
@@ -11,13 +12,14 @@ const Home = () => {
         <Text style={styles.text}>Your Events</Text>
         <EventCarousel />
         <Text style={styles.suggested}>Suggested</Text>
+        <FilterBar />
         <View style={styles.recommendedScroll}>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('..\\assets\\images\\dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
         </View>
     </ScrollView>
   );
