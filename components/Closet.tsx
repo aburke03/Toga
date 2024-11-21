@@ -15,25 +15,28 @@ const Closet = () => {
     const [sales, setSales] = useState(10);
     const [disputes, setDisputes] = useState(3);
 
-    function getClothingItems() {
+    function getClothingItems(): any {
+        let arr = [
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+        ]
         return (
-            [
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            ]
+            arr.map((item: any, index: any) => (
+                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} />
+            ))
         );
     }
 
     return (
         <ScrollView>
-            <View style={styles.top}>3
+            <View style={styles.top}>
                 <Image source={require('../assets/images/toga.png')} style={styles.pfp} />
                 <View style={styles.sales}>
                     <Text style={styles.text}>Sales</Text>
@@ -47,20 +50,18 @@ const Closet = () => {
             <View style={styles.organizations}>
                 <Text style={styles.name}>{firstName + " " + lastName}</Text>
                 {organizations.map((organization, index) => (
-                    <Text style={styles.org}>{organization}</Text>
+                    <Text key={index} style={styles.org}>{organization}</Text>
                 ))}
             </View>
             <FilterBar />
             <View style={styles.recommendedScroll}>
-                {clothingItems.map((item: any, index: any) => (
-                    <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} />
-                ))}
+                {clothingItems}
             </View>
         </ScrollView>
     );
 };
 
-const styles = StyleSheet.create({
+const styles= StyleSheet.create({
     organizations: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
