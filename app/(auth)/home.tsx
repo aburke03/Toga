@@ -36,13 +36,11 @@ const styles = StyleSheet.create({
     suggested: {
         fontSize: 40,
         color: 'black',
-        margin: 20,
+        margin: 16,
         alignSelf: "center"
     },
     recommendedScroll: {
         flexDirection: 'row',
-        gap: 20,
-        padding: 20,
         flexWrap: "wrap",
         justifyContent: "space-between",
     }

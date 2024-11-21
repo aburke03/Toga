@@ -1,71 +1,105 @@
 import React, {useState} from "react";
-import {Button, StyleSheet, Text, TextInput, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import { useUser } from '@clerk/clerk-expo';
+import {Organization} from "@clerk/clerk-js/dist/types/ui/icons";
+import FilterBar from "@/components/FilterBar";
+import ClothingCard from "@/components/ClothingCard";
 
 const Closet = () => {
     const { user } = useUser();
-    const [firstName, setFirstName] = useState(user?.firstName);
-    const [lastName, setLastName] = useState(user?.lastName);
+    const firstName = user?.firstName;
+    const lastName = user?.lastName;
 
-    const onSaveUser = async () => {
-        try {
-            // Update the user's first and last name (Needs further testing)
-            const result = await user?.update({
-                firstName: firstName!,
-                lastName: lastName!,
-            });
-            console.log('🚀 ~ file: profile.tsx:16 ~ onSaveUser ~ result:', result);
-        } catch (e) {
-            console.log('🚀 ~ file: profile.tsx:18 ~ onSaveUser ~ e', JSON.stringify(e));
-        }
-    };
+    const [clothingItems, setClothingItems] = useState(getClothingItems);
+    const [organizations, setOrganization] = useState(["LSU", "Acacia"]);
+    const [sales, setSales] = useState(10);
+    const [disputes, setDisputes] = useState(3);
+
+    function getClothingItems() {
+        return (
+            [
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+                {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            ]
+        );
+    }
 
     return (
-        <View>
-            <Text style={{ textAlign: 'center' }}>
-                Good morning {user?.firstName} {user?.lastName}!
-            </Text>
-            <TextInput
-                placeholder="First Name"
-                value={firstName || ''}
-                onChangeText={setFirstName}
-                style={styles.inputField}
-                placeholderTextColor={'grey'}
-            />
-            <TextInput
-                placeholder="Last Name"
-                value={lastName || ''}
-                onChangeText={setLastName}
-                style={styles.inputField}
-                placeholderTextColor={'grey'}
-            />
-            <Button onPress={onSaveUser} title="Update account" color={'#6c47ff'} />
-        </View>
+        <ScrollView>
+            <View style={styles.top}>3
+                <Image source={require('../assets/images/toga.png')} style={styles.pfp} />
+                <View style={styles.sales}>
+                    <Text style={styles.text}>Sales</Text>
+                    <Text style={styles.text}>{sales}</Text>
+                </View>
+                <View style={styles.sales}>
+                    <Text style={styles.text}>Disputes</Text>
+                    <Text style={styles.text}>{disputes}</Text>
+                </View>
+            </View>
+            <View style={styles.organizations}>
+                <Text style={styles.name}>{firstName + " " + lastName}</Text>
+                {organizations.map((organization, index) => (
+                    <Text style={styles.org}>{organization}</Text>
+                ))}
+            </View>
+            <FilterBar />
+            <View style={styles.recommendedScroll}>
+                {clothingItems.map((item: any, index: any) => (
+                    <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} />
+                ))}
+            </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 40,
-    },
-    inputField: {
-        marginVertical: 4,
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#6c47ff',
-        borderRadius: 4,
-        padding: 10,
-        backgroundColor: '#fff',
-    },
-    topNav: {
+    organizations: {
         flexDirection: 'row',
+        justifyContent: 'flex-start',
+        columnGap: 10
     },
-    topNavButton: {
-
+    org: {
+        backgroundColor: '#92CAFF',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 20,
     },
-    topNavButtonText: {
+    pfp: {
+        borderRadius: "50%",
+        height: 64,
+        width: 64,
+    },
+    name: {
+        padding: 5,
+        justifyContent: "center"
+    },
+    top: {
+        flexDirection: 'row',
+        width: '100%',
+        paddingHorizontal: 40,
+        paddingTop: 10,
+        justifyContent: 'space-between',
+    },
+    recommendedScroll: {
+        flexDirection: 'row',
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+    },
+    sales: {
+        flexDirection: 'column',
+    },
+    text: {
+        textAlign: "center",
         fontSize: 18,
+        margin: 5
     }
 });
 

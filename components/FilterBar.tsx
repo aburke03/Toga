@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     bar: {
         flexDirection: "row",
         paddingHorizontal: 16,
+        paddingVertical: 16,
     },
     filter: {
         backgroundColor: "#92CAFF",
