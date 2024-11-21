@@ -1,10 +1,14 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
+import EventPreview from "@/components/EventPreview";
 
 const Events = () => {
+       return (
+        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
 
-    return (
-        <></>
+        <EventPreview/>
+
+        </View>
     );
 };
 
