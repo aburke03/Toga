@@ -34,14 +34,14 @@ export default function ClothingCard(props: any) {
 
 const styles = StyleSheet.create({
     image: {
-        width: 175,
-        height: 175,
+        width: "100%",
+        height: "100%",
         aspectRatio: 1,
         flex: 1,
     },
     card: {
-        height: 175,
-        width: 175,
+        height: undefined,
+        width: "50%",
         backgroundColor: 'rgba(217,217,217,0)',
     },
     textbox: {
