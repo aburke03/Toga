@@ -3,14 +3,18 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const stripe = require("stripe")(
-  process.env.STRIPE_SECRET_KEY
+  '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'
 );
 
 const PORT = 8080;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Accept'],
+}));
 
 // Simple test route
 app.get('/test', (req, res) => {
@@ -20,7 +24,8 @@ app.get('/test', (req, res) => {
 
 // Console logs to payment-sheet route
 app.post('/payment-sheet', async (req, res) => {
-  console.log('Payment-sheet endpoint hit');
+  console.log('Payment-sheet endpoint hit at:', new Date().toISOString());
+  console.log('Request headers:', req.headers);
   console.log('Request body:', req.body);
   
   try {
@@ -65,17 +70,6 @@ app.post('/payment-sheet', async (req, res) => {
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ error: err.message });
-});
-
-// Listen on all interfaces
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${PORT}`);
-  console.log('Routes registered:');
-  app._router.stack.forEach(r => {
-    if (r.route && r.route.path) {
-      console.log(`${Object.keys(r.route.methods)} ${r.route.path}`);
-    }
-  });
 });
 
 app.listen(PORT, () => {

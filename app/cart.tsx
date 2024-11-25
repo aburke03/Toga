@@ -61,8 +61,8 @@ const Cart = () => {
 
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
-  // Replace with your computer's local IP address and ensure you're running the server in a separate terminal
-  const API_URL = 'http://192.168.1.171:8080';
+  // Replace with your computer's local IPv4 address and ensure you're running the server in a separate terminal
+  const API_URL = 'http://192.168.68.114:8080';
 
   const fetchPaymentSheetParams = async () => {
     try {
