@@ -7,6 +7,10 @@ import FilterBar from "@/components/FilterBar";
 
 const Home = () => {
 
+    function cardPress() {
+        console.log('cardPressed');
+    }
+
   return (
     <ScrollView style={{ flex: 1, width: '100%' }}>
         <Text style={styles.text}>Your Events</Text>
@@ -14,12 +18,12 @@ const Home = () => {
         <Text style={styles.suggested}>Suggested</Text>
         <FilterBar />
         <View style={styles.recommendedScroll}>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
-            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
+            <ClothingCard image={require('../../assets/images/dressPNG.png')} bookmarked={false} buyType={"Buy"} cardPress={cardPress} priceAmount={20} size={"Small"}/>
         </View>
     </ScrollView>
   );

@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import { useUser } from '@clerk/clerk-expo';
-import {Organization} from "@clerk/clerk-js/dist/types/ui/icons";
 import FilterBar from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 
@@ -15,17 +14,21 @@ const Closet = () => {
     const [sales, setSales] = useState(10);
     const [disputes, setDisputes] = useState(3);
 
+    function cardPress() {
+        console.log('cardPressed');
+    }
+
     function getClothingItems(): any {
         let arr = [
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
+            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
         ]
         return (
             arr.map((item: any, index: any) => (

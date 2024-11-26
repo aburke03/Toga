@@ -20,13 +20,13 @@ export default function ClothingCard(props: any) {
     }
 
     return (
-        <Card onPress={cardPress} style={styles.card}>
+        <Card onPress={props.cardPress} style={styles.card}>
             <ImageBackground resizeMode="cover" style={styles.image} source={props.image}>
                 <Ionicons name={bookmarked ? "bookmark" : "bookmark-outline"} size={36} color={'#132260'} onPress={bookmarkPress} style={styles.bookmark} />
-                <Card.Section style={styles.textbox} content={[
+                {props.buyType!="none"?<Card.Section style={styles.textbox} content={[
                     {text: props.size, style: styles.size},
                     {text: props.buyType+': $'+props.priceAmount, style: styles.size},
-                ]}/>
+                ]}/>:<></>}
             </ImageBackground>
         </Card>
     );
