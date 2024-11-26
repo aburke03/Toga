@@ -1,8 +1,9 @@
-import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable, Button} from 'react-native';
 import React, { useState } from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
+import Camera from "@/components/Camera";
 
 const Profile = () => {
   const [content, setContent] = useState(<Closet />)
@@ -24,6 +25,10 @@ const Profile = () => {
     }
   }
 
+  function goToAddPage(){
+    console.log("goToAddPage");
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -38,8 +43,11 @@ const Profile = () => {
             <Text style={styles.topNavButtonText}>Virtual Try-On</Text>
           </Pressable>
         </View>
+        <Button onPress = {goToAddPage} title = 'Add'></Button>
+
         {content}
       </View>
+
     </TouchableWithoutFeedback>
   );
 };

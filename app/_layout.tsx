@@ -2,8 +2,11 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 const CLERK_PUBLISHABLE_KEY = 'pk_test_dXNlZnVsLWdsb3d3b3JtLTc1LmNsZXJrLmFjY291bnRzLmRldiQ';
+const STRIPE_PUBLISHABLE_KEY="pk_live_51QN4V9I08saIli9Vj8v5zY2eMzsw3bAgWJr4G7cUGnIRKjQVsgOqRTVKK3iXAxM9V2uV1PjMjI7RtuUd1k0UlzaB00Ol4RIdXP";
+
 
 const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
@@ -46,8 +49,13 @@ const tokenCache = {
 
 const RootLayout = () => {
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+    <ClerkProvider 
+    publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+      <StripeProvider 
+      publishableKey={STRIPE_PUBLISHABLE_KEY}
+      >
       <InitialLayout />
+      </StripeProvider>
     </ClerkProvider>
   );
 };

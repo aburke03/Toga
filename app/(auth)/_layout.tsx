@@ -60,10 +60,10 @@ const TabsPage = () => {
         options={{
             headerShown: false,
             tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
-            tabBarLabel: 'My Profile',
+            tabBarLabel: 'Profile',
         }}
         redirect={!isSignedIn}
-      />
+        />
     </Tabs>
   );
 };
