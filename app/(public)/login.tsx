@@ -54,7 +54,7 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Spinner visible={loading} />
+        {/*<Spinner visible={loading} />*/}
 
         {/* Placeholder image on login screen */}
         <Image 

@@ -57,7 +57,6 @@ const Register = () => {
 
   const onSignUpPress = async () => {
 
-    setLoading(true)
     try {
       // Create the user on Clerk
       await signUp({
@@ -78,7 +77,7 @@ const Register = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Stack.Screen />
-        <Spinner visible={loading} />
+        {/*<Spinner visible={loading} />*/}
             <TextInput
                 autoCapitalize="none"
                 placeholder="Full name"

@@ -30,6 +30,8 @@ const InitialLayout = () => {
         } catch (e) {
           console.error(e);
         }
+      } else {
+        router.replace('/login');
       }
     } catch (error) {
       console.error(error);
