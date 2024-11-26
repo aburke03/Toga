@@ -19,7 +19,6 @@ export const CartIcon = () => {
   return (
     <Pressable 
       style={styles.iconContainer}
-      onPress={() => router.push('/cart')}
     >
       <Ionicons name="cart-outline" size={24} color="black" />
     </Pressable>

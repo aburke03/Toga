@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import { useUser } from '@clerk/clerk-expo';
+import {Button} from 'react-native-ui-lib'
 import FilterBar from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 
@@ -16,6 +17,10 @@ const Closet = () => {
 
     function cardPress() {
         console.log('cardPressed');
+    }
+
+    function goToAddPage(){
+        console.log("goToAddPage");
     }
 
     function getClothingItems(): any {
@@ -56,10 +61,15 @@ const Closet = () => {
                     <Text key={index} style={styles.org}>{organization}</Text>
                 ))}
             </View>
-            <FilterBar />
-            <View style={styles.recommendedScroll}>
-                {clothingItems}
-            </View>
+            <Button style={styles.addButton} onPress ={goToAddPage}>
+                <Text>Add</Text>
+            </Button>
+            <ScrollView>
+                <FilterBar />
+                <View style={styles.recommendedScroll}>
+                    {clothingItems}
+                </View>
+            </ScrollView>
         </ScrollView>
     );
 };
@@ -104,7 +114,13 @@ const styles= StyleSheet.create({
         textAlign: "center",
         fontSize: 18,
         margin: 5
-    }
+    },
+    addButton: {
+        marginTop: 10,
+        backgroundColor: "#92CAFF",
+        width: "60%",
+        alignSelf: "center"
+    },
 });
 
 export default Closet;
