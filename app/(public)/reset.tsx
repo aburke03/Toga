@@ -1,7 +1,6 @@
 import { View, StyleSheet, TextInput, Button, Keyboard, TouchableWithoutFeedback, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Stack, useRouter } from 'expo-router'; // Import Stack and useRouter for navigation
-import { useSignIn } from '@clerk/clerk-expo';
 
 const PwReset = () => {
   const [emailAddress, setEmailAddress] = useState('');
@@ -12,37 +11,14 @@ const PwReset = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(true); // To check if passwords match
   const [secureText, setSecureText] = useState(true); // For show/hide password
   const [passwordValid, setPasswordValid] = useState(false); // Password validation state
-  const { signIn, setActive } = useSignIn();
-  const router = useRouter(); // Hook to navigate between screens
 
   // Request a password reset code by email
   const onRequestReset = async () => {
-    try {
-      await signIn!.create({
-        strategy: 'reset_password_email_code',
-        identifier: emailAddress,
-      });
-      setSuccessfulCreation(true);
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    }
+
   };
 
   // Reset the password with the code and the new password
   const onReset = async () => {
-    try {
-      const result = await signIn!.attemptFirstFactor({
-        strategy: 'reset_password_email_code',
-        code,
-        password,
-      });
-      alert('Password reset successfully');
-      
-      // Set the user session active, which will log in the user automatically
-      await setActive!({ session: result.createdSessionId });
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    }
   };
 
   // Password validation logic

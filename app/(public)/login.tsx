@@ -1,30 +1,49 @@
-import { useSignIn } from '@clerk/clerk-expo';
-import { Link } from 'expo-router';
+import {Link, router} from 'expo-router';
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Button, Pressable, Text, Alert, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native'; // Import Image component
-import Spinner from 'react-native-loading-spinner-overlay';
+import { View, StyleSheet, TextInput, Button, Pressable, Text, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native'; // Import Image component
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from "react-native-loading-spinner-overlay";
 
 const Login = () => {
-  const { signIn, setActive, isLoaded } = useSignIn();
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [secureText, setSecureText] = useState(true); 
+  const [secureText, setSecureText] = useState(true);
+
+  async function signIn(userInfo: {email: string, password: string}) {
+    try {
+      const response = await fetch("https://backend-toga.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userInfo),
+      })
+
+
+      if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+      } else {
+
+        const data = await response.json();
+        await AsyncStorage.setItem('token', data.token);
+        router.push('/home');
+      }
+    }catch (error) {
+      console.error(error);
+    } finally {
+    }
+  }
 
   const onSignInPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
     setLoading(true);
     try {
-      const completeSignIn = await signIn.create({
-        identifier: emailAddress,
-        password,
+      await signIn({
+        email: emailAddress,
+        password: password,
       });
 
-      // This indicates the user is signed in
-      await setActive({ session: completeSignIn.createdSessionId });
     } catch (err: any) {
       alert(err.errors[0].message);
     } finally {
