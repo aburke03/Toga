@@ -1,34 +1,52 @@
 import {Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { CartIcon } from './../cart';
 import Purchasing from "@/components/Purchasing";
 import Selling from "@/components/Selling";
 
 const Chat = () => {
-    const [content, setContent] = useState(<Purchasing />);
+    const [content, setContent] = useState<React.ReactNode>(null);
     const [currState, setCurrState] = useState("purchasing");
 
+    // Add useEffect for initial content
+    useEffect(() => {
+        setContent(<Purchasing key={Date.now()} />);
+    }, []);
 
     function changeContent(route: string) {
         setCurrState(route);
         switch (route) {
             case 'purchasing':
-                setContent(<Purchasing />);
+                setContent(<Purchasing key={Date.now()} />);
                 break;
             case 'selling':
                 setContent(<Selling />);
                 break;
         }
     }
+
+    // Force refresh when component mounts or updates
+    useEffect(() => {
+        if (currState === 'purchasing') {
+            setContent(<Purchasing key={Date.now()} />);
+        }
+    }, [currState]);
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <CartIcon />
                 <View style={styles.topNav}>
-                    <Pressable style={currState === "purchasing" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("purchasing")}>
+                    <Pressable 
+                        style={currState === "purchasing" ? styles.topNavButtonSelected : styles.topNavButton} 
+                        onPress={() => changeContent("purchasing")}
+                    >
                         <Text style={styles.topNavButtonText}>Purchasing</Text>
                     </Pressable>
-                    <Pressable style={currState === "selling" ? styles.topNavButtonSelected : styles.topNavButton} onPress={() => changeContent("selling")}>
+                    <Pressable 
+                        style={currState === "selling" ? styles.topNavButtonSelected : styles.topNavButton} 
+                        onPress={() => changeContent("selling")}
+                    >
                         <Text style={styles.topNavButtonText}>Selling</Text>
                     </Pressable>
                 </View>

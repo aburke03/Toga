@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+//stripe test secret key
 const stripe = require("stripe")(
-  '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'
+  'sk_test_51QN4V9I08saIli9VwOb3buBMyQFiJIIYkQ1Mqp9VGqPvTD0D2IIT4ZQrO4RscCcdJrVL3L15SSoJStfQ3NofRC5200cEYvdcGS'
 );
 
 const PORT = 8080;
@@ -55,7 +56,7 @@ app.post('/payment-sheet', async (req, res) => {
       paymentIntent: paymentIntent.client_secret,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
-      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+      publishableKey: process.env.STRIPE_TEST_PUBLISHABLE_KEY,
     };
     
     console.log('Sending response');

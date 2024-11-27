@@ -5,7 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 
 const CLERK_PUBLISHABLE_KEY = 'pk_test_dXNlZnVsLWdsb3d3b3JtLTc1LmNsZXJrLmFjY291bnRzLmRldiQ';
-const STRIPE_PUBLISHABLE_KEY="pk_live_51QN4V9I08saIli9Vj8v5zY2eMzsw3bAgWJr4G7cUGnIRKjQVsgOqRTVKK3iXAxM9V2uV1PjMjI7RtuUd1k0UlzaB00Ol4RIdXP";
+const STRIPE_TEST_PUBLISHABLE_KEY="pk_test_51QN4V9I08saIli9VUFz6ouYM0znXpL6KIBOjFS605x6A9MDv9JTIOZj8pz0k99i1H9y4q71htEMGXJVnCPYFP46900NfwKVKRa";
 
 
 const InitialLayout = () => {
@@ -52,7 +52,7 @@ const RootLayout = () => {
     <ClerkProvider 
     publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
       <StripeProvider 
-      publishableKey={STRIPE_PUBLISHABLE_KEY}
+      publishableKey={STRIPE_TEST_PUBLISHABLE_KEY}
       >
       <InitialLayout />
       </StripeProvider>
