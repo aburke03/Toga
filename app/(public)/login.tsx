@@ -13,13 +13,14 @@ const Login = () => {
 
   async function signIn(userInfo: {email: string, password: string}) {
     try {
-      const response = await fetch("https://backend-toga.onrender.com/api/auth/login", {
+      const response = await fetch("https://backend-toga-r5s3.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userInfo),
       })
+      console.log("Sign IN");
 
 
       if (!response.ok) {
@@ -31,6 +32,7 @@ const Login = () => {
         router.push('/home');
       }
     }catch (error) {
+      console.log("Hello");
       console.error(error);
     } finally {
     }

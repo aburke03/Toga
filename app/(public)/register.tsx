@@ -17,7 +17,7 @@ const Register = () => {
   const [username, setUsername] = useState('');
 
   async function signUp(userInfo: {email: string, password: string, full_name: string, username: string}) {
-    await fetch("https://backend-toga.onrender.com/api/auth/register", {
+    await fetch("https://backend-toga-r5s3.onrender.com/api/auth/register", {
       method: "POST",
       body: JSON.stringify(userInfo),
     }).then((response) => console.log(response)).then(() => {router.replace("/login")}).catch(error => console.log(error));

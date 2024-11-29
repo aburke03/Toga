@@ -8,12 +8,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Closet = () => {
 
-    const [clothingItems, setClothingItems] = useState(getClothingItems);
+    const images = require.context('../assets/images', true);
+
+    const [clothingItems, setClothingItems] = useState<any[]>([]);
     const [organizations, setOrganization] = useState(["LSU", "Acacia"]);
     const [sales, setSales] = useState(10);
     const [disputes, setDisputes] = useState(3);
     const [imgUrl, setImgUrl] = useState("");
     const [fullName, setFullName] = useState("");
+    const [userID, setUserID] = useState("");
 
     function cardPress() {
         console.log('cardPressed');
@@ -24,10 +27,11 @@ const Closet = () => {
     }
 
     async function pullProfile() {
+        let user = ""
         const token = await AsyncStorage.getItem("token");
         if (token !== null) {
             try {
-                const response = await fetch("https://backend-toga.onrender.com/api/users/profile", {
+                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/users/profile", {
                     method: "GET",
                     headers: {
                         'Authorization': "Bearer " + token,
@@ -41,6 +45,7 @@ const Closet = () => {
                     const data = await response.json();
                     setFullName(data.full_name);
                     setImgUrl(data.profile_picture_url);
+                    user = data.id;
                 }
             } catch (e) {
                 console.error(e);
@@ -48,30 +53,40 @@ const Closet = () => {
         } else {
             router.replace('/login');
         }
+        let request_body = {user: user};
+        const response = await fetch("https://backend-toga-r5s3.onrender.com/api/items?"+new URLSearchParams(request_body), {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status}`);
+        }
+        let items = await response.json();
+        let arr: any[] = []
+        for (let item of items) {
+            arr.push({
+                priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
+                buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
+                bookmarked: false,
+                image: item.images[0],
+                size: item.size,
+                key: arr.length
+            })
+        }
+        setClothingItems(
+            arr.map((item: any, index: any) => (
+                <ClothingCard key={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} />
+            ))
+        );
+        setUserID(user);
     }
 
     useEffect(() => {
         pullProfile();
     }, []);
 
-    function getClothingItems(): any {
-        let arr = [
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-            {priceAmount: 20, buyType: "Buy", bookmarked: true, image: require('../assets/images/toga.png'), cardPress: {cardPress}, size: 'Large'},
-        ]
-        return (
-            arr.map((item: any, index: any) => (
-                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} />
-            ))
-        );
-    }
 
     return (
         <ScrollView>

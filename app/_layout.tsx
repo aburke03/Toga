@@ -12,22 +12,27 @@ const InitialLayout = () => {
   async function loadStorage() {
     try {
       const token = await AsyncStorage.getItem("token");
+      console.log('token', token);
       if (token !== null) {
         try {
-          const response = await fetch("https://backend-toga.onrender.com/api/users/profile", {
+          const response = await fetch("https://backend-toga-r5s3.onrender.com/api/users/profile", {
             method: "GET",
             headers: {
               'Authorization': "Bearer " + token,
             },
           })
+          console.log(await response.json());
 
           if (!response.ok) {
+            await AsyncStorage.removeItem("token");
             router.replace('/login');
             console.error(`HTTP error! status: ${response.status}`);
           } else {
             router.replace('/home');
           }
         } catch (e) {
+          await AsyncStorage.removeItem("token");
+          console.log("Hello");
           console.error(e);
         }
       } else {
