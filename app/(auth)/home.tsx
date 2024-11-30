@@ -71,7 +71,7 @@ const Home = () => {
                     bookmarked: false,
                     image: item.images[0],
                     size: item.size,
-                    key: clothingCards.length
+                    key: item.id
                 });
             }
             setClothingCards(arr);
@@ -90,7 +90,7 @@ const Home = () => {
         <FilterBar />
         <View style={styles.recommendedScroll}>
             {clothingCards.map((item: any, index: any) => (
-                <ClothingCard key ={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} />
+                <ClothingCard key ={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
             ))}
         </View>
     </ScrollView>

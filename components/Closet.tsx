@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Image, Pressable, ScrollView, StyleSheet, Text, View} from "react-native";
 import {Button} from 'react-native-ui-lib'
 import FilterBar from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
@@ -26,6 +26,12 @@ const Closet = () => {
         console.log("goToAddPage");
     }
 
+    async function logout() {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("user-id");
+        router.replace('/login');
+    }
+
     async function pullProfile() {
         let user = ""
         const token = await AsyncStorage.getItem("token");
@@ -45,6 +51,7 @@ const Closet = () => {
                     const data = await response.json();
                     setFullName(data.full_name);
                     setImgUrl(data.profile_picture_url);
+                    setOrganization(data.organization_names)
                     user = data.id;
                 }
             } catch (e) {
@@ -72,12 +79,12 @@ const Closet = () => {
                 bookmarked: false,
                 image: item.images[0],
                 size: item.size,
-                key: arr.length
+                key: item.id
             })
         }
         setClothingItems(
             arr.map((item: any, index: any) => (
-                <ClothingCard key={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} />
+                <ClothingCard key={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
             ))
         );
         setUserID(user);
@@ -91,7 +98,9 @@ const Closet = () => {
     return (
         <ScrollView>
             <View style={styles.top}>
-                <Image source={require('../assets/images/toga.png')} style={styles.pfp} />
+                <Pressable onPress={logout}>
+                    <Image source={images('./profile.png')} style={styles.pfp} />
+                </Pressable>
                 <View style={styles.sales}>
                     <Text style={styles.text}>Sales</Text>
                     <Text style={styles.text}>{sales}</Text>

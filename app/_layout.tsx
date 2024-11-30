@@ -25,6 +25,7 @@ const InitialLayout = () => {
 
           if (!response.ok) {
             await AsyncStorage.removeItem("token");
+            await AsyncStorage.removeItem("user-id");
             router.replace('/login');
             console.error(`HTTP error! status: ${response.status}`);
           } else {
@@ -32,6 +33,7 @@ const InitialLayout = () => {
           }
         } catch (e) {
           await AsyncStorage.removeItem("token");
+          await AsyncStorage.removeItem("user-id");
           console.log("Hello");
           console.error(e);
         }

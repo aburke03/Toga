@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
         width: "100%",
         aspectRatio: 1,
         alignItems: 'center',
+        borderRadius: 5,
     },
     textbox: {
         alignSelf: "center",

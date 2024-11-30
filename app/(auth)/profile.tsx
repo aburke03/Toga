@@ -1,15 +1,27 @@
 import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable, ScrollView} from 'react-native';
-import React, { useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
 import Camera from "@/components/Camera";
 import {Button} from "react-native-ui-lib";
+import {useFocusEffect} from "expo-router";
 
 const Profile = () => {
   const [content, setContent] = useState(<Closet />)
   const [currState, setCurrState] = useState("closet")
 
+  useFocusEffect(
+      useCallback(() => {
+        setContent(<Closet />);
+        setCurrState("closet");
+
+        // Return function is invoked whenever the route gets out of focus.
+        return () => {
+          console.log('This route is now unfocused.');
+        };
+      }, [])
+  );
 
   function changeContent(route: string) {
     setCurrState(route);

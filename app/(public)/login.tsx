@@ -28,7 +28,9 @@ const Login = () => {
       } else {
 
         const data = await response.json();
+        console.log("Data", data);
         await AsyncStorage.setItem('token', data.token);
+        await AsyncStorage.setItem('user-id', data.user.id);
         router.push('/home');
       }
     }catch (error) {

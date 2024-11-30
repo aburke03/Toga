@@ -2,6 +2,7 @@ import {Card} from 'react-native-ui-lib';
 import React, {useState} from "react";
 import {ImageBackground, StyleSheet} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ClothingCard(props: any) {
 
@@ -11,11 +12,33 @@ export default function ClothingCard(props: any) {
         console.log('cardPressed');
     }
 
-    function bookmarkPress() {
+    async function bookmarkPress() {
         if (bookmarked) {
-            setBookmarked(false);
+            const userId = await AsyncStorage.getItem("user-id");
+            if (userId !== null) {
+                setBookmarked(false);
+                const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: props.id};
+                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/remove", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request_body),
+                })
+            }
         } else {
-            setBookmarked(true);
+            const userId = await AsyncStorage.getItem("user-id");
+            if (userId !== null) {
+                setBookmarked(true);
+                const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: props.id};
+                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/add", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request_body),
+                })
+            }
         }
     }
 
