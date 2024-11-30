@@ -2,6 +2,7 @@ import React from "react";
 import {Card, Text, CardProps, Image, View} from 'react-native-ui-lib';
 import {Component, useState} from "react";
 import {ImageBackground, StyleSheet} from "react-native";
+import {router, useRouter} from "expo-router";
 
 export default function EventPreview(props: any) {
 
@@ -14,13 +15,13 @@ export default function EventPreview(props: any) {
 
     return (
         <View style={styles.screenContainer}>
-        <Card onPress={() => console.log('pressed')}>
+        <Card onPress={() => router.push("../insideEvent")}>
         <View style={styles.card}>
 
             <View style={styles.backgroundContainer}>
                 <Image source={{ uri: eventBackground }} style={styles.image} />
                 <View style={styles.textbox}>
-                    <Text style={styles.eventName}>Your Text Here</Text>
+                    <Text style={styles.eventName}>Rodeo</Text>
                 </View>
             </View>
 
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         overflow: 'hidden',
         backgroundColor: 'white',
-        margin: 10,
+        margin: 0,
         position: 'relative',
 
     },
