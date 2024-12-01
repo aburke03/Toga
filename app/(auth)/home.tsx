@@ -2,7 +2,6 @@ import {StyleSheet, View, ScrollView, TouchableOpacity, Dimensions, Image} from 
 import { Text } from 'react-native-ui-lib';
 import React, {useEffect, useState} from 'react';
 import {EventCarousel} from "@/components/EventCarousel";
-import ClothingCard from "@/components/ClothingCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {router} from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
@@ -11,16 +10,16 @@ interface ClothingItem {
     priceAmount: number;
     buyType: string;
     bookmarked: boolean;
-    image: any;
+    image: string;
     size: string;
     key: number;
+    title: string;
 }
 
 const Home = () => {
     const [clothingCards, setClothingCards] = useState<ClothingItem[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const windowWidth = Dimensions.get('window').width;
-    
     const itemWidth = (windowWidth - 48) / 2;
 
     async function loadPage() {
@@ -47,19 +46,29 @@ const Home = () => {
             router.replace('/login');
         }
 
-        const sampleItems = [
-            { image: require('../../assets/images/denim_jacket.png'), price: 49.99, type: 'Sale', size: 'M' },
-            { image: require('../../assets/images/dressPNG.png'), price: 89.99, type: 'Rent', size: 'S' },
-        ];
-
-        setClothingCards(sampleItems.map((item, index) => ({
-            priceAmount: item.price,
-            buyType: item.type,
-            bookmarked: false,
-            image: item.image,
-            size: item.size,
-            key: index
-        })));
+        const request_body = {organization: user.id};
+        const response = await fetch("https://backend-toga-r5s3.onrender.com/api/items?"+new URLSearchParams(request_body), {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status}`);
+        } else {
+            let items = await response.json();
+            setClothingCards(items.map((item: { is_available_for_sale: any; purchase_price: any; is_available_for_rent: any; rental_price: any; images: any[]; size: any; id: any; title: any; }) => ({
+                priceAmount: item.is_available_for_sale ? item.purchase_price : 
+                           item.is_available_for_rent ? item.rental_price : 0,
+                buyType: item.is_available_for_sale ? "Sale" : 
+                        item.is_available_for_rent ? "Rent" : "none",
+                bookmarked: false,
+                image: item.images[0],
+                size: item.size,
+                key: item.id,
+                title: item.title
+            })));
+        }
     }
 
     useEffect(() => {
@@ -79,7 +88,7 @@ const Home = () => {
                     style={styles.categoryScroll}
                     contentContainerStyle={styles.categoryScrollContent}
                 >
-                    {['All', 'Tops', 'Bottoms', 'Shoes', "Hats", "Accessories"].map((category) => (
+                    {['All', 'Tops', 'Bottoms', 'Shoes'].map((category) => (
                         <TouchableOpacity
                             key={category}
                             style={[
@@ -101,15 +110,33 @@ const Home = () => {
 
             <View style={styles.clothingGrid}>
                 {clothingCards.map((item, index) => (
-                    <View key={index} style={[styles.cardWrapper, { width: itemWidth }]}>
+                    <TouchableOpacity 
+                        key={index} 
+                        style={[styles.cardWrapper, { width: itemWidth }]}
+                        onPress={() => router.push({
+                            pathname: '/(popups)/[id]',
+                            params: { 
+                                id: item.key,
+                                image: item.image,
+                                title: item.title,
+                                price: item.priceAmount,
+                                size: item.size,
+                                buyType: item.buyType
+                            }
+                        })}
+                    >
                         <TouchableOpacity 
                             style={styles.bookmarkButton}
                             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            onPress={(e) => {
+                                e.stopPropagation();
+                                // Handle bookmark logic here
+                            }}
                         >
                             <Ionicons name="bookmark-outline" size={24} color="#461D7C" />
                         </TouchableOpacity>
                         <Image 
-                            source={item.image} 
+                            source={{ uri: item.image }} 
                             style={styles.itemImage}
                             resizeMode="cover"
                         />
@@ -122,7 +149,7 @@ const Home = () => {
                             </View>
                             <Text style={styles.typeText}>{item.buyType}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </View>
         </ScrollView>
