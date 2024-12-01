@@ -1,11 +1,9 @@
 import {Link, router} from 'expo-router';
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Button, Pressable, Text, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native'; // Import Image component
+import { View, StyleSheet, TextInput, Pressable, Text, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Spinner from "react-native-loading-spinner-overlay";
 
 const Login = () => {
-
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,24 +17,18 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userInfo),
-      })
-      console.log("Sign IN");
-
+      });
 
       if (!response.ok) {
         console.error(`HTTP error! status: ${response.status}`);
       } else {
-
         const data = await response.json();
-        console.log("Data", data);
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('user-id', data.user.id);
         router.push('/home');
       }
-    }catch (error) {
-      console.log("Hello");
+    } catch (error) {
       console.error(error);
-    } finally {
     }
   }
 
@@ -47,7 +39,6 @@ const Login = () => {
         email: emailAddress,
         password: password,
       });
-
     } catch (err: any) {
       alert(err.errors[0].message);
     } finally {
@@ -58,50 +49,64 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        {/*<Spinner visible={loading} />*/}
-
-        {/* Placeholder image on login screen */}
-        <Image 
-          source={require('../../assets/images/toga.png')}  
-          style={styles.image} 
-          resizeMode="contain" 
-        />
-        <TextInput
-          autoCapitalize="none"
-          placeholder="geauxtigers@lsu.edu"
-          value={emailAddress}
-          onChangeText={setEmailAddress}
-          style={styles.inputField}
-          placeholderTextColor={'grey'}
-        />
-        <View style={styles.passwordContainer}>
+        <View style={styles.logoContainer}>
+          <Image 
+            source={require('../../assets/images/toga.png')}  
+            style={styles.image} 
+            resizeMode="contain" 
+          />
+        </View>
+        
+        <View style={styles.formContainer}>
           <TextInput
             autoCapitalize="none"
-            placeholder="Password"
-            onChangeText={setPassword}
-            secureTextEntry={secureText}
+            placeholder="geauxtigers@lsu.edu"
+            value={emailAddress}
+            onChangeText={setEmailAddress}
             style={styles.inputField}
-            placeholderTextColor={'grey'}
-            textContentType='none'
+            placeholderTextColor={'#94a3b8'}
           />
-          <TouchableOpacity
-            style={styles.toggleButton}
-            onPress={() => setSecureText(!secureText)}
+          
+          <View style={styles.passwordContainer}>
+            <TextInput
+              autoCapitalize="none"
+              placeholder="Password"
+              onChangeText={setPassword}
+              secureTextEntry={secureText}
+              style={[styles.inputField, styles.passwordInput]}
+              placeholderTextColor={'#94a3b8'}
+              textContentType='none'
+            />
+            <TouchableOpacity
+              style={styles.toggleButton}
+              onPress={() => setSecureText(!secureText)}
+            >
+              <Text style={styles.toggleButtonText}>{secureText ? 'Show' : 'Hide'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            onPress={onSignInPress}
+            activeOpacity={0.8}
           >
-            <Text>{secureText ? 'Show' : 'Hide'}</Text>
+            <Text style={styles.loginButtonText}>Sign In</Text>
           </TouchableOpacity>
+
+          <View style={styles.linkContainer}>
+            <Link href="/reset" asChild>
+              <Pressable>
+                <Text style={styles.linkText}>Forgot password?</Text>
+              </Pressable>
+            </Link>
+            
+            <Link href="/register" asChild>
+              <Pressable>
+                <Text style={styles.createAccountText}>Create Account</Text>
+              </Pressable>
+            </Link>
+          </View>
         </View>
-        <Button onPress={onSignInPress} title="Login" color={'#6c47ff'} />
-        <Link href="/reset" asChild>
-          <Pressable style={styles.button}>
-            <Text>Forgot password?</Text>
-          </Pressable>
-        </Link>
-        <Link href="/register" asChild>
-          <Pressable style={styles.button}>
-            <Text>Create Account</Text>
-          </Pressable>
-        </Link>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -110,45 +115,92 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  logoContainer: {
+    flex: 0.4,
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#6c47ff',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     padding: 20,
   },
-  image: {
-    width: '100%',
-    height: undefined, 
-    aspectRatio: 1, 
-    marginBottom: 50, 
-  },
-  inputField: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#6c47ff',
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: '#fff',
-    paddingRight: 50, 
-  },
-  passwordContainer: {
-    position: 'relative', 
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#6c47ff',
-    borderRadius: 4,
-    backgroundColor: '#fff',
-    justifyContent: 'center', 
-  },
-  toggleButton: {
-    position: 'absolute', 
-    right: 10, 
-    paddingHorizontal: 10,
-    height: '100%', 
+  formContainer: {
+    flex: 0.6,
+    padding: 24,
     justifyContent: 'center',
   },
-  button: {
-    margin: 8,
+  image: {
+    width: '60%',
+    height: undefined,
+    aspectRatio: 1,
+    tintColor: '#ffffff',
+  },
+  inputField: {
+    height: 55,
+    backgroundColor: '#f8fafc',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: 24,
+  },
+  passwordInput: {
+    marginBottom: 0,
+    paddingRight: 70,
+  },
+  toggleButton: {
+    position: 'absolute',
+    right: 16,
+    top: 0,
+    height: '100%',
+    justifyContent: 'center',
+  },
+  toggleButtonText: {
+    color: '#6c47ff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loginButton: {
+    backgroundColor: '#6c47ff',
+    height: 55,
+    borderRadius: 12,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#6c47ff',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  loginButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  linkContainer: {
+    alignItems: 'center',
+    gap: 16,
+  },
+  linkText: {
+    color: '#6c47ff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  createAccountText: {
+    color: '#1e293b',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
