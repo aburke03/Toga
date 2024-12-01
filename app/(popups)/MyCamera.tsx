@@ -1,16 +1,19 @@
 import { AntDesign } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
-import { useRouter } from 'expo-router';
 
 
-const MyCamera = async () => {
-    const [facing, setFacing] = useState<'back' | 'front'>('back');
+export default function MyCamera() {
+    const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
-    const [photo, setPhoto] = useState<any>(null);
     const cameraRef = useRef<CameraView | null>(null);
+    const [photo, setPhoto] = useState<any>(null);
+
+    const handleRetakePhoto = () => setPhoto(null);
+
+    const handleReturn = () => {alert('send back pic and got to add clothes')};
 
     if (!permission) {
         return <View />;
@@ -25,9 +28,9 @@ const MyCamera = async () => {
         );
     }
 
-    const toggleCameraFacing = () => {
-        setFacing((current) => (current === 'back' ? 'front' : 'back'));
-    };
+    function toggleCameraFacing() {
+        setFacing(current => (current === 'back' ? 'front' : 'back'));
+    }
 
     const handleTakePhoto = async () => {
         if (cameraRef.current) {
@@ -40,10 +43,6 @@ const MyCamera = async () => {
             setPhoto(takenPhoto);
         }
     };
-
-    const handleRetakePhoto = () => setPhoto(null);
-
-    const handleReturn = () => {alert('send back pic and got to add clothes')};
 
     if (photo) {
         return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} />;
@@ -63,7 +62,7 @@ const MyCamera = async () => {
             </CameraView>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -93,5 +92,3 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 });
-
-export default MyCamera;

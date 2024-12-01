@@ -11,8 +11,7 @@ import {
     Modal,
     Button,
 } from 'react-native';
-import { OptionRow } from './OptionRow';
-import { OptionRowProps } from '../WardrobeTypes';
+import { OptionRow } from '@/components/addingClothes/OptionRow';
 import { useRouter } from 'expo-router';
 
 
@@ -24,7 +23,7 @@ export const AddClothes: React.FC = () => {
 
     const router = useRouter();
 
-    const optionRows: OptionRowProps[] = [
+    const optionRows: any[] = [
         {
             label: 'Category',
             options: [
@@ -108,7 +107,7 @@ export const AddClothes: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.cameraIcon} onPress={() => router.push("..//MyCamera")}>
+                <TouchableOpacity style={styles.cameraIcon} onPress={() => router.replace("../MyCamera")}>
                     <Image
                         source={{ uri: 'https://cdn.builder.io/api/v1/image/assets/TEMP/4b2fb31d9fd7f8776037917f534beb06505f89264458be53b4aec15764c79304' }}
                         style={styles.cameraIcon}
@@ -136,7 +135,7 @@ export const AddClothes: React.FC = () => {
                         <View style={styles.modalContainer}>
                             {optionRows
                                 .find((row) => row.label === currentOption)
-                                ?.options.map((option) => (
+                                ?.options.map((option: any) => (
                                     <TouchableOpacity
                                         key={option.value}
                                         style={styles.modalButton}

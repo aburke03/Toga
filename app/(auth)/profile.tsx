@@ -4,7 +4,7 @@ import React, {useCallback, useState} from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
-import AddClothes from "@/components/addingClothes/addClothesPage";
+import AddClothes from "@/app/(popups)/addClothesPage";
 import {useFocusEffect} from "expo-router";
 
 const Profile = () => {

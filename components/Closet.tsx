@@ -22,10 +22,6 @@ const Closet = () => {
         console.log('cardPressed');
     }
 
-    function goToAddPage(){
-        console.log("goToAddPage");
-    }
-
     async function logout() {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("user-id");
@@ -116,9 +112,6 @@ const Closet = () => {
                     <Text key={index} style={styles.org}>{organization}</Text>
                 ))}
             </View>
-            <Button style={styles.addButton} onPress ={goToAddPage}>
-                <Text>Add</Text>
-            </Button>
             <View>
                 <FilterBar />
                 <View style={styles.recommendedScroll}>
