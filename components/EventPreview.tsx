@@ -1,97 +1,136 @@
 import React from "react";
-import {Card, Text, CardProps, Image, View} from 'react-native-ui-lib';
-import {Component, useState} from "react";
-import {ImageBackground, StyleSheet} from "react-native";
-import {router, useRouter} from "expo-router";
+import {Card, Text, View, Image} from 'react-native-ui-lib';
+import {StyleSheet, ImageBackground} from "react-native";
+import {router} from "expo-router";
 
-export default function EventPreview(props: any) {
+interface EventPreviewProps {
+    event_id: string;
+    title: string;
+    description: string;
+    event_begin: string;
+    event_end: string;
+    location: string;
+    image_url: string;
+    organizer_name: string;
+}
 
-    const eventBackground = "https://t3.ftcdn.net/jpg/02/75/90/56/360_F_275905630_PzLJAFNCLUQYmzo8icryZdcwZ2LyCeJS.jpg";
-    const featuredClothes = [
-        "https://pngimg.com/d/dress_PNG156.png",
-        "https://e7.pngegg.com/pngimages/925/483/png-clipart-little-black-dress-transparency-clothing-chinese-military-uniform-fashion-party-dress.png",
-        "https://image.similarpng.com/very-thumbnail/2021/07/Easy-summer-women's-clothing--on-transparent-background-PNG.png",
-    ];
+export default function EventPreview({ 
+    title, 
+    description, 
+    event_begin, 
+    location, 
+    image_url, 
+    organizer_name 
+}: EventPreviewProps) {
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return {
+            month: date.toLocaleString('default', { month: 'short' }).toUpperCase(),
+            day: date.getDate(),
+            time: date.toLocaleString('default', { hour: 'numeric', minute: '2-digit' })
+        };
+    };
+
+    const dateInfo = formatDate(event_begin);
+
+    const getImageSource = () => {
+        // Default thrift store image
+        const defaultImage = require('@/assets/images/event1.jpg');
+        
+        if (!image_url) return defaultImage;
+        
+        // If it's a full URL (starts with http or https)
+        if (image_url.startsWith('http')) {
+            return { uri: image_url };
+        }
+        
+        // If it's just a filename like 'event.jpg', use default image
+        return defaultImage;
+    };
+    
 
     return (
-        <View style={styles.screenContainer}>
-        <Card onPress={() => router.push("../insideEvent")}>
-        <View style={styles.card}>
-
-            <View style={styles.backgroundContainer}>
-                <Image source={{ uri: eventBackground }} style={styles.image} />
-                <View style={styles.textbox}>
-                    <Text style={styles.eventName}>Rodeo</Text>
+        <Card onPress={() => router.push("../insideEvent")} style={styles.card}>
+            <ImageBackground
+                source={getImageSource()}
+                style={styles.imageBackground}
+                imageStyle={styles.imageStyle}
+                defaultSource={require('@/assets/images/event1.jpg')}
+            >
+                <View style={styles.dateContainer}>
+                    <Text style={styles.monthText}>{dateInfo.month}</Text>
+                    <Text style={styles.dayText}>{dateInfo.day}</Text>
+                    <Text style={styles.timeText}>{dateInfo.time}</Text>
                 </View>
-            </View>
 
-            <View style={styles.featuredContainer}>
-                {featuredClothes.map((src, index) => (
-                    <View key={index} style={styles.featuredWrapper}>
-                        <Image source={{ uri: src }} style={styles.clothes} />
-                    </View>
-                ))}
-            </View>
-        </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.host}>Host: {organizer_name}</Text>
+                </View>
+            </ImageBackground>
         </Card>
-        </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
-
-    screenContainer: {
-        flex: 1,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     card: {
-        width: 300,
-        borderRadius: 8,
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        margin: 0,
-        position: 'relative',
-
-    },
-    backgroundContainer: {
-        position: 'relative',
-
-    },
-    image: {
-        width: '100%',
+        width: '90%',
         height: 200,
-        resizeMode: 'cover',
+        borderRadius: 20,
+        overflow: 'hidden',
+        marginVertical: 8,
+        backgroundColor: 'transparent',
     },
-    textbox: {
-        position: 'absolute',
-        bottom: 10,
-        left: '10%',
-        width: '80%',
-        height: '50%',
-        backgroundColor: 'rgba(217,217,217,0.96)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
-    },
-    eventName: {
-        fontSize: 24,
-        color: 'black',
-        fontWeight: 'bold',
-    },
-    featuredContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10,
-    },
-    featuredWrapper: {
-        width: '30%',
-    },
-    clothes: {
+    imageBackground: {
         width: '100%',
-        height: undefined,
-        aspectRatio: 1,
-        borderRadius: 5,
+        height: '100%',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
     },
+    imageStyle: {
+        borderRadius: 20,
+    },
+    dateContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        padding: 12,
+        borderRadius: 12,
+        margin: 16,
+        alignItems: 'center',
+    },
+    monthText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#666',
+    },
+    dayText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    timeText: {
+        fontSize: 14,
+        color: '#666',
+    },
+    titleContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: 16,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#000',
+        marginBottom: 4,
+    },
+    host: {
+        fontSize: 16,
+        color: '#461D7C',
+        fontWeight: '500',
+    }
 });
