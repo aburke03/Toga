@@ -52,9 +52,9 @@ const Cart = () => {
   const [items] = React.useState<CartItem[]>([
     {
       id: '1',
-      title: 'Sample Cart Item',
-      description: 'Sample item description...\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\n',
-      price: 1
+      title: 'Black Cowboy Hat',
+      description: 'Size Small\n',
+      price: 10
     }
   ]);
 
@@ -144,15 +144,24 @@ const Cart = () => {
   const openPaymentSheet = async () => {
     try {
       const { error } = await presentPaymentSheet();
-
+  
       if (error) {
         Alert.alert(`Error code: ${error.code}`, error.message);
         throw error;
       }
       
-      Alert.alert('Success', 'Your order is confirmed!');
-      // You might want to clear the cart or navigate somewhere here
-      // router.push('/order-confirmation');
+      Alert.alert(
+        'Success',
+        'Your order is confirmed!',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.push('./post_payment_schedule');
+            }
+          }
+        ]
+      );
     } catch (error) {
       console.error('Error in openPaymentSheet:', error);
       throw error;

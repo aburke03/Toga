@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const STRIPE_PUBLISHABLE_KEY="pk_live_51QN4V9I08saIli9Vj8v5zY2eMzsw3bAgWJr4G7cUGnIRKjQVsgOqRTVKK3iXAxM9V2uV1PjMjI7RtuUd1k0UlzaB00Ol4RIdXP";
+const STRIPE_TEST_PUBLISHABLE_KEY="pk_test_51QN4V9I08saIli9VUFz6ouYM0znXpL6KIBOjFS605x6A9MDv9JTIOZj8pz0k99i1H9y4q71htEMGXJVnCPYFP46900NfwKVKRa";
 
 
 const InitialLayout = () => {
@@ -61,7 +61,7 @@ const InitialLayout = () => {
 const RootLayout = () => {
   return (
       <StripeProvider 
-      publishableKey={STRIPE_PUBLISHABLE_KEY}
+      publishableKey={STRIPE_TEST_PUBLISHABLE_KEY}
       >
         <InitialLayout />
       </StripeProvider>
