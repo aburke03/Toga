@@ -1,11 +1,9 @@
 import React from "react";
-import {Card, Text, CardProps, Image, View} from 'react-native-ui-lib';
-import {Component, useState} from "react";
-import {ImageBackground, StyleSheet} from "react-native";
-import {router, useRouter} from "expo-router";
+import { Card, Text, Image, View } from 'react-native-ui-lib';
+import { StyleSheet } from "react-native";
+import { router } from "expo-router";
 
 export default function EventPreview(props: any) {
-
     const eventBackground = "https://t3.ftcdn.net/jpg/02/75/90/56/360_F_275905630_PzLJAFNCLUQYmzo8icryZdcwZ2LyCeJS.jpg";
     const featuredClothes = [
         "https://pngimg.com/d/dress_PNG156.png",
@@ -14,50 +12,50 @@ export default function EventPreview(props: any) {
     ];
 
     return (
-        <View style={styles.screenContainer}>
-        <Card onPress={() => router.push("../insideEvent")}>
-        <View style={styles.card}>
-
+        <Card 
+            style={styles.card}
+            onPress={() => router.push("../insideEvent")}
+            enableShadow={true}
+        >
             <View style={styles.backgroundContainer}>
-                <Image source={{ uri: eventBackground }} style={styles.image} />
-                <View style={styles.textbox}>
-                    <Text style={styles.eventName}>Rodeo</Text>
-                </View>
+                <Image 
+                    source={{ uri: eventBackground }} 
+                    style={styles.image}
+                    customOverlayContent={
+                        <View style={styles.textbox}>
+                            <Text style={styles.eventName}>Rodeo</Text>
+                        </View>
+                    }
+                />
             </View>
 
             <View style={styles.featuredContainer}>
                 {featuredClothes.map((src, index) => (
                     <View key={index} style={styles.featuredWrapper}>
-                        <Image source={{ uri: src }} style={styles.clothes} />
+                        <Image 
+                            source={{ uri: src }} 
+                            style={styles.clothes}
+                            customOverlayContent={
+                                <View style={styles.clothesOverlay} />
+                            }
+                        />
                     </View>
                 ))}
             </View>
-        </View>
         </Card>
-        </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
-
-    screenContainer: {
-        flex: 1,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     card: {
-        width: 300,
-        borderRadius: 8,
+        width: 340,
+        borderRadius: 16,
         overflow: 'hidden',
         backgroundColor: 'white',
-        margin: 0,
-        position: 'relative',
-
+        marginHorizontal: 16,
     },
     backgroundContainer: {
         position: 'relative',
-
     },
     image: {
         width: '100%',
@@ -66,14 +64,22 @@ const styles = StyleSheet.create({
     },
     textbox: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 20,
         left: '10%',
         width: '80%',
-        height: '50%',
-        backgroundColor: 'rgba(217,217,217,0.96)',
+        paddingVertical: 16,
+        backgroundColor: 'rgba(255,255,255,0.95)',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     eventName: {
         fontSize: 24,
@@ -83,15 +89,22 @@ const styles = StyleSheet.create({
     featuredContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 10,
+        padding: 12,
+        backgroundColor: '#fff',
     },
     featuredWrapper: {
-        width: '30%',
+        width: '31%',
+        aspectRatio: 1,
+        borderRadius: 8,
+        overflow: 'hidden',
     },
     clothes: {
         width: '100%',
-        height: undefined,
-        aspectRatio: 1,
-        borderRadius: 5,
+        height: '100%',
+        borderRadius: 8,
     },
+    clothesOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.02)',
+    }
 });

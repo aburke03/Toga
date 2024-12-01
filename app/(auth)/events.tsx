@@ -1,32 +1,62 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View } from 'react-native';
+import React from 'react';
 import EventPreview from "@/components/EventPreview";
+import { Text } from 'react-native-ui-lib';
 
 const Events = () => {
-       return (
-        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Events</Text>
+            </View>
 
-        <EventPreview/>
-            <EventPreview/>
-
-        </View>
+            {/* Scrollable Content */}
+            <ScrollView 
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={styles.eventsContainer}>
+                    <EventPreview />
+                    <EventPreview />
+                    <EventPreview />
+                    <EventPreview />
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'space-evenly',
-        padding: 20,
-    },
-    inputField: {
-        marginVertical: 4,
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#6c47ff',
-        borderRadius: 4,
-        padding: 10,
+    safeArea: {
+        flex: 1,
         backgroundColor: '#fff',
     },
+    header: {
+        padding: 16,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0f0f0',
+        marginBottom: 8,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        paddingVertical: 16,
+    },
+    eventsContainer: {
+        gap: 24, // Space between event previews
+        alignItems: 'center', // Center the cards horizontally
+    }
 });
 
 export default Events;
