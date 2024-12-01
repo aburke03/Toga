@@ -12,24 +12,31 @@ const Login = () => {
   async function signIn(userInfo: {email: string, password: string}) {
     try {
       const response = await fetch("https://backend-toga-r5s3.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userInfo),
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userInfo),
       });
 
       if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
+          console.error(`HTTP error! status: ${response.status}`);
       } else {
-        const data = await response.json();
-        await AsyncStorage.setItem('token', data.token);
-        await AsyncStorage.setItem('user-id', data.user.id);
-        router.push('/home');
+          const data = await response.json();
+          await AsyncStorage.setItem('token', data.token);
+          await AsyncStorage.setItem('user-id', data.user.id);
+          
+          // Store organization data if it exists
+          if (data.user.organization) {
+              await AsyncStorage.setItem('organization-id', data.user.organization.organization_id);
+              await AsyncStorage.setItem('organization-name', data.user.organization.organization_name);
+          }
+          
+          router.push('/home');
       }
-    } catch (error) {
+  } catch (error) {
       console.error(error);
-    }
+  }
   }
 
   const onSignInPress = async () => {
