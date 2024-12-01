@@ -7,6 +7,7 @@ const Events = () => {
         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
 
         <EventPreview/>
+            <EventPreview/>
 
         </View>
     );
@@ -14,9 +15,8 @@ const Events = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 40,
+        justifyContent: 'space-evenly',
+        padding: 20,
     },
     inputField: {
         marginVertical: 4,
