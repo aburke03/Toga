@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Button} from 'react-native-ui-lib'
 import FilterBar from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 import {router} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AddClothes from "@/app/(popups)/addClothesPage";
 
 const Closet = () => {
 
@@ -72,7 +73,7 @@ const Closet = () => {
             arr.push({
                 priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
                 buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
-                bookmarked: false,
+                bookmarked: item.is_bookmarked,
                 image: item.images[0],
                 size: item.size,
                 key: item.id
@@ -89,6 +90,16 @@ const Closet = () => {
     useEffect(() => {
         pullProfile();
     }, []);
+
+    const [addClothesPopup, setAddClothesPopup] = useState(false);
+
+    const openPopup = () => {
+        setAddClothesPopup(true);
+    }
+
+    const closePopup = () => {
+        setAddClothesPopup(false);
+    }
 
 
     return (
@@ -118,6 +129,21 @@ const Closet = () => {
                     {clothingItems}
                 </View>
             </View>
+            <TouchableOpacity style={styles.addButton} onPress={openPopup}>
+                <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={addClothesPopup}
+                onRequestClose={closePopup}>
+                <View style={styles.modalContainer}>
+                    <AddClothes></AddClothes>
+                    <TouchableOpacity onPress={closePopup} >
+                        <Text>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -163,11 +189,36 @@ const styles= StyleSheet.create({
         fontSize: 18,
         margin: 5
     },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+        paddingBottom: 20,
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        width: '100%',
+
+    },
+    modalText: {
+        fontSize: 16,
+    },
     addButton: {
-        marginTop: 10,
-        backgroundColor: "#92CAFF",
-        width: "60%",
-        alignSelf: "center"
+        backgroundColor: 'blue',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        zIndex:10,
+        alignSelf: 'center',
+        position: 'absolute',
+        top: "100%",
+    },
+
+    addButtonText: {
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 16,
+
     },
 });
 

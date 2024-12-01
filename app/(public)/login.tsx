@@ -20,7 +20,6 @@ const Login = () => {
         },
         body: JSON.stringify(userInfo),
       })
-      console.log("Sign IN");
 
 
       if (!response.ok) {
@@ -28,13 +27,11 @@ const Login = () => {
       } else {
 
         const data = await response.json();
-        console.log("Data", data);
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('user-id', data.user.id);
         router.push('/home');
       }
     }catch (error) {
-      console.log("Hello");
       console.error(error);
     } finally {
     }
@@ -58,7 +55,7 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        {/*<Spinner visible={loading} />*/}
+        <Spinner visible={loading} />
 
         {/* Placeholder image on login screen */}
         <Image 

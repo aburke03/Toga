@@ -4,7 +4,6 @@ import React, {useCallback, useState} from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
-import AddClothes from "@/app/(popups)/addClothesPage";
 import {useFocusEffect} from "expo-router";
 
 const Profile = () => {
@@ -38,16 +37,6 @@ const Profile = () => {
     }
   }
 
-  const [addClothesPopup, setAddClothesPopup] = useState(false);
-
-  const openPopup = () => {
-    setAddClothesPopup(true);
-  }
-
-  const closePopup = () => {
-    setAddClothesPopup(false);
-  }
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -62,22 +51,6 @@ const Profile = () => {
             <Text style={styles.topNavButtonText}>Virtual Try-On</Text>
           </Pressable>
         </View>
-        <TouchableOpacity style={styles.addButton} onPress={openPopup}>
-          <Text style={styles.addButtonText}>Add</Text>
-        </TouchableOpacity>
-
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={addClothesPopup}
-            onRequestClose={closePopup}>
-          <View style={styles.modalContainer}>
-            <AddClothes></AddClothes>
-            <TouchableOpacity onPress={closePopup} >
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
 
         {content}
       </View>
@@ -126,37 +99,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     padding: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingBottom: 20,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    width: '100%',
-
-  },
-  modalText: {
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: 'blue',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    zIndex:10,
-    alignSelf: 'center',
-    position: 'absolute',
-    bottom: 0,
-  },
-
-  addButtonText: {
-    alignSelf: 'center',
-    color: 'white',
-    fontSize: 16,
-
   },
 
 

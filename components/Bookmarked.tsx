@@ -17,7 +17,6 @@ const Bookmarked = () => {
     async function pullBookmarks() {
         const userID = await AsyncStorage.getItem("user-id");
         if (userID !== null) {
-            console.log('userID', userID);
             let request_body = {user: userID};
             const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks?"+new URLSearchParams(request_body), {
                 method: "GET",
@@ -29,7 +28,6 @@ const Bookmarked = () => {
                 console.error(`HTTP error! status: ${response.status}`);
             }
             let items = await response.json();
-            console.log(items);
             let arr: any[] = []
             for (let item of items) {
                 arr.push({

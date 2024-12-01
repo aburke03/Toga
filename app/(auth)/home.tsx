@@ -1,12 +1,14 @@
 import {StyleSheet, View, ScrollView} from 'react-native';
 import { Text } from 'react-native-ui-lib';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {EventCarousel} from "@/components/EventCarousel";
 import ClothingCard from "@/components/ClothingCard";
 import FilterBar from "@/components/FilterBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {router} from "expo-router";
+import {router, useFocusEffect} from "expo-router";
 import EventCard from "@/components/EventCard";
+import Closet from "@/components/Closet";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const Home = () => {
 
@@ -22,6 +24,7 @@ const Home = () => {
     }
 
     const [clothingCards, setClothingCards] = useState<ClothingItem[]>([]);
+    const [loading, setLoading] = useState(false);
 
     function cardPress() {
         console.log('cardPressed');
@@ -29,6 +32,7 @@ const Home = () => {
 
     async function loadPage() {
         let user:any;
+        setLoading(true);
         const token = await AsyncStorage.getItem("token");
         if (token !== null) {
             try {
@@ -64,11 +68,10 @@ const Home = () => {
             let items = await response.json();
             let arr = []
             for (let item of items) {
-                console.log(item);
                 arr.push({
                     priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
                     buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
-                    bookmarked: false,
+                    bookmarked: item.is_bookmarked,
                     image: item.images[0],
                     size: item.size,
                     key: item.id
@@ -76,14 +79,22 @@ const Home = () => {
             }
             setClothingCards(arr);
         }
+        setLoading(false);
     }
 
-    useEffect(() => {
-        loadPage();
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            loadPage();
+            // Return function is invoked whenever the route gets out of focus.
+            return () => {
+                console.log('This route is now unfocused.');
+            };
+        }, [])
+    );
 
   return (
     <ScrollView style={{ flex: 1, width: '100%' }}>
+        <Spinner visible={loading} />
         <Text style={styles.text}>Your Events</Text>
         <EventCarousel />
         <Text style={styles.suggested}>Suggested</Text>
