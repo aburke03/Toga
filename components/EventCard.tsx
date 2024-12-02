@@ -3,8 +3,7 @@ import React from "react";
 import {ImageBackground, StyleSheet, View} from "react-native";
 
 
-export default function EventCard(props: any) {
-    return (
+export default function EventCard(props: any) {   return (
             <Card height={350} width={350} borderRadius={10} flex center onPress={() => console.log('pressed')}>
                 <ImageBackground source={props.image} resizeMode="cover" style={styles.image}>
                     <View style={styles.infoBox}>

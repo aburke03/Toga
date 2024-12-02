@@ -26,12 +26,12 @@ export const AddClothes = () => {
         category: string,
         condition: string,
         color: string,
-        theme: string,
+        size: string,
     }>({
             category: "Select",
             condition: "Select",
             color: "Select",
-            theme: "Select",
+            size: "Select",
         });
     const [showModal, setShowModal] = useState(false);
     const [currentOption, setCurrentOption] = useState<string>('');
@@ -67,9 +67,9 @@ export const AddClothes = () => {
             ],
         },
         {
-            label: 'Theme',
+            label: 'Size',
             options: [
-                { label: 'Select', value: 'theme' },
+                { label: 'Select', value: 'size' },
                 { label: 'Casual', value: 'casual' },
                 { label: 'Formal', value: 'formal' },
             ],
@@ -126,10 +126,10 @@ export const AddClothes = () => {
 
 
     const handleOptionSelection = (selected: {
-        category: string,
+            category: string,
             condition: string,
             color: string,
-            theme: string,
+            size: string,
     }) => {
         setSelectedValues(selected);
         setShowModal(false);
@@ -162,7 +162,7 @@ export const AddClothes = () => {
                     <TouchableOpacity style={styles.cameraIcon} onPress={() => setTakingPicture(true)}>
                         <Image
                             source={{ uri: picture }}
-                            style={styles.cameraIcon}
+                            style={styles.cameraPic}
                             accessibilityLabel="center icon"
                         />
                     </TouchableOpacity>
@@ -172,10 +172,9 @@ export const AddClothes = () => {
                         style={styles.description}
                         onChangeText={onChangeText}
                         value={text}
-                        placeholder="Description"
-                        placeholderTextColor="#888" // Optional: Custom placeholder color
-                        maxLength={200} // Optional: Limit input length
-                        multiline={true} // Optional: Allow multiline input
+                        placeholderTextColor="#888"
+                        maxLength={200}
+                        multiline={true}
                     />
                 </View>
                 <View style={styles.separator} />
@@ -196,7 +195,6 @@ export const AddClothes = () => {
                         <Text style={styles.addButtonText}>Add to Wardrobe</Text>
                     </TouchableOpacity>
                 </View>
-
 
                 {/* Modal for selecting options */}
                 <Modal
@@ -253,9 +251,9 @@ const styles = StyleSheet.create({
     },
     imageUploadArea: {
         display: 'flex',
-        height: 300,
-        marginTop: 39,
-        width: 300,
+        height: '25%',
+        marginTop: '10%',
+        width: 'auto',
         maxWidth: '100%',
         borderWidth: 1,
         borderStyle: 'dashed',
@@ -310,16 +308,19 @@ const styles = StyleSheet.create({
     },
     cameraIcon: {
         aspectRatio: 1,
-        objectFit: 'cover',
-        width: "100%",
-        height: "100%",
+        objectFit: 'fill',
+        width: "50%",
+        height: "auto",
+        justifyContent:'center',
+        alignSelf: 'center',
     },
     description: {
         color: '#828282',
         fontFamily: 'Gantari, sans-serif',
         fontWeight: '700',
         fontSize: 18,
-        alignSelf: "flex-start"
+        alignSelf: "flex-start",
+        marginLeft: 10,
     },
 
     // Modal styles
@@ -345,6 +346,18 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000',
     },
+    cameraPic: {
+
+        aspectRatio: 1,
+        objectFit: 'fill',
+        width: "101%",
+        height: "auto",
+        justifyContent:'center',
+        alignSelf: 'center',
+
+    },
+
+
 });
 
 export default AddClothes;

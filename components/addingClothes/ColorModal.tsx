@@ -111,11 +111,12 @@ const styles = StyleSheet.create({
         color: '#132260',
     },
     closeButton: {
-        marginTop: 10,
+        marginTop: '10%',
         padding: 10,
         backgroundColor: '#132260',
         borderRadius: 5,
         alignItems: 'center',
+
     },
     closeButtonText: {
         color: '#fff',

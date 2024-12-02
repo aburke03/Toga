@@ -8,6 +8,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddClothes from "@/app/(popups)/addClothesPage";
 import { imageDb } from "@/components/firebase";
 import {getDownloadURL, ref} from "@firebase/storage";
+import {AntDesign} from "@expo/vector-icons";
+import {index} from "@zxing/text-encoding/es2015/encoding/indexes";
 
 const Closet = () => {
 
@@ -136,7 +138,8 @@ const Closet = () => {
                 </View>
             </ScrollView>
             <TouchableOpacity style={styles.addButton} onPress={() => router.navigate('/addClothesPage')}>
-                <Text style={styles.addButtonText}>Add</Text>
+                <AntDesign name={"plus"} size={30} color={'white'} style={styles.addButtonPlus}></AntDesign>
+
             </TouchableOpacity>
         </View>
     );
@@ -209,19 +212,19 @@ const styles= StyleSheet.create({
     },
     addButton: {
         backgroundColor: 'blue',
-        paddingVertical: 10,
+        paddingVertical: 20,
         paddingHorizontal: 20,
-        borderRadius: 5,
+        borderRadius: 100,
         zIndex:10,
         alignSelf: 'center',
         position: 'absolute',
-        top: "82%",
-    },
+        top: "78%",
+        alignContent: "flex-start",
 
-    addButtonText: {
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 16,
+
+    },
+    addButtonPlus: {
+
 
     },
 });

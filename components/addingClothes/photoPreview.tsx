@@ -23,7 +23,7 @@ const photoPreview = ({
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name="trash" size={36} color="black" />
+                <Fontisto name="trash" size={36} color="white" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={() => handleUsePhoto(photo)}>
@@ -41,34 +41,38 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     box: {
-        borderRadius: 15,
+        borderRadius: 0,
         padding: 1,
         width: '95%',
-        backgroundColor: 'darkgray',
+        backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: "center",
     },
     previewContainer: {
-        width: '95%',
+        width: '90%',
         height: '85%',
-        borderRadius: 15
+        borderRadius: 0
     },
     buttonContainer: {
-        marginTop: '4%',
         flexDirection: 'row',
-        justifyContent: "center",
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: 'black',
+        paddingVertical: 20,
+        position: 'absolute',
+        bottom: 0,
         width: '100%',
+        borderTopColor:'white',
+        borderTopWidth: 1,
     },
     button: {
-        backgroundColor: 'gray',
-        borderRadius: 2,
-        marginRight: '5%',
-        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 10,
     },
     text:{
         fontSize: 18,
+        color: "white",
     },
 
 });

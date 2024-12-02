@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     closeButton: {
-        marginBottom: 10,
+        marginTop: '10%',
         padding: 10,
         backgroundColor: '#132260',
         borderRadius: 5,

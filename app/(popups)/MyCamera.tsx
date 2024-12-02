@@ -58,10 +58,10 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
             <CameraView style={styles.camera} facing={facing} ref={cameraRef} ratio={'4:3'}>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                        <AntDesign name="retweet" size={44} color="black" />
+                        <AntDesign name="retweet" size={44} color="white" />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-                        <AntDesign name="camera" size={44} color="black" />
+                        <AntDesign name="camera" size={44} color="white" />
                     </TouchableOpacity>
                 </View>
             </CameraView>
@@ -79,18 +79,21 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     buttonContainer: {
-        flex: 1,
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: 'black',
+        paddingVertical: 20,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        borderTopColor:'white',
+        borderTopWidth: 1,
     },
     button: {
-        flex: 1,
-        alignSelf: 'flex-end',
         alignItems: 'center',
-        marginHorizontal: 10,
-        backgroundColor: 'gray',
-        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 10,
     },
     text: {
         fontSize: 24,
