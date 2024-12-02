@@ -2,6 +2,8 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import {useEffect, useState} from 'react';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import React from 'react';
 
 const STRIPE_TEST_PUBLISHABLE_KEY="pk_test_51QN4V9I08saIli9VUFz6ouYM0znXpL6KIBOjFS605x6A9MDv9JTIOZj8pz0k99i1H9y4q71htEMGXJVnCPYFP46900NfwKVKRa";
 
@@ -58,12 +60,29 @@ const InitialLayout = () => {
   return <Slot />;
 };
 
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
+
 const RootLayout = () => {
   return (
       <StripeProvider 
       publishableKey={STRIPE_TEST_PUBLISHABLE_KEY}
       >
-        <InitialLayout />
+      <InitialLayout />
       </StripeProvider>
   );
 };
