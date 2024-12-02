@@ -29,7 +29,7 @@ interface ClothingItem {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const windowWidth = Dimensions.get('window').width;
     const itemWidth = (windowWidth - 48) / 2;
-    const [imageUris, setImageUris] = useState<string[]>([]);
+    const [imageUris, setImageUris] = useState<{ [key: string]: string }>({});
 
     async function loadPage() {
         let user:any;
