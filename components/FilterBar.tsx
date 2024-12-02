@@ -51,13 +51,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         padding: 5,
         borderRadius: 5,
+        height: 32,
     },
     button: {
 
     },
     selected: {
         color: "white",
-        height: "100%",
+        height: 32,
         lineHeight: 32,
         backgroundColor: "#132260",
         fontSize: 16,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
     },
     unselected: {
-        height: "100%",
+        height: 32,
         lineHeight: 32,
         backgroundColor: "#92CAFF",
         fontSize: 16,

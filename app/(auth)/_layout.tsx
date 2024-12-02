@@ -1,14 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
-import { useAuth } from '@clerk/clerk-expo';
 
 export const LogoutButton = () => {
-  const { signOut } = useAuth();
 
-  const doLogout = () => {
-    signOut();
-  };
+    function doLogout() {
+        console.log('logout');
+    }
 
   return (
     <Pressable onPress={doLogout} style={{ marginRight: 10 }}>
@@ -18,7 +16,6 @@ export const LogoutButton = () => {
 };
 
 const TabsPage = () => {
-  const { isSignedIn } = useAuth();
 
   return (
     <Tabs
@@ -35,7 +32,6 @@ const TabsPage = () => {
             tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} />,
             tabBarLabel: 'Home',
         }}
-        redirect={!isSignedIn}
       />
         <Tabs.Screen
             name="events"
@@ -44,7 +40,6 @@ const TabsPage = () => {
                 tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" size={size} color={color} />,
                 tabBarLabel: 'Events',
             }}
-            redirect={!isSignedIn}
         />
         <Tabs.Screen
             name="chat"
@@ -53,17 +48,15 @@ const TabsPage = () => {
                 tabBarIcon: ({ color, size }) => <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />,
                 tabBarLabel: 'Chats',
             }}
-            redirect={!isSignedIn}
         />
       <Tabs.Screen
         name="profile"
         options={{
             headerShown: false,
             tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
-            tabBarLabel: 'My Profile',
+            tabBarLabel: 'Profile',
         }}
-        redirect={!isSignedIn}
-      />
+        />
     </Tabs>
   );
 };

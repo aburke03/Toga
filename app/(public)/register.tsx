@@ -1,22 +1,27 @@
 import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { useSignUp } from '@clerk/clerk-expo';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useState } from 'react';
-import { Stack } from 'expo-router';
+import {router, Stack} from 'expo-router';
 
 const Register = () => {
-  const { isLoaded, signUp, setActive } = useSignUp();
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
-  const [retypePassword, setRetypePassword] = useState(''); 
-  const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState('');
+  const [retypePassword, setRetypePassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [secureText, setSecureText] = useState(true); 
   const [passwordsMatch, setPasswordsMatch] = useState(true); 
   const [isValidEmail, setIsValidEmail] = useState(true); 
-  const [passwordValid, setPasswordValid] = useState(false); 
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
+
+  async function signUp(userInfo: {email: string, password: string, full_name: string, username: string}) {
+    await fetch("https://backend-toga-r5s3.onrender.com/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(userInfo),
+    }).then((response) => console.log(response)).then(() => {router.replace("/login")}).catch(error => console.log(error));
+  }
 
   // Password validation logic
   const validatePassword = (password: string) => {
@@ -51,41 +56,16 @@ const Register = () => {
   };
 
   const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
 
     try {
       // Create the user on Clerk
-      await signUp.create({
-        emailAddress,
-        password,
+      await signUp({
+        email: emailAddress,
+        password: password,
+        full_name: fullName,
+        username: username
       });
 
-      // Send verification Email
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-
-      setPendingVerification(true);
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
-
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-
-      await setActive({ session: completeSignUp.createdSessionId });
     } catch (err: any) {
       alert(err.errors[0].message);
     } finally {
@@ -96,11 +76,24 @@ const Register = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Stack.Screen options={{ headerBackVisible: !pendingVerification }} />
-        <Spinner visible={loading} />
-
-        {!pendingVerification && (
-          <>
+        <Stack.Screen />
+        {/*<Spinner visible={loading} />*/}
+            <TextInput
+                autoCapitalize="none"
+                placeholder="Full name"
+                value={fullName}
+                onChangeText={(value) => setFullName(value)}
+                style={styles.inputField}
+                placeholderTextColor={'grey'}
+            />
+            <TextInput
+                autoCapitalize="none"
+                placeholder="username"
+                value={username}
+                onChangeText={(value) => setUsername(value)}
+                style={styles.inputField}
+                placeholderTextColor={'grey'}
+            />
             <TextInput
               autoCapitalize="none"
               placeholder="geauxtigers@lsu.edu"
@@ -154,24 +147,6 @@ const Register = () => {
                 !passwordValid || !passwordsMatch || !isValidEmail || !password || !retypePassword
               }
             />
-          </>
-        )}
-
-        {pendingVerification && (
-          <>
-            <View>
-              <TextInput
-                value={code}
-                placeholder="Enter Code"
-                style={styles.inputField}
-                onChangeText={setCode}
-                placeholderTextColor={'grey'}
-                keyboardType="numeric"
-              />
-            </View>
-            <Button onPress={onPressVerify} title="Verify Email" color={'#6c47ff'} />
-          </>
-        )}
       </View>
     </TouchableWithoutFeedback>
   );

@@ -1,27 +1,26 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Pressable,
-  Button,
-  TouchableOpacity
-} from 'react-native';
-import React, { useState } from 'react';
-import {Modal} from 'react-native';
+import {Modal, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable, ScrollView} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
-import myCamera from "@/components/addingClothes/MyCamera";
-import {navigate} from "expo-router/build/global-state/routing";
-import {CaptchaElement} from "@clerk/clerk-js/dist/types/ui/elements/CaptchaElement";
-import AddClothes from "@/components/addingClothes/addClothesPage";
+import {useFocusEffect} from "expo-router";
 
 const Profile = () => {
   const [content, setContent] = useState(<Closet />)
   const [currState, setCurrState] = useState("closet")
 
+  useFocusEffect(
+      useCallback(() => {
+        setContent(<Closet />);
+        setCurrState("closet");
+
+        // Return function is invoked whenever the route gets out of focus.
+        return () => {
+          console.log('This route is now unfocused.');
+        };
+      }, [])
+  );
 
   function changeContent(route: string) {
     setCurrState(route);
@@ -38,19 +37,7 @@ const Profile = () => {
     }
   }
 
-  const [addClothesPopup, setAddClothesPopup] = useState(false);
-
-  const openPopup = () => {
-    setAddClothesPopup(true);
-  }
-
-  const closePopup = () => {
-    setAddClothesPopup(false);
-  }
-
   return (
-
-
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.topNav}>
@@ -64,28 +51,11 @@ const Profile = () => {
             <Text style={styles.topNavButtonText}>Virtual Try-On</Text>
           </Pressable>
         </View>
-        <TouchableOpacity style={styles.addButton} onPress={openPopup}>
-          <Text style={styles.addButtonText}>Add</Text>
-        </TouchableOpacity>
-
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={addClothesPopup}
-            onRequestClose={closePopup}>
-          <View style={styles.modalContainer}>
-            <AddClothes></AddClothes>
-            <TouchableOpacity onPress={closePopup} >
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
 
         {content}
       </View>
+
     </TouchableWithoutFeedback>
-
-
   );
 };
 
@@ -130,40 +100,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 10,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingBottom: 20,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    width: '100%',
-
-  },
-  modalText: {
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: 'blue',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    zIndex:10,
-    alignSelf: 'center',
-    position: 'absolute',
-    bottom: 0,
-  },
-
-  addButtonText: {
-    alignSelf: 'center',
-    color: 'white',
-    fontSize: 16,
-
-  },
 
 
 });
-
 
 export default Profile;
