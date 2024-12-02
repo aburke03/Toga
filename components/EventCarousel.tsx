@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    marginLeft: 16,
     color: '#000',
+    alignSelf:'center',
   },
   carousel: {
     height: 240,

@@ -1,9 +1,8 @@
+import React, { useRef, useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
-import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
-
 
 export default function MyCamera() {
     const [facing, setFacing] = useState<CameraType>('back');
@@ -13,7 +12,9 @@ export default function MyCamera() {
 
     const handleRetakePhoto = () => setPhoto(null);
 
-    const handleReturn = () => {alert('send back pic and got to add clothes')};
+    const handleReturn = () => {
+        alert('Send back picture and go to add clothes');
+    };
 
     if (!permission) {
         return <View />;
@@ -28,9 +29,9 @@ export default function MyCamera() {
         );
     }
 
-    function toggleCameraFacing() {
+    const toggleCameraFacing = () => {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
-    }
+    };
 
     const handleTakePhoto = async () => {
         if (cameraRef.current) {
@@ -50,16 +51,16 @@ export default function MyCamera() {
 
     return (
         <View style={styles.container}>
-            <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                        <AntDesign name="retweet" size={44} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-                        <AntDesign name="camera" size={44} color="black" />
-                    </TouchableOpacity>
-                </View>
-            </CameraView>
+            <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+
+            <View style={styles.bottomBar}>
+                <TouchableOpacity style={styles.barButton} onPress={toggleCameraFacing}>
+                    <AntDesign name="retweet" size={32} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.barButton} onPress={handleTakePhoto}>
+                    <AntDesign name="camera" size={32} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -68,27 +69,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        backgroundColor: 'black',
     },
     camera: {
         flex: 1,
     },
-    buttonContainer: {
-        flex: 1,
+    bottomBar: {
+        borderTopWidth: 3,
+        borderTopColor: 'white',
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
-    },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        marginHorizontal: 10,
-        backgroundColor: 'gray',
-        borderRadius: 10,
+        backgroundColor: 'black',
+        paddingVertical: 15,
     },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
+    barButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
     },
 });

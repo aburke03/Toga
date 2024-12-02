@@ -4,13 +4,13 @@ import React from 'react'
 import { TouchableOpacity, SafeAreaView, Image, StyleSheet, View, Text } from 'react-native';
 
 const handleReturn = () => {
-  alert('go back');
+    alert('go back');
 }
 
 const photoPreview = ({
                           photo,
                           handleRetakePhoto,
-                             }: {
+                      }: {
     photo: CameraCapturedPicture;
     handleRetakePhoto: () => void;
 }) => (
@@ -24,7 +24,7 @@ const photoPreview = ({
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name='trash' size={36} color='black' />
+                <Fontisto name='trash' size={36} color='white' />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={handleReturn}>
@@ -35,43 +35,47 @@ const photoPreview = ({
 );
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
     },
     box: {
-        borderRadius: 15,
-        padding: 1,
-        width: '95%',
-        backgroundColor: 'darkgray',
+        borderRadius: 5,
+        padding: 0,
+        width: '100%',
+        backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: "center",
     },
     previewContainer: {
-        width: '95%',
-        height: '85%',
-        borderRadius: 15
+        width: '100%',
+        height: '100%',
+        borderRadius: 0,
     },
     buttonContainer: {
-        marginTop: '4%',
+        borderTopWidth: 3,
+        borderTopColor: 'white',
         flexDirection: 'row',
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
         width: '100%',
+        paddingVertical: 15,
+        backgroundColor: 'black',
+        position: 'absolute',
+        bottom: 0,
     },
     button: {
-        backgroundColor: 'gray',
-        borderRadius: 2,
-        marginRight: '5%',
-        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 10,
     },
-    text:{
+    text: {
         fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
     },
-
 });
 
 export default photoPreview;

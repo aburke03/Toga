@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     topNavButton: {
-        paddingTop: 50,
+        paddingTop: '20%',
         padding: 0,
         alignSelf: 'center',
         borderBottomWidth: 1,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     topNavButtonSelected: {
-        paddingTop: 50,
+        paddingTop: "20%",
         padding: 0,
         alignSelf: 'center',
         borderBottomWidth: 2,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     topNavButtonText: {
         fontSize: 18,
         textAlign: 'center',
-        padding: 10,
+        paddingBottom: 10,
     }
 });
 

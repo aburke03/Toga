@@ -155,8 +155,10 @@ const styles= StyleSheet.create({
         columnGap: 10
     },
     org: {
+
         backgroundColor: '#92CAFF',
-        paddingVertical: 5,
+        marginTop: 10,
+        paddingVertical: 10,
         paddingHorizontal: 10,
         borderRadius: 20,
     },
@@ -166,10 +168,14 @@ const styles= StyleSheet.create({
         width: 64,
     },
     name: {
-        padding: 5,
-        justifyContent: "center"
+        marginTop: 10,
+        marginLeft: 40,
+        position: "relative",
+        alignSelf: "center",
+
     },
     top: {
+
         flexDirection: 'row',
         width: '100%',
         paddingHorizontal: 40,
@@ -190,6 +196,7 @@ const styles= StyleSheet.create({
         margin: 5
     },
     modalContainer: {
+
         flex: 1,
         justifyContent: 'center',
         backgroundColor: '#fff',

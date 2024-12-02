@@ -95,9 +95,9 @@ const Home = () => {
   return (
     <ScrollView style={{ flex: 1, width: '100%' }}>
         <Spinner visible={loading} />
-        <Text style={styles.text}>Your Events</Text>
+
         <EventCarousel />
-        <Text style={styles.suggested}>Suggested</Text>
+        <Text style={styles.suggested}>Suggested for you</Text>
         <FilterBar />
         <View style={styles.recommendedScroll}>
             {clothingCards.map((item: any, index: any) => (
@@ -117,10 +117,12 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     suggested: {
-        fontSize: 40,
+        fontSize: 24,
         color: 'black',
-        margin: 16,
-        alignSelf: "center"
+        margin: 12,
+        alignSelf: "center",
+        fontWeight: 'bold',
+
     },
     recommendedScroll: {
         flexDirection: 'row',

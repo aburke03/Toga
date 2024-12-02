@@ -95,9 +95,10 @@ const styles = StyleSheet.create({
     header: {
         padding: 16,
         backgroundColor: '#f0f0f0',
+        alignItems: 'center',
     },
     headerText: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#000',
     },
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        paddingVertical: 16,
+        paddingVertical: 10,
     },
     eventsContainer: {
         alignItems: 'center',
