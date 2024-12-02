@@ -9,6 +9,8 @@ import {router, useFocusEffect} from "expo-router";
 import EventCard from "@/components/EventCard";
 import Closet from "@/components/Closet";
 import Spinner from "react-native-loading-spinner-overlay";
+import {getDownloadURL, ref} from "@firebase/storage";
+import {imageDb} from "@/components/firebase";
 
 const Home = () => {
 
@@ -68,11 +70,14 @@ const Home = () => {
             let items = await response.json();
             let arr = []
             for (let item of items) {
+                const storageRef = ref(imageDb, item.images[0]);
+                const url = await getDownloadURL(storageRef)
+                console.log(url);
                 arr.push({
                     priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
                     buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
                     bookmarked: item.is_bookmarked,
-                    image: item.images[0],
+                    image: url,
                     size: item.size,
                     key: item.id
                 });
@@ -101,7 +106,7 @@ const Home = () => {
         <FilterBar />
         <View style={styles.recommendedScroll}>
             {clothingCards.map((item: any, index: any) => (
-                <ClothingCard key ={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
+                <ClothingCard key ={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
             ))}
         </View>
     </ScrollView>

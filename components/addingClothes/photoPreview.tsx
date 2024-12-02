@@ -2,32 +2,31 @@ import { Fontisto } from '@expo/vector-icons';
 import { CameraCapturedPicture } from 'expo-camera';
 import React from 'react'
 import { TouchableOpacity, SafeAreaView, Image, StyleSheet, View, Text } from 'react-native';
-
-const handleReturn = () => {
-  alert('go back');
-}
+import {router} from "expo-router";
 
 const photoPreview = ({
                           photo,
                           handleRetakePhoto,
-                             }: {
+                          handleUsePhoto,
+                      }: {
     photo: CameraCapturedPicture;
     handleRetakePhoto: () => void;
+    handleUsePhoto: (photo: CameraCapturedPicture) => void;
 }) => (
     <SafeAreaView style={styles.container}>
         <View style={styles.box}>
             <Image
                 style={styles.previewContainer}
-                source={{uri: 'data:image/jpg;base64,' + photo.base64}}
+                source={{ uri: 'data:image/jpg;base64,' + photo.base64}}
             />
         </View>
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name='trash' size={36} color='black' />
+                <Fontisto name="trash" size={36} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={handleReturn}>
+            <TouchableOpacity style={styles.button} onPress={() => handleUsePhoto(photo)}>
                 <Text style={styles.text}>Use This Photo</Text>
             </TouchableOpacity>
         </View>

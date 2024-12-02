@@ -1,17 +1,22 @@
 import { AntDesign } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
+import {CameraView, useCameraPermissions, CameraType, CameraCapturedPicture} from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
+import React from 'react';
 
 
-export default function MyCamera() {
+const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCapturedPicture) => void}) => {
     const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef<CameraView | null>(null);
     const [photo, setPhoto] = useState<any>(null);
 
     const handleRetakePhoto = () => setPhoto(null);
+
+    const handleUsePhoto = (photo: CameraCapturedPicture) => {
+        handleTakenPicture(photo);
+    }
 
     const handleReturn = () => {alert('send back pic and got to add clothes')};
 
@@ -45,12 +50,12 @@ export default function MyCamera() {
     };
 
     if (photo) {
-        return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} />;
+        return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto}  handleUsePhoto={handleUsePhoto}/>;
     }
 
     return (
         <View style={styles.container}>
-            <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+            <CameraView style={styles.camera} facing={facing} ref={cameraRef} ratio={'4:3'}>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
                         <AntDesign name="retweet" size={44} color="black" />
@@ -63,6 +68,7 @@ export default function MyCamera() {
         </View>
     );
 }
+export default MyCamera;
 
 const styles = StyleSheet.create({
     container: {
