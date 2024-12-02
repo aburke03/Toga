@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground} from 'react-native';
 import { Text } from 'react-native-ui-lib';
 import React from 'react';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const ProductDetail = () => {
     const params = useLocalSearchParams();
+    console.log(params.image as string);
 
     return (
         <>
@@ -40,11 +41,13 @@ const ProductDetail = () => {
             />
             
             <ScrollView style={styles.container}>
-                <Image
-                    source={{ uri: params.image as string }}
-                    style={styles.image}
-                    resizeMode="cover"
-                />
+                <View style={{ width: "100%", height: undefined, aspectRatio: 1 }}>
+                    <Image
+                        source={{ uri: params.image as string }}
+                        style={{ width: "100%", height: "100%" }}
+                        resizeMode="contain" // Or "cover" if you want cropping
+                    />
+                </View>
 
                 <View style={styles.details}>
                     <Text style={styles.title}>{params.title as string}</Text>
@@ -111,8 +114,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     image: {
-        width: '100%',
-        height: 400,
+        width: "100%",
+        height: "100%",borderWidth: 10, borderColor: "black"
     },
     details: {
         padding: 20,
