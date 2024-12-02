@@ -2,32 +2,31 @@ import { Fontisto } from '@expo/vector-icons';
 import { CameraCapturedPicture } from 'expo-camera';
 import React from 'react'
 import { TouchableOpacity, SafeAreaView, Image, StyleSheet, View, Text } from 'react-native';
-
-const handleReturn = () => {
-    alert('go back');
-}
+import {router} from "expo-router";
 
 const photoPreview = ({
                           photo,
                           handleRetakePhoto,
+                          handleUsePhoto,
                       }: {
     photo: CameraCapturedPicture;
     handleRetakePhoto: () => void;
+    handleUsePhoto: (photo: CameraCapturedPicture) => void;
 }) => (
     <SafeAreaView style={styles.container}>
         <View style={styles.box}>
             <Image
                 style={styles.previewContainer}
-                source={{uri: 'data:image/jpg;base64,' + photo.base64}}
+                source={{ uri: 'data:image/jpg;base64,' + photo.base64}}
             />
         </View>
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name='trash' size={36} color='white' />
+                <Fontisto name="trash" size={36} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={handleReturn}>
+            <TouchableOpacity style={styles.button} onPress={() => handleUsePhoto(photo)}>
                 <Text style={styles.text}>Use This Photo</Text>
             </TouchableOpacity>
         </View>
@@ -35,47 +34,43 @@ const photoPreview = ({
 );
 
 const styles = StyleSheet.create({
-    container: {
+    container:{
         flex: 1,
         backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
     },
     box: {
-        borderRadius: 5,
-        padding: 0,
-        width: '100%',
-        backgroundColor: 'transparent',
+        borderRadius: 15,
+        padding: 1,
+        width: '95%',
+        backgroundColor: 'darkgray',
         justifyContent: 'center',
         alignItems: "center",
     },
     previewContainer: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 0,
+        width: '95%',
+        height: '85%',
+        borderRadius: 15
     },
     buttonContainer: {
-        borderTopWidth: 3,
-        borderTopColor: 'white',
+        marginTop: '4%',
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: "center",
         width: '100%',
-        paddingVertical: 15,
-        backgroundColor: 'black',
-        position: 'absolute',
-        bottom: 0,
     },
     button: {
+        backgroundColor: 'gray',
+        borderRadius: 2,
+        marginRight: '5%',
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 10,
     },
-    text: {
+    text:{
         fontSize: 18,
-        color: 'white',
-        fontWeight: 'bold',
     },
+
 });
 
 export default photoPreview;

@@ -6,7 +6,7 @@ import { router } from "expo-router";
 
 const EventCard = ({ date, name, image, host, days, month }) => {
   // Format the date string to a more readable format
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return {
       day: date.getDate(),

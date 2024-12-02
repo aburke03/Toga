@@ -6,6 +6,8 @@ import ClothingCard from "@/components/ClothingCard";
 import {router} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddClothes from "@/app/(popups)/addClothesPage";
+import { imageDb } from "@/components/firebase";
+import {getDownloadURL, ref} from "@firebase/storage";
 
 const Closet = () => {
 
@@ -70,18 +72,20 @@ const Closet = () => {
         let items = await response.json();
         let arr: any[] = []
         for (let item of items) {
+            const storageRef = ref(imageDb, item.images[0]);
+            const url = await getDownloadURL(storageRef)
             arr.push({
                 priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
                 buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
                 bookmarked: item.is_bookmarked,
-                image: item.images[0],
+                image: url,
                 size: item.size,
                 key: item.id
             })
         }
         setClothingItems(
             arr.map((item: any, index: any) => (
-                <ClothingCard key={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
+                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
             ))
         );
         setUserID(user);
@@ -103,52 +107,45 @@ const Closet = () => {
 
 
     return (
-        <ScrollView>
-            <View style={styles.top}>
-                <Pressable onPress={logout}>
-                    <Image source={images('./profile.png')} style={styles.pfp} />
-                </Pressable>
-                <View style={styles.sales}>
-                    <Text style={styles.text}>Sales</Text>
-                    <Text style={styles.text}>{sales}</Text>
+        <View style={styles.closet}>
+            <ScrollView>
+                <View style={styles.top}>
+                    <Pressable onPress={logout}>
+                        <Image source={images('./profile.png')} style={styles.pfp} />
+                    </Pressable>
+                    <View style={styles.sales}>
+                        <Text style={styles.text}>Sales</Text>
+                        <Text style={styles.text}>{sales}</Text>
+                    </View>
+                    <View style={styles.sales}>
+                        <Text style={styles.text}>Disputes</Text>
+                        <Text style={styles.text}>{disputes}</Text>
+                    </View>
                 </View>
-                <View style={styles.sales}>
-                    <Text style={styles.text}>Disputes</Text>
-                    <Text style={styles.text}>{disputes}</Text>
+                <View style={styles.organizations}>
+                    <Text style={styles.name}>{fullName}</Text>
+                    {organizations.map((organization, index) => (
+                        <Text key={index} style={styles.org}>{organization}</Text>
+                    ))}
                 </View>
-            </View>
-            <View style={styles.organizations}>
-                <Text style={styles.name}>{fullName}</Text>
-                {organizations.map((organization, index) => (
-                    <Text key={index} style={styles.org}>{organization}</Text>
-                ))}
-            </View>
-            <View>
-                <FilterBar />
-                <View style={styles.recommendedScroll}>
-                    {clothingItems}
+                <View>
+                    <FilterBar />
+                    <View style={styles.recommendedScroll}>
+                        {clothingItems}
+                    </View>
                 </View>
-            </View>
-            <TouchableOpacity style={styles.addButton} onPress={openPopup}>
+            </ScrollView>
+            <TouchableOpacity style={styles.addButton} onPress={() => router.navigate('/addClothesPage')}>
                 <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={addClothesPopup}
-                onRequestClose={closePopup}>
-                <View style={styles.modalContainer}>
-                    <AddClothes></AddClothes>
-                    <TouchableOpacity onPress={closePopup} >
-                        <Text>Close</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-        </ScrollView>
+        </View>
     );
 };
 
 const styles= StyleSheet.create({
+    closet: {
+        height: "100%"
+    },
     organizations: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -218,7 +215,7 @@ const styles= StyleSheet.create({
         zIndex:10,
         alignSelf: 'center',
         position: 'absolute',
-        top: "100%",
+        top: "82%",
     },
 
     addButtonText: {

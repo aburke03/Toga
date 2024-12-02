@@ -1,10 +1,12 @@
-import React, { useRef, useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
+import {CameraView, useCameraPermissions, CameraType, CameraCapturedPicture} from 'expo-camera';
+import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
+import React from 'react';
 
-export default function MyCamera() {
+
+const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCapturedPicture) => void}) => {
     const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef<CameraView | null>(null);
@@ -12,9 +14,11 @@ export default function MyCamera() {
 
     const handleRetakePhoto = () => setPhoto(null);
 
-    const handleReturn = () => {
-        alert('Send back picture and go to add clothes');
-    };
+    const handleUsePhoto = (photo: CameraCapturedPicture) => {
+        handleTakenPicture(photo);
+    }
+
+    const handleReturn = () => {alert('send back pic and got to add clothes')};
 
     if (!permission) {
         return <View />;
@@ -29,9 +33,9 @@ export default function MyCamera() {
         );
     }
 
-    const toggleCameraFacing = () => {
+    function toggleCameraFacing() {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
-    };
+    }
 
     const handleTakePhoto = async () => {
         if (cameraRef.current) {
@@ -46,46 +50,51 @@ export default function MyCamera() {
     };
 
     if (photo) {
-        return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto} />;
+        return <PhotoPreview photo={photo} handleRetakePhoto={handleRetakePhoto}  handleUsePhoto={handleUsePhoto}/>;
     }
 
     return (
         <View style={styles.container}>
-            <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-
-            <View style={styles.bottomBar}>
-                <TouchableOpacity style={styles.barButton} onPress={toggleCameraFacing}>
-                    <AntDesign name="retweet" size={32} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.barButton} onPress={handleTakePhoto}>
-                    <AntDesign name="camera" size={32} color="white" />
-                </TouchableOpacity>
-            </View>
+            <CameraView style={styles.camera} facing={facing} ref={cameraRef} ratio={'4:3'}>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                        <AntDesign name="retweet" size={44} color="black" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
+                        <AntDesign name="camera" size={44} color="black" />
+                    </TouchableOpacity>
+                </View>
+            </CameraView>
         </View>
     );
 }
+export default MyCamera;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'black',
     },
     camera: {
         flex: 1,
     },
-    bottomBar: {
-        borderTopWidth: 3,
-        borderTopColor: 'white',
+    buttonContainer: {
+        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        paddingVertical: 15,
+        backgroundColor: 'transparent',
+        margin: 64,
     },
-    barButton: {
+    button: {
+        flex: 1,
+        alignSelf: 'flex-end',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: 10,
+        marginHorizontal: 10,
+        backgroundColor: 'gray',
+        borderRadius: 10,
+    },
+    text: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
     },
 });

@@ -12,15 +12,33 @@ import {
     Button,
 } from 'react-native';
 import { OptionRow } from '@/components/addingClothes/OptionRow';
-import { useRouter } from 'expo-router';
+import {router, useRouter} from 'expo-router';
+import MyCamera from "@/app/(popups)/MyCamera";
+import {CameraCapturedPicture} from "expo-camera";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { imageDb } from "@/components/firebase";
+import {ref, uploadBytes} from "@firebase/storage";
 
+import Compressor from 'compressorjs';
 
-export const AddClothes: React.FC = () => {
-    const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
+export const AddClothes = () => {
+    const [selectedValues, setSelectedValues] = useState<{
+        category: string,
+        condition: string,
+        color: string,
+        theme: string,
+    }>({
+            category: "Select",
+            condition: "Select",
+            color: "Select",
+            theme: "Select",
+        });
     const [showModal, setShowModal] = useState(false);
     const [currentOption, setCurrentOption] = useState<string>('');
-    const [text, onChangeText] = React.useState('Description');
-
+    const [text, onChangeText] = useState('Description');
+    const [takingPicture, setTakingPicture] = useState(false);
+    const [picture, setPicture] = useState("https://cdn.builder.io/api/v1/image/assets/TEMP/4b2fb31d9fd7f8776037917f534beb06505f89264458be53b4aec15764c79304")
+    const [photo, setPhoto] = useState("");
     const router = useRouter();
 
     const optionRows: any[] = [
@@ -58,27 +76,81 @@ export const AddClothes: React.FC = () => {
         },
     ];
 
-    const handleAddToWardrobe = () => {
-        console.log('Adding to wardrobe:', selectedValues);
+    async function uploadImage(fileName:string) {
+        console.log(fileName)
+        try {
+            const storageRef = ref(imageDb, 'images/' + fileName);  // Define the storage reference path
+            // Upload the file to Firebase Storage
+            const response = await fetch(picture);
+            const blob = await response.blob();
+            const uploadTask = await uploadBytes(storageRef, blob);
+            console.log(uploadTask.ref.fullPath)
+            return uploadTask.ref.fullPath;
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }
+
+    const handleAddToWardrobe = async () => {
+        const imageUrl = await uploadImage(Date.now()+"_image.jpg");
+        const user = await AsyncStorage.getItem("user-id");
+        const requestBody = {
+            category: selectedValues.category,
+            condition: selectedValues.condition,
+            description: text,
+            size: "S",
+            title: "denim jacket",
+            rental_price: 0,
+            purchase_price: 0,
+            images: [imageUrl],
+            owner: user
+        }
+        const token = await AsyncStorage.getItem("token");
+        try {
+            const response = await fetch("https://backend-toga-r5s3.onrender.com/api/items/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            const data = await response.json();  // Wait for the response to be parsed
+            console.log(data);
+            router.replace("/profile");
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
     };
 
-    const handleSelectOption = (label: string) => {
-        setCurrentOption(label);
-        setShowModal(true);
-    };
 
-    const handleOptionSelection = (value: string) => {
-        setSelectedValues((prev) => ({
-            ...prev,
-            [currentOption.toLowerCase()]: value,
-        }));
+    const handleOptionSelection = (selected: {
+        category: string,
+            condition: string,
+            color: string,
+            theme: string,
+    }) => {
+        setSelectedValues(selected);
         setShowModal(false);
     };
 
+    const handleTakenPicture = (photo: CameraCapturedPicture) => {
+        setPicture(photo.uri);
+        if (photo.base64 != undefined && photo.base64 !== "") {
+            setPhoto(photo.base64);
+        }
+        setTakingPicture(false);
+    };
+
+    if (takingPicture) {
+        return <MyCamera handleTakenPicture={handleTakenPicture}/>
+    }
+
     return (
-        <ScrollView>
+        <View>
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={() => router.push("/home")}>
+                <TouchableWithoutFeedback onPress={() => router.replace('/profile')}>
                     <Image
                         source={{ uri: 'https://cdn.builder.io/api/v1/image/assets/TEMP/76dc4b34dc0f148da5ee5b240ca6b1b833f1819a8fa1b0875c62c63d82654ad2' }}
                         style={styles.backButton}
@@ -86,12 +158,30 @@ export const AddClothes: React.FC = () => {
                     />
                 </TouchableWithoutFeedback>
 
-                <View style={styles.imageUploadArea} />
-                <View style={styles.previewArea} />
+                <View style={styles.imageUploadArea}>
+                    <TouchableOpacity style={styles.cameraIcon} onPress={() => setTakingPicture(true)}>
+                        <Image
+                            source={{ uri: picture }}
+                            style={styles.cameraIcon}
+                            accessibilityLabel="center icon"
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.previewArea} >
+                    <TextInput
+                        style={styles.description}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholder="Description"
+                        placeholderTextColor="#888" // Optional: Custom placeholder color
+                        maxLength={200} // Optional: Limit input length
+                        multiline={true} // Optional: Allow multiline input
+                    />
+                </View>
                 <View style={styles.separator} />
 
                 <View style={styles.optionsContainer}>
-                    <OptionRow />
+                    <OptionRow handleOptionSelect={handleOptionSelection}/>
                 </View>
 
                 <View style={styles.separator} />
@@ -107,22 +197,6 @@ export const AddClothes: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.cameraIcon} onPress={() => router.replace("../MyCamera")}>
-                    <Image
-                        source={{ uri: 'https://cdn.builder.io/api/v1/image/assets/TEMP/4b2fb31d9fd7f8776037917f534beb06505f89264458be53b4aec15764c79304' }}
-                        style={styles.cameraIcon}
-                        accessibilityLabel="center icon"
-                    />
-                </TouchableOpacity>
-                <TextInput
-                    style={styles.description}
-                    onChangeText={onChangeText}
-                    value={text}
-                    placeholder="Description"
-                    placeholderTextColor="#888" // Optional: Custom placeholder color
-                    maxLength={200} // Optional: Limit input length
-                    multiline={true} // Optional: Allow multiline input
-                />
 
                 {/* Modal for selecting options */}
                 <Modal
@@ -149,7 +223,7 @@ export const AddClothes: React.FC = () => {
                     </View>
                 </Modal>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 
@@ -179,9 +253,9 @@ const styles = StyleSheet.create({
     },
     imageUploadArea: {
         display: 'flex',
-        minHeight: 200,
+        height: 300,
         marginTop: 39,
-        width: 200,
+        width: 300,
         maxWidth: '100%',
         borderWidth: 1,
         borderStyle: 'dashed',
@@ -236,22 +310,16 @@ const styles = StyleSheet.create({
     },
     cameraIcon: {
         aspectRatio: 1,
-        objectFit: 'contain',
-        width: 120,
-        position: 'absolute',
-        left: '50%',
-        top: '22%',
-        transform: [{ translateX: -60 }, { translateY: -60 }],
-        height: 120,
+        objectFit: 'cover',
+        width: "100%",
+        height: "100%",
     },
     description: {
         color: '#828282',
         fontFamily: 'Gantari, sans-serif',
         fontWeight: '700',
         fontSize: 18,
-        position: 'absolute',
-        left: 36,
-        top: 300,
+        alignSelf: "flex-start"
     },
 
     // Modal styles

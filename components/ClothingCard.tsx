@@ -9,7 +9,7 @@ export default function ClothingCard(props: any) {
     const [bookmarked, setBookmarked] = useState(props.bookmarked);
 
     function cardPress() {
-        console.log('cardPressed');
+        console.log(props.image);
     }
 
     async function bookmarkPress() {
@@ -44,7 +44,7 @@ export default function ClothingCard(props: any) {
 
     return (
         <Card onPress={props.cardPress} style={styles.card}>
-            <ImageBackground resizeMode="cover" style={styles.image} source={props.image}>
+            <ImageBackground resizeMode="cover" style={styles.image} source={{uri: props.image}}>
                 <Ionicons name={bookmarked ? "bookmark" : "bookmark-outline"} size={36} color={'#132260'} onPress={bookmarkPress} style={styles.bookmark} />
                 {props.buyType!="none"?<Card.Section style={styles.textbox} content={[
                     {text: props.size, style: styles.size},

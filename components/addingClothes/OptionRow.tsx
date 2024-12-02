@@ -4,8 +4,14 @@ import { CategoryModal } from './CategoryModal';
 import { ConditionModal } from './ConditionModal';
 import { ColorModal } from './ColorModal';
 import { ThemeModal } from './ThemeModal';
+import {CameraCapturedPicture} from "expo-camera";
 
-export const OptionRow = () => {
+export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: {
+        category: string,
+        condition: string,
+        color: string,
+        theme: string,
+    }) => void}) => {
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [selectedOptions, setSelectedOptions] = useState({
         category: 'Select',
@@ -24,6 +30,7 @@ export const OptionRow = () => {
 
     const handleOptionChange = (type: string, value: string) => {
         setSelectedOptions((prev) => ({ ...prev, [type]: value }));
+        handleOptionSelect(selectedOptions);
         closeModal(); // Close the modal after selection
     };
 

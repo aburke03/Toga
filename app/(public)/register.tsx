@@ -2,6 +2,7 @@ import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, Keyboard, 
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useState } from 'react';
 import {router, Stack} from 'expo-router';
+import React from 'react';
 
 const Register = () => {
 
