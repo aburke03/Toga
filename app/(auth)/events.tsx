@@ -1,24 +1,33 @@
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import EventPreview from "@/components/EventPreview";
 import { Text } from 'react-native-ui-lib';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Events = () => {
-    const [events, setEvents] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [refreshing, setRefreshing] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
-    const [hasMore, setHasMore] = useState<boolean>(true);
+interface Event {
+    event_id: string;
+    title: string;
+    description: string;
+    event_begin: string;
+    event_end: string;
+    location: string;
+    image_url: string;
+    organizer_name: string;
+}
 
-    const fetchEvents = async (pageNum = 1, isRefresh = false) => {
+const Events = () => {
+    const [events, setEvents] = useState<Event[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchEvents = async () => {
         try {
             const token = await AsyncStorage.getItem("token");
             const userId = await AsyncStorage.getItem("user-id");
 
-            let url = `https://backend-toga-r5s3.onrender.com/api/events?page=${pageNum}&limit=10`;
+            let url = 'https://backend-toga-r5s3.onrender.com/api/events';
             if (userId) {
-                url += `&organization=${userId}`;
+                url += `?organization=${userId}`;
             }
 
             const response = await fetch(url, {
@@ -34,22 +43,14 @@ const Events = () => {
             }
 
             const data = await response.json();
-            
-            if (Array.isArray(data)) {
-                if (isRefresh) {
-                    setEvents(data);
-                } else {
-                    setEvents(prevEvents => [...(prevEvents || []), ...data]);
-                }
-                setHasMore(data.length === 10);
-            }
+            setEvents(data);
             
         } catch (error) {
             console.error('Error fetching events:', error);
+            setError('Failed to load events');
             setEvents([]);
         } finally {
             setLoading(false);
-            setRefreshing(false);
         }
     };
 
@@ -70,7 +71,13 @@ const Events = () => {
             >
                 <View style={styles.eventsContainer}>
                     {loading ? (
-                        <Text>Loading...</Text>
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#461D7C" />
+                        </View>
+                    ) : error ? (
+                        <View style={styles.errorContainer}>
+                            <Text style={styles.errorText}>{error}</Text>
+                        </View>
                     ) : events.length > 0 ? (
                         events.map((event) => (
                             <EventPreview 
@@ -79,7 +86,9 @@ const Events = () => {
                             />
                         ))
                     ) : (
-                        <Text>No events found</Text>
+                        <View style={styles.noEventsContainer}>
+                            <Text style={styles.noEventsText}>No events found</Text>
+                        </View>
                     )}
                 </View>
             </ScrollView>
@@ -112,6 +121,34 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 16,
         paddingHorizontal: 16,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+    errorText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+    },
+    noEventsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+    noEventsText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
     },
 });
 

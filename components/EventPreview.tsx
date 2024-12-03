@@ -15,6 +15,7 @@ interface EventPreviewProps {
 }
 
 export default function EventPreview({ 
+    event_id,
     title, 
     description, 
     event_begin, 
@@ -47,12 +48,30 @@ export default function EventPreview({
         }
         
         // If it's just a filename like 'event.jpg', use default image
-        return images("./" + image_url);
+        try {
+            return images("./" + image_url);
+        } catch {
+            return defaultImage;
+        }
     };
-    
+
+    const handlePress = () => {
+        router.push({
+            pathname: '/(popups)/eventDetail',
+            params: {
+                id: event_id,
+                title,
+                description,
+                event_date: event_begin,
+                location,
+                image_url: image_url || '../assets/images/event1.jpg',
+                organizer_name
+            }
+        });
+    };
 
     return (
-        <Card onPress={() => router.push("../insideEvent")} style={styles.card}>
+        <Card onPress={handlePress} style={styles.card}>
             <ImageBackground
                 source={getImageSource()}
                 style={styles.imageBackground}
@@ -67,7 +86,12 @@ export default function EventPreview({
 
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.host}>Host: {organizer_name}</Text>
+                    <View style={styles.hostContainer}>
+                        <Text style={styles.host}>Host: {organizer_name}</Text>
+                        {location && (
+                            <Text style={styles.location}>{location}</Text>
+                        )}
+                    </View>
                 </View>
             </ImageBackground>
         </Card>
@@ -82,6 +106,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginVertical: 8,
         backgroundColor: 'transparent',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     imageBackground: {
         width: '100%',
@@ -94,11 +126,19 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     dateContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         padding: 12,
         borderRadius: 12,
         margin: 16,
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     monthText: {
         fontSize: 16,
@@ -120,7 +160,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         padding: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
     },
@@ -130,9 +170,18 @@ const styles = StyleSheet.create({
         color: '#000',
         marginBottom: 4,
     },
+    hostContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     host: {
         fontSize: 16,
-        color: '#461D7C',
+        color: '#4788B7',
         fontWeight: '500',
+    },
+    location: {
+        fontSize: 14,
+        color: '#666',
     }
 });
