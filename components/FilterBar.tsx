@@ -1,80 +1,59 @@
+import {ScrollView, StyleSheet, TouchableOpacity} from "react-native";
+import {Text} from "react-native-ui-lib";
 import React, {useState} from "react";
-import {Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
-
-
-export default function FilterBar(props: any) {
-
-    const buttons = ["Tops", "Bottoms", "Shoes", "Hats", "Accessories"];
-    const [activeButtons, setActiveButtons] = useState(initActiveButtons);
-
-    function initActiveButtons() {
-        let arr: boolean[] = []
-        for (let button of buttons) {
-            arr.push(false);
-        }
-        return arr;
-    }
-
-    function filterButtonPress() {
-        console.log("Filter Bar Press");
-    }
-
-    function quickFilterPress(index: number) {
-        let newArr: boolean[] = activeButtons;
-        newArr[index] = !activeButtons[index];
-        setActiveButtons(newArr);
-        console.log(activeButtons);
-        console.log("Quick Filter Bar Press");
-    }
-
+export const FilterBar = (props: any) => {
+    const [selectedCategory, setSelectedCategory] = useState('All');
     return (
-        <ScrollView horizontal={true} style={styles.bar} showsHorizontalScrollIndicator={false}>
-            <Ionicons name={"filter"} onPress={filterButtonPress} size={24} style={styles.filter} />
-            {buttons.map((button, index) => (
-                <Pressable style={styles.button} key={index} onPress={() => quickFilterPress(index)}>
-                    <Text style={activeButtons[index] ? styles.selected : styles.unselected}>{button}</Text>
-                </Pressable>
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.categoryScroll}
+            contentContainerStyle={styles.categoryScrollContent}
+        >
+            {['All', 'Tops', 'Bottoms', 'Shoes'].map((category) => (
+                <TouchableOpacity
+                    key={category}
+                    style={[
+                        styles.categoryButton,
+                        selectedCategory === category && styles.categoryButtonActive
+                    ]}
+                    onPress={() => setSelectedCategory(category)}
+                >
+                    <Text style={[
+                        styles.categoryText,
+                        selectedCategory === category && styles.categoryTextActive
+                    ]}>
+                        {category}
+                    </Text>
+                </TouchableOpacity>
             ))}
         </ScrollView>
     );
 }
-
 const styles = StyleSheet.create({
-    bar: {
-        flexDirection: "row",
+    categoryScroll: {
+        marginBottom: 8,
+    },
+    categoryScrollContent: {
         paddingHorizontal: 16,
-        paddingVertical: 16,
+        gap: 8,
     },
-    filter: {
-        backgroundColor: "#92CAFF",
-        marginHorizontal: 8,
-        padding: 5,
-        borderRadius: 5,
-        height: 32,
+    categoryButton: {
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 25,
+        backgroundColor: '#f0f0f0',
+        marginRight: 8,
     },
-    button: {
-
+    categoryButtonActive: {
+        backgroundColor: '#000000',
     },
-    selected: {
-        color: "white",
-        height: 32,
-        lineHeight: 32,
-        backgroundColor: "#132260",
-        fontSize: 16,
-        width: 100,
-        textAlign: "center",
-        borderRadius: 5,
-        marginHorizontal: 8,
+    categoryText: {
+        color: '#666666',
+        fontWeight: '600',
+        fontSize: 15,
     },
-    unselected: {
-        height: 32,
-        lineHeight: 32,
-        backgroundColor: "#92CAFF",
-        fontSize: 16,
-        width: 100,
-        textAlign: "center",
-        borderRadius: 5,
-        marginHorizontal: 8,
-    }
+    categoryTextActive: {
+        color: '#ffffff',
+    },
 });

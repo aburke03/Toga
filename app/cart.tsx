@@ -19,6 +19,7 @@ export const CartIcon = () => {
   return (
     <Pressable 
       style={styles.iconContainer}
+      onPress={() => router.push('/cart')}
     >
       <Ionicons name="cart-outline" size={24} color="black" />
     </Pressable>
@@ -61,7 +62,7 @@ const Cart = () => {
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
   // Replace with your computer's local IPv4 address and ensure you're running the server in a separate terminal
-  const API_URL = 'http://192.168.68.114:8080';
+  const API_URL = 'http://167.96.188.125:8080';
 
   const fetchPaymentSheetParams = async () => {
     try {

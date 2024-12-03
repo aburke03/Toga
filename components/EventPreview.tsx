@@ -31,6 +31,8 @@ export default function EventPreview({
         };
     };
 
+    const images = require.context('../assets/images', true);
+
     const dateInfo = formatDate(event_begin);
 
     const getImageSource = () => {
@@ -45,7 +47,7 @@ export default function EventPreview({
         }
         
         // If it's just a filename like 'event.jpg', use default image
-        return defaultImage;
+        return images("./" + image_url);
     };
     
 

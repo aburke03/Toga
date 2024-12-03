@@ -3,12 +3,12 @@ import {ScrollView, StyleSheet, View} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {router} from "expo-router";
 import ClothingCard from "@/components/ClothingCard";
+import {getDownloadURL, ref} from "@firebase/storage";
+import {imageDb} from "@/components/firebase";
 
 const Bookmarked = () => {
 
     const [clothingItems, setClothingItems] = useState<any[]>([]);
-
-    const images = require.context('../assets/images', true);
 
     function cardPress() {
         console.log('cardPressed');
@@ -30,18 +30,20 @@ const Bookmarked = () => {
             let items = await response.json();
             let arr: any[] = []
             for (let item of items) {
+                const storageRef = ref(imageDb, item.images[0]);
+                const url = await getDownloadURL(storageRef)
                 arr.push({
                     priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
                     buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
                     bookmarked: true,
-                    image: item.images[0],
+                    image: url,
                     size: item.size,
                     key: item.clothing_id
                 })
             }
             setClothingItems(
                 arr.map((item: any, index: any) => (
-                    <ClothingCard key={index} image={images("./"+item.image)} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
+                    <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
                 ))
             );
         }

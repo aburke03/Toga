@@ -4,12 +4,10 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {EventCarousel} from "@/components/EventCarousel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {router, useFocusEffect} from "expo-router";
-import EventCard from "@/components/EventCard";
-import Closet from "@/components/Closet";
-import Spinner from "react-native-loading-spinner-overlay";
 import {getDownloadURL, ref} from "@firebase/storage";
 import {imageDb} from "@/components/firebase";
 import { Ionicons } from '@expo/vector-icons';
+import {FilterBar} from "@/components/FilterBar";
 
 const Home = () => {
 
@@ -26,7 +24,6 @@ interface ClothingItem {
 }
 
     const [clothingCards, setClothingCards] = useState<ClothingItem[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState('All');
     const windowWidth = Dimensions.get('window').width;
     const itemWidth = (windowWidth - 48) / 2;
     const [imageUris, setImageUris] = useState<{ [key: string]: string }>({});
@@ -117,35 +114,12 @@ interface ClothingItem {
 
     return (
         <ScrollView style={styles.container}>
+
             <EventCarousel />
 
             <View style={styles.filterContainer}>
                 <Text style={styles.suggestedTitle}>Suggested</Text>
-
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.categoryScroll}
-                    contentContainerStyle={styles.categoryScrollContent}
-                >
-                    {['All', 'Tops', 'Bottoms', 'Shoes'].map((category) => (
-                        <TouchableOpacity
-                            key={category}
-                            style={[
-                                styles.categoryButton,
-                                selectedCategory === category && styles.categoryButtonActive
-                            ]}
-                            onPress={() => setSelectedCategory(category)}
-                        >
-                            <Text style={[
-                                styles.categoryText,
-                                selectedCategory === category && styles.categoryTextActive
-                            ]}>
-                                {category}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
+                <FilterBar/>
             </View>
 
             <View style={styles.clothingGrid}>
@@ -157,7 +131,7 @@ interface ClothingItem {
                             pathname: '../(popups)/[id]',
                             params: {
                                 id: item.key,
-                                image: item.image,
+                                image: imageUris[item.image],
                                 title: item.title,
                                 price: item.priceAmount,
                                 size: item.size,
@@ -209,31 +183,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#000000',
         margin: 20,
-    },
-    categoryScroll: {
-        marginBottom: 8,
-    },
-    categoryScrollContent: {
-        paddingHorizontal: 16,
-        gap: 8,
-    },
-    categoryButton: {
-        paddingHorizontal: 24,
-        paddingVertical: 12,
-        borderRadius: 25,
-        backgroundColor: '#f0f0f0',
-        marginRight: 8,
-    },
-    categoryButtonActive: {
-        backgroundColor: '#000000',
-    },
-    categoryText: {
-        color: '#666666',
-        fontWeight: '600',
-        fontSize: 15,
-    },
-    categoryTextActive: {
-        color: '#ffffff',
     },
     clothingGrid: {
         padding: 16,

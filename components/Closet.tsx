@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Button} from 'react-native-ui-lib'
-import FilterBar from "@/components/FilterBar";
+import {FilterBar} from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 import {router} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";

@@ -4,8 +4,9 @@ import { View, Text, StyleSheet, Image, SafeAreaView, StatusBar } from 'react-na
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 
-const EventCard = ({ date, name, image, host, days, month }) => {
+const EventCard = ({name, image, host, days}: {name: string, image: string, host: string, days: string}) => {
   // Format the date string to a more readable format
+  const images = require.context('../assets/images', true);
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return {
@@ -19,7 +20,7 @@ const EventCard = ({ date, name, image, host, days, month }) => {
 
   return (
     <View style={styles.card}>
-      <Image source={image} style={styles.image} />
+      <Image source={images('./' + image)} style={styles.image} />
       <View style={styles.overlay}>
         <View style={styles.dateContainer}>
           <Text style={styles.month}>{formattedDate.month}</Text>
@@ -37,7 +38,7 @@ const EventCard = ({ date, name, image, host, days, month }) => {
 
 export function EventCarousel() {
   const images = require.context('../assets/images', true);
-  const [eventItems, setEventItems] = useState([]);
+  const [eventItems, setEventItems] = useState<{ date: string, name: any, host: any, image: any, event_begin: any }[]>([]);
 
   async function loadEvents() {
     let user;
@@ -76,12 +77,11 @@ export function EventCarousel() {
       console.error(`HTTP error! status: ${response.status}`);
     } else {
       let items = await response.json();
-      let arr = items.map(item => ({
+      let arr = items.map((item: { date: string, title: any, organizer_name: any, image_url: any, event_begin: any }) => ({
+        date: item.event_begin,
         name: item.title,
         host: item.organizer_name,
         image: item.image_url,
-        days: item.event_begin,
-        month: 'Nov'
       }));
       setEventItems(arr);
     }
@@ -109,12 +109,10 @@ export function EventCarousel() {
           {eventItems.map((item, index) => (
             <EventCard
               key={index}
-              date={item.date}
               name={item.name}
-              image={images('./' + item.image)}
+              image={item.image}
               host={item.host}
-              days={item.days}
-              month={item.month}
+              days={item.date}
             />
           ))}
         </Carousel>

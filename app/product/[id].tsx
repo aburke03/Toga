@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 400,
+        height: undefined,
     },
     details: {
         padding: 20,
