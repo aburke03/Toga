@@ -143,7 +143,7 @@ const Register = () => {
             <Button
               onPress={onSignUpPress}
               title="Sign up"
-              color={'#6c47ff'}
+              color={'#92CAFF'}
               disabled={
                 !passwordValid || !passwordsMatch || !isValidEmail || !password || !retypePassword
               }
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     height: 50,
     borderWidth: 1,
-    borderColor: '#6c47ff',
+    borderColor: '#92CAFF',
     borderRadius: 4,
     padding: 10,
     backgroundColor: '#fff',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     height: 50,
     borderWidth: 1,
-    borderColor: '#6c47ff',
+    borderColor: '#92CAFF',
     borderRadius: 4,
     backgroundColor: '#fff',
     justifyContent: 'center',
