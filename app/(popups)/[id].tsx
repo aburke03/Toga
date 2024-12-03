@@ -1,13 +1,61 @@
-import {View, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 import { Text } from 'react-native-ui-lib';
 import React, {useState} from 'react';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CartItem, CART_STORAGE_KEY } from '../types';
 
 const ProductDetail = () => {
     const params = useLocalSearchParams();
-    console.log(params.image as string);
+
+    const handleAddToCart = async () => {
+        try {
+            // Create cart item from params
+            const cartItem: CartItem = {
+                id: params.id as string,
+                title: params.title as string,
+                price: Number(params.price),
+                size: params.size as string,
+                buyType: params.buyType as string,
+                image: params.image as string
+            };
+
+            // Get existing cart items
+            const existingCartJson = await AsyncStorage.getItem(CART_STORAGE_KEY);
+            const existingCart: CartItem[] = existingCartJson ? JSON.parse(existingCartJson) : [];
+
+            // Check if item already exists in cart
+            const itemExists = existingCart.some(item => item.id === cartItem.id);
+
+            if (itemExists) {
+                Alert.alert('Already in Cart', 'This item is already in your cart.');
+                return;
+            }
+
+            // Add new item to cart
+            const updatedCart = [...existingCart, cartItem];
+            await AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
+
+            Alert.alert(
+                'Success',
+                'Item added to cart',
+                [
+                    {
+                        text: 'View Cart',
+                        onPress: () => router.push('/cart'),
+                    },
+                    {
+                        text: 'Continue Shopping',
+                        style: 'cancel',
+                    },
+                ]
+            );
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            Alert.alert('Error', 'Failed to add item to cart. Please try again.');
+        }
+    };
 
     const [bookmarked, setBookmarked] = useState<any>(params.bookmarked);
 
@@ -125,7 +173,10 @@ const ProductDetail = () => {
                         Minimal wear and tear, well maintained.
                     </Text>
 
-                    <TouchableOpacity style={styles.addToCartButton}>
+                    <TouchableOpacity
+                     style={styles.addToCartButton}
+                     onPress={handleAddToCart}
+                     >
                         <Text style={styles.addToCartText}>Add to Cart</Text>
                     </TouchableOpacity>
                 </View>

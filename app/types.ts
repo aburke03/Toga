@@ -1,51 +1,17 @@
-export interface TimeSlot {
-    time: string;
-    available: boolean;
-  }
-  
-  export interface AvailableDay {
-    date: string;
-    timeSlots: TimeSlot[];
-  }
-  
-  export interface CartItem {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    availableDays: AvailableDay[];
-  }
-  
-  // Sample data
-  export const sampleCartItem: CartItem = {
-    id: '1',
-    title: 'Black Cowboy Hat',
-    description: 'Size: Small',
-    price: 10,
-    availableDays: [
-      {
-        date: 'Dec 7',
-        timeSlots: [
-          { time: '10:00', available: true },
-          { time: '10:30', available: true },
-          { time: '11:00', available: true }
-        ]
-      },
-      {
-        date: 'Dec 8',
-        timeSlots: [
-          { time: '10:00', available: true },
-          { time: '10:30', available: true },
-          { time: '11:00', available: true }
-        ]
-      },
-      {
-        date: 'Dec 9',
-        timeSlots: [
-          { time: '10:00', available: true },
-          { time: '10:30', available: true },
-          { time: '11:00', available: true }
-        ]
-      }
-    ]
-  }
+export interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  size: string;
+  buyType: string;
+  image?: string;
+}
+
+export interface Purchase extends CartItem {
+  selectedDay: string;
+  selectedTime: string;
+  purchaseDate: string;
+}
+
+export const CART_STORAGE_KEY = 'cart_items';
+export const PURCHASES_STORAGE_KEY = 'purchases';
