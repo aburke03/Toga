@@ -67,12 +67,41 @@ export const AddClothes = () => {
     async function uploadImage(fileName: string) {
         console.log(fileName)
         try {
-            const storageRef = ref(imageDb, 'images/' + fileName);
+            const storageRef = ref(imageDb, 'images/' + fileName);  // Define the storage reference path
+            // Upload the file to Firebase Storage
             const response = await fetch(picture);
             const blob = await response.blob();
             const uploadTask = await uploadBytes(storageRef, blob);
             console.log(uploadTask.ref.fullPath);
-            return uploadTask.ref.fullPath;
+            const apiKey = '6QmVc1MeSWvEagaBLyy5Ufq9'; // Replace with your API key
+
+            const formData = new FormData();
+            const downloadUrl = await getDownloadURL(storageRef);
+            formData.append('image_url', downloadUrl);
+            formData.append('size', 'preview');
+            formData.append('format', 'jpg');
+
+            try {
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    console.error('remove.bg API error:', await response.text());
+                    return null;
+                }
+                const storageRef2 = ref(imageDb, 'images/transparent' + fileName);
+                const blob2 = await response.blob();
+                const uploadTask2 = await uploadBytes(storageRef2, blob2);
+                console.log(uploadTask2.ref.fullPath);
+                return uploadTask2.ref.fullPath;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
         } catch (error) {
             console.error('Error uploading file:', error);
         }
