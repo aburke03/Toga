@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { CategoryModal } from './CategoryModal';
 import { ConditionModal } from './ConditionModal';
 import { ColorModal } from './ColorModal';
-import { SizeModal } from './SizeModal';
+import { ThemeModal } from './ThemeModal';
 import {CameraCapturedPicture} from "expo-camera";
 
 export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: {
@@ -51,7 +51,7 @@ export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: 
                 <Text style={styles.optionLabel}>Color</Text>
                 <Text style={styles.optionValue}>{selectedOptions.color}</Text>
             </TouchableOpacity>
-            {/** Theme Row */}
+            {/** Size Row */}
             <TouchableOpacity onPress={() => openModal('size')} style={styles.row}>
                 <Text style={styles.optionLabel}>Size</Text>
                 <Text style={styles.optionValue}>{selectedOptions.size}</Text>
@@ -78,7 +78,7 @@ export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: 
                 selectedOption={selectedOptions.condition}
 
             />
-            <SizeModal
+            <ThemeModal
                 isVisible={activeModal === 'size'}
                 onClose={closeModal}
                 onSelect={(value:string) => handleOptionChange('size', value)}

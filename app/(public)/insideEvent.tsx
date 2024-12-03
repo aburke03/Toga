@@ -3,10 +3,6 @@ import { Text } from 'react-native-ui-lib';
 import React from 'react';
 import { router } from "expo-router";
 import ClothingCard from "@/components/ClothingCard";
-import { AntDesign } from '@expo/vector-icons';
-import FilterBar from "@/components/FilterBar";
-
-
 
 export default function InsideEvent() {
     const eventBackground = "https://t3.ftcdn.net/jpg/02/75/90/56/360_F_275905630_PzLJAFNCLUQYmzo8icryZdcwZ2LyCeJS.jpg";
@@ -29,32 +25,21 @@ export default function InsideEvent() {
                             accessibilityLabel="Back button icon"
                         />
                     </TouchableWithoutFeedback>
-                </View>
-
                     <View style={styles.textbox}>
                         <Text style={styles.eventName}>Rodeo</Text>
-                        <Text style={styles.eventName}>Host: Phi Mu</Text>
-                        <Text style={styles.eventName} >Location: Phi Mu House</Text>
-
+                        <Text style={styles.eventName}>Host: Alpha Delta Pi</Text>
+                        <Text style={styles.eventName} >Location: Alpha Delta Pi House</Text>
                         <View style={styles.date}>
                             <Text style={styles.dateText} >Nov. 30</Text>
                         </View>
 
                     </View>
 
-                <TouchableWithoutFeedback onPress={() => router.back()}>
-                    <View style={styles.addToEvent}>
-                    <Text style={styles.addToEventText}>Add Listing</Text>
-                    </View>
-                </TouchableWithoutFeedback>
 
-                <FilterBar></FilterBar>
-
-
+                </View>
 
 
                 <View style={styles.recommendedScroll}>
-
 
                     <ClothingCard
                         image={require('../../assets/images/dressPNG.png')}
@@ -112,31 +97,32 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: '80%',
+        height: '100%',
         resizeMode: 'cover',
     },
     backButton: {
         position: 'absolute',
-        top: '5%',
-        left: '3%',
+        top: 30,
+        left: 15,
         width: 50,
         height: 50,
     },
     textbox: {
-        position: 'fixed',
-        bottom: '4.3%',
+        position: 'absolute',
+        bottom: 0,
         left: 0,
         width: '100%',
-        height: '12%',
-        backgroundColor: 'transparent',
-        opacity: 100,
+        height: '50%',
+        backgroundColor: 'rgba(217,217,217,0.96)',
+
+        paddingBottom: 10,
+
 
     },
     eventName: {
         top:'10%',
         marginLeft:'3%',
         fontSize: 20,
-        paddingBottom: '2%',
         color: 'black',
         fontWeight: 'bold',
 
@@ -145,44 +131,18 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     recommendedScroll: {
-        marginTop:'5%',
+        marginTop:'10%',
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
-    date: {
-        top: '-76%',
-        alignSelf: 'flex-start',
-        backgroundColor: 'blue',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 5,
-        marginLeft: 'auto',
-        marginRight: 20,
-        marginTop: 10,
+    date:{
+        right: 0,
     },
-    dateText: {
-        fontSize: 20,
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
+    dateText:{
+        right:'5%',
+        bottom: '100%',
+        fontSize: 30,
+        alignSelf: 'flex-end',
     },
-    addToEvent: {
-        alignSelf: 'center',
-        backgroundColor: 'blue',
-        borderRadius: 5,
-        justifyContent: "center",
-        height: '5%',
-        width: '80%',
-        top:'-4%',
-
-    },
-    addToEventText: {
-        color: 'white',
-        alignSelf: 'center',
-        fontSize: 20,
-
-    }
-
-
 });

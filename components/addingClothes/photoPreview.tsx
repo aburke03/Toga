@@ -23,7 +23,7 @@ const photoPreview = ({
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name="trash" size={36} color="white" />
+                <Fontisto name="trash" size={36} color="black" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={() => handleUsePhoto(photo)}>
@@ -36,43 +36,38 @@ const photoPreview = ({
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
     },
     box: {
-        borderRadius: 0,
+        borderRadius: 15,
         padding: 1,
         width: '95%',
-        backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: "center",
     },
     previewContainer: {
-        width: '90%',
-        height: '85%',
-        borderRadius: 0
+        width: '95%',
+        height: "65%",
+        borderRadius: 15
     },
     buttonContainer: {
+        marginTop: '4%',
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        paddingVertical: 20,
-        position: 'absolute',
-        bottom: 0,
+        justifyContent: "center",
         width: '100%',
-        borderTopColor:'white',
-        borderTopWidth: 1,
     },
     button: {
+        backgroundColor: '#92CAFF',
+        borderRadius: 2,
+        marginRight: '5%',
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 10,
     },
     text:{
         fontSize: 18,
-        color: "white",
     },
 
 });

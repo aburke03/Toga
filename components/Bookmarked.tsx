@@ -55,7 +55,7 @@ const Bookmarked = () => {
 
     return (
         <ScrollView>
-            <View style={styles.recommendedScroll}>
+            <View style={styles.clothingGrid}>
                 {clothingItems}
             </View>
         </ScrollView>
@@ -82,5 +82,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: "wrap",
         justifyContent: "space-between",
-    }
+    },
+    clothingGrid: {
+        padding: 16,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        gap: 16,
+    },
 });

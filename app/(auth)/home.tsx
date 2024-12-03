@@ -8,6 +8,7 @@ import {getDownloadURL, ref} from "@firebase/storage";
 import {imageDb} from "@/components/firebase";
 import { Ionicons } from '@expo/vector-icons';
 import {FilterBar} from "@/components/FilterBar";
+import ClothingCard from "@/components/ClothingCard";
 
 const Home = () => {
 
@@ -21,12 +22,11 @@ interface ClothingItem {
     size: string;
     key: number;
     title: string;
+    owner_id: string;
+    id: string;
 }
 
     const [clothingCards, setClothingCards] = useState<ClothingItem[]>([]);
-    const windowWidth = Dimensions.get('window').width;
-    const itemWidth = (windowWidth - 48) / 2;
-    const [imageUris, setImageUris] = useState<{ [key: string]: string }>({});
 
     async function loadPage() {
         let user:any;
@@ -63,17 +63,26 @@ interface ClothingItem {
             console.error(`HTTP error! status: ${response.status}`);
         } else {
             let items = await response.json();
-            setClothingCards(items.map((item: { is_available_for_sale: any; purchase_price: any; is_available_for_rent: any; rental_price: any; images: any[]; size: any; id: any; title: any; }) => ({
-                priceAmount: item.is_available_for_sale ? item.purchase_price :
-                           item.is_available_for_rent ? item.rental_price : 0,
-                buyType: item.is_available_for_sale ? "Sale" :
-                        item.is_available_for_rent ? "Rent" : "none",
-                bookmarked: false,
-                image: item.images[0],
-                size: item.size,
-                key: item.id,
-                title: item.title
-            })));
+            let arr = [];
+            for (let i=0; i<items.length; i++) {
+                console.log(items[i]);
+                let img = await getImgUrl(items[i].images[0]);
+                console.log(img);
+                arr.push({
+                    priceAmount: items[i].is_available_for_sale ? items[i].purchase_price :
+                        items[i].is_available_for_rent ? items[i].rental_price : 0,
+                    buyType: items[i].is_available_for_sale ? "Sale" :
+                        items[i].is_available_for_rent ? "Rent" : "none",
+                    bookmarked: false,
+                    image: img,
+                    size: items[i].size,
+                    key: items[i].id,
+                    title: items[i].title,
+                    owner_id: items[i].owner_id,
+                    id: items[i].id
+                })
+            }
+            setClothingCards(arr);
         }
     }
 
@@ -85,32 +94,6 @@ interface ClothingItem {
     useEffect(() => {
         loadPage();
     }, []);
-
-
-    useFocusEffect(
-        useCallback(() => {
-            const fetchImageUris = async () => {
-                const uriPromises = clothingCards.map(async (item) => {
-                    const uri = await getImgUrl(item.image);
-                    return { id: item.image, uri }; // Assuming `item.id` is unique
-                });
-
-                const resolvedUris = await Promise.all(uriPromises);
-                const uriMap = resolvedUris.reduce((acc: any, { id, uri }) => {
-                    acc[id] = uri; // Map item ID to its URI
-                    return acc;
-                }, {});
-
-                setImageUris(uriMap); // Update state with resolved URIs
-            };
-
-            fetchImageUris();
-            // Return function is invoked whenever the route gets out of focus.
-            return () => {
-                console.log('This route is now unfocused.');
-            };
-        }, [clothingCards])
-    );
 
     return (
         <ScrollView style={styles.container}>
@@ -124,46 +107,7 @@ interface ClothingItem {
 
             <View style={styles.clothingGrid}>
                 {clothingCards.map((item, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[styles.cardWrapper, { width: itemWidth }]}
-                        onPress={() => router.push({
-                            pathname: '../(popups)/[id]',
-                            params: {
-                                id: item.key,
-                                image: imageUris[item.image],
-                                title: item.title,
-                                price: item.priceAmount,
-                                size: item.size,
-                                buyType: item.buyType
-                            }
-                        })}
-                    >
-                        <TouchableOpacity
-                            style={styles.bookmarkButton}
-                            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                // Handle bookmark logic here
-                            }}
-                        >
-                            <Ionicons name="bookmark-outline" size={24} color="#461D7C" />
-                        </TouchableOpacity>
-                        <Image
-                            source={{ uri: imageUris[item.image] }}
-                            style={styles.itemImage}
-                            resizeMode="cover"
-                        />
-                        <View style={styles.itemInfo}>
-                            <View style={styles.infoRow}>
-                                <Text style={styles.priceText}>${item.priceAmount}</Text>
-                                <View style={styles.sizeContainer}>
-                                    <Text style={styles.sizeText}>{item.size}</Text>
-                                </View>
-                            </View>
-                            <Text style={styles.typeText}>{item.buyType}</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <ClothingCard id={item.id} key={index} priceAmount={item.priceAmount} buyType={item.buyType} bookmarked={item.bookmarked} image={item.image} owner={item.owner_id} size={item.size} title={item.title} />
                 ))}
             </View>
         </ScrollView>

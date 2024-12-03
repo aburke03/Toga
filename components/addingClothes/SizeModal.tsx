@@ -1,13 +1,13 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-export const SizeModal: React.FC<{
+export const ThemeModal: React.FC<{
     isVisible: boolean;
     onClose: () => void;
     onSelect: (value: string) => void;
     selectedOption: string | null;
 }> = ({ isVisible, onClose, onSelect, selectedOption }) => {
-    const options = ['Extra Small', 'Small', 'Medium', 'Large', 'Extra Large'];
+    const options = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large'];
 
     const handleSelect = (option: string) => {
         onSelect(option);
@@ -18,7 +18,7 @@ export const SizeModal: React.FC<{
         <Modal visible={isVisible} transparent={true} animationType="slide">
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.title}>Size</Text>
+                    <Text style={styles.title}>Theme</Text>
                     {options.map((option, index) => (
                         <TouchableOpacity
                             key={index}
@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,
-
     },
     title: {
         fontSize: 18,
@@ -68,12 +67,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 15,
-
     },
     radioCircle: {
         height: 20,
         width: 20,
-
         borderRadius: 10,
         borderWidth: 2,
         borderColor: '#555',
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     closeButton: {
-        marginTop: '10%',
+        marginBottom: 10,
         padding: 10,
         backgroundColor: '#132260',
         borderRadius: 5,

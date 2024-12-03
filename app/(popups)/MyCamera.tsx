@@ -1,7 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import {CameraView, useCameraPermissions, CameraType, CameraCapturedPicture} from 'expo-camera';
 import { useRef, useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Button, PixelRatio, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
 import React from 'react';
 
@@ -11,6 +11,8 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef<CameraView | null>(null);
     const [photo, setPhoto] = useState<any>(null);
+
+    const targetPixels = 500;
 
     const handleRetakePhoto = () => setPhoto(null);
 
@@ -43,6 +45,8 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
                 quality: 1,
                 base64: true,
                 exif: true,
+                height: 500,
+                width: 500
             };
             const takenPhoto = await cameraRef.current.takePictureAsync(options);
             setPhoto(takenPhoto);
@@ -55,7 +59,8 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
 
     return (
         <View style={styles.container}>
-            <CameraView style={styles.camera} facing={facing} ref={cameraRef} ratio={'4:3'}>
+            <CameraView style={styles.camera} facing={facing} ref={cameraRef} pictureSize={'10%'}>
+                <View style={styles.dashedBox} />
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
                         <AntDesign name="retweet" size={44} color="white" />
@@ -74,6 +79,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        height: "50%"
     },
     camera: {
         flex: 1,
@@ -100,4 +106,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
+    dashedBox: {
+        position: "absolute",
+        borderStyle: "dashed",
+        height: 500,
+        width: 500,
+    }
 });

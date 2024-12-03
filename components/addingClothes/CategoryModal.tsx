@@ -7,7 +7,7 @@ export const CategoryModal: React.FC<{
     onSelect: (value: string) => void;
     selectedOption: string | null;
 }> = ({ isVisible, onClose, onSelect, selectedOption }) => {
-    const options = ['Tops', 'Bottoms', 'Shoes', 'Hats', 'Accessories'];
+    const options = ['Shirt', 'Pants', 'Footwear', 'Hats', 'Accessories', 'Dresses'];
 
     const handleSelect = (option: string) => {
         onSelect(option);
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     closeButton: {
-        marginTop: '10%',
+        marginBottom: 10,
         padding: 10,
         backgroundColor: '#132260',
         borderRadius: 5,

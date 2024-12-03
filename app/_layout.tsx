@@ -1,12 +1,9 @@
-import { Slot, useRouter, useSegments } from 'expo-router';
-import {useEffect, useState} from 'react';
+import { Slot, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
-import React from 'react';
 
-const STRIPE_TEST_PUBLISHABLE_KEY="pk_test_51QN4V9I08saIli9VUFz6ouYM0znXpL6KIBOjFS605x6A9MDv9JTIOZj8pz0k99i1H9y4q71htEMGXJVnCPYFP46900NfwKVKRa";
-
+const STRIPE_TEST_PUBLISHABLE_KEY = "pk_test_51QN4V9I08saIli9VUFz6ouYM0znXpL6KIBOjFS605x6A9MDv9JTIOZj8pz0k99i1H9y4q71htEMGXJVnCPYFP46900NfwKVKRa";
 
 const InitialLayout = () => {
   const router = useRouter();
@@ -14,76 +11,43 @@ const InitialLayout = () => {
   async function loadStorage() {
     try {
       const token = await AsyncStorage.getItem("token");
-      console.log('token', token);
-      if (token !== null) {
-        try {
-          const response = await fetch("https://backend-toga-r5s3.onrender.com/api/users/profile", {
-            method: "GET",
-            headers: {
-              'Authorization': "Bearer " + token,
-            },
-          })
-          console.log(await response.json());
+      console.log('Token:', token);
 
-          if (!response.ok) {
-            await AsyncStorage.removeItem("token");
-            await AsyncStorage.removeItem("user-id");
-            router.replace('/login');
-            console.error(`HTTP error! status: ${response.status}`);
-          } else {
-            router.replace('/home');
-          }
-        } catch (e) {
-          await AsyncStorage.removeItem("token");
-          await AsyncStorage.removeItem("user-id");
-          console.log("Hello");
-          console.error(e);
+      if (token) {
+        const response = await fetch("https://backend-toga-r5s3.onrender.com/api/users/profile", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          router.replace('/home'); // Valid token, go to Home
+        } else {
+          console.error('Invalid token, redirecting to login');
+          await AsyncStorage.clear(); // Clear storage on error
+          router.replace('/login');
         }
       } else {
-        router.replace('/login');
+        console.log('No token found, redirecting to Welcome');
+        router.replace('/welcome'); // No token, go to Welcome
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error in loadStorage:', error);
+      router.replace('/welcome');
     }
   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        await loadStorage()
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    })();
+    loadStorage();
   }, []);
 
   return <Slot />;
 };
 
-const tokenCache = {
-  async getToken(key: string) {
-    try {
-      return SecureStore.getItemAsync(key);
-    } catch (err) {
-      return null;
-    }
-  },
-  async saveToken(key: string, value: string) {
-    try {
-      return SecureStore.setItemAsync(key, value);
-    } catch (err) {
-      return;
-    }
-  },
-};
-
 const RootLayout = () => {
   return (
-      <StripeProvider 
-      publishableKey={STRIPE_TEST_PUBLISHABLE_KEY}
-      >
+    <StripeProvider publishableKey={STRIPE_TEST_PUBLISHABLE_KEY}>
       <InitialLayout />
-      </StripeProvider>
+    </StripeProvider>
   );
 };
 

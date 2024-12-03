@@ -8,8 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddClothes from "@/app/(popups)/addClothesPage";
 import { imageDb } from "@/components/firebase";
 import {getDownloadURL, ref} from "@firebase/storage";
-import {AntDesign} from "@expo/vector-icons";
-import {index} from "@zxing/text-encoding/es2015/encoding/indexes";
 
 const Closet = () => {
 
@@ -130,7 +128,7 @@ const Closet = () => {
                         <Text key={index} style={styles.org}>{organization}</Text>
                     ))}
                 </View>
-                <View>
+                <View style={styles.scroll}>
                     <FilterBar />
                     <View style={styles.recommendedScroll}>
                         {clothingItems}
@@ -138,8 +136,7 @@ const Closet = () => {
                 </View>
             </ScrollView>
             <TouchableOpacity style={styles.addButton} onPress={() => router.navigate('/addClothesPage')}>
-                <AntDesign name={"plus"} size={30} color={'white'} style={styles.addButtonPlus}></AntDesign>
-
+                <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
         </View>
     );
@@ -147,7 +144,8 @@ const Closet = () => {
 
 const styles= StyleSheet.create({
     closet: {
-        height: "100%"
+        height: "100%",
+        backgroundColor: "white"
     },
     organizations: {
         flexDirection: 'row',
@@ -155,10 +153,8 @@ const styles= StyleSheet.create({
         columnGap: 10
     },
     org: {
-
         backgroundColor: '#92CAFF',
-        marginTop: 10,
-        paddingVertical: 10,
+        paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 20,
     },
@@ -168,14 +164,13 @@ const styles= StyleSheet.create({
         width: 64,
     },
     name: {
-        marginTop: 10,
-        marginLeft: 40,
-        position: "relative",
-        alignSelf: "center",
-
+        padding: 5,
+        justifyContent: "center"
+    },
+    scroll: {
+        paddingVertical: 15
     },
     top: {
-
         flexDirection: 'row',
         width: '100%',
         paddingHorizontal: 40,
@@ -196,7 +191,6 @@ const styles= StyleSheet.create({
         margin: 5
     },
     modalContainer: {
-
         flex: 1,
         justifyContent: 'center',
         backgroundColor: '#fff',
@@ -211,20 +205,20 @@ const styles= StyleSheet.create({
         fontSize: 16,
     },
     addButton: {
-        backgroundColor: 'blue',
-        paddingVertical: 20,
-        paddingHorizontal: 20,
+        backgroundColor: '#92CAFF',
+        paddingVertical: 10,
+        paddingHorizontal: 30,
         borderRadius: 100,
         zIndex:10,
         alignSelf: 'center',
         position: 'absolute',
-        top: "78%",
-        alignContent: "flex-start",
-
-
+        top: "82%",
     },
-    addButtonPlus: {
 
+    addButtonText: {
+        alignSelf: 'center',
+        color: 'black',
+        fontSize: 16,
 
     },
 });
