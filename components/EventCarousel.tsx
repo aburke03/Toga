@@ -105,6 +105,9 @@ export function EventCarousel() {
             color: '#D1D5DB',
             inactiveColor: '#6B7280',
           }}
+          autoplay={true} 
+          autoplayInterval={3500}
+          loop={true}
         >
           {eventItems.map((item, index) => (
             <EventCard
