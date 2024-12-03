@@ -11,7 +11,7 @@ const EventCard = ({name, image, host, days, id, description, location}: {
   days: string,
   id: string,
   description: string,
-  location: string
+  location: string,
 }) => {
   const images = require.context('../assets/images', true);
   const formatDate = (dateString: string | number | Date) => {
@@ -107,13 +107,14 @@ export function EventCarousel() {
       console.error(`HTTP error! status: ${response.status}`);
     } else {
       let items = await response.json();
+      console.log(items);
       let arr = items.map((item: any) => ({
         date: item.event_begin,
         name: item.title,
         host: item.organizer_name,
         image: item.image_url,
         event_begin: item.event_begin,
-        id: item.id,
+        id: item.event_id,
         description: item.description,
         location: item.location
       }));
@@ -139,9 +140,6 @@ export function EventCarousel() {
             color: '#D1D5DB',
             inactiveColor: '#6B7280',
           }}
-          autoplay={true} 
-          autoplayInterval={3500}
-          loop={true}
         >
           {eventItems.map((item, index) => (
             <EventCard
