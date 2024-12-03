@@ -3,14 +3,8 @@ import { View, Text, StyleSheet, Pressable, Image, Alert, TouchableOpacity } fro
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStripe } from '@stripe/stripe-react-native';
-
-// Types
-interface CartItem {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CartItem, CART_STORAGE_KEY } from './types';
 
 // CartIcon component
 export const CartIcon = () => {
@@ -29,19 +23,25 @@ export const CartIcon = () => {
 // CartItem component
 const CartItemComponent = ({ item, onRemove }: { item: CartItem, onRemove: () => void }) => (
   <View style={styles.cartItem}>
-    <View style={styles.itemImage}>
-      <Text style={styles.placeholderText}>[ ]</Text>
-    </View>
-    <View style={styles.itemDetails}>
-      <Text style={styles.itemTitle}>{item.title}</Text>
-      <Text style={styles.itemDescription} numberOfLines={2}>
-        {item.description}
-      </Text>
-      <Text style={styles.itemPrice}>Price: ${item.price.toFixed(2)}</Text>
-    </View>
-    <Pressable onPress={onRemove} style={styles.removeButton}>
-      <Text style={styles.removeButtonText}>×</Text>
-    </Pressable>
+      {item.image ? (
+          <Image 
+              source={{ uri: item.image }} 
+              style={styles.itemImage}
+              resizeMode="cover"
+          />
+      ) : (
+          <View style={styles.itemImage}>
+              <Text style={styles.placeholderText}>[ ]</Text>
+          </View>
+      )}
+      <View style={styles.itemDetails}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemPrice}>Price: ${item.price.toFixed(2)}</Text>
+          <Text style={styles.itemDescription}>{item.size} - {item.buyType}</Text>
+      </View>
+      <Pressable onPress={onRemove} style={styles.removeButton}>
+          <Text style={styles.removeButtonText}>×</Text>
+      </Pressable>
   </View>
 );
 
@@ -50,19 +50,42 @@ const Cart = () => {
   const router = useRouter();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
-  const [items] = React.useState<CartItem[]>([
-    {
-      id: '1',
-      title: 'Black Cowboy Hat',
-      description: 'Size Small\n',
-      price: 10
+  const [items, setItems] = useState<CartItem[]>([]);
+
+  // Load cart items on mount
+  useEffect(() => {
+      loadCartItems();
+  }, []);
+
+  const loadCartItems = async () => {
+    try {
+        const cartJson = await AsyncStorage.getItem(CART_STORAGE_KEY);
+        if (cartJson) {
+            setItems(JSON.parse(cartJson));
+        }
+    } catch (error) {
+        console.error('Error loading cart items:', error);
+        Alert.alert('Error', 'Failed to load cart items');
     }
-  ]);
+};
+
+const removeItem = async (itemId: string) => {
+  try {
+      const updatedItems = items.filter(item => item.id !== itemId);
+      await AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedItems));
+      setItems(updatedItems);
+  } catch (error) {
+      console.error('Error removing item:', error);
+      Alert.alert('Error', 'Failed to remove item');
+  }
+};
 
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
   // Replace with your computer's local IPv4 address and ensure you're running the server in a separate terminal
-  const API_URL = 'http://167.96.188.125:8080';
+  const API_URL = 'http://192.168.1.171:8080';
+ // pft ip: http://167.96.188.125:8080
+  
 
   const fetchPaymentSheetParams = async () => {
     try {
@@ -170,63 +193,72 @@ const Cart = () => {
   };
 
   const handleCheckout = async () => {
-    try {
-      setLoading(true);
-      await initializePaymentSheet();
-      await openPaymentSheet();
-    } catch (error) {
-      console.error('Payment error:', error);
-      Alert.alert(
-        'Payment Error',
-        'There was a problem processing your payment. Please try again.'
-      );
-    } finally {
-      setLoading(false);
+    if (items.length === 0) {
+        Alert.alert('Cart Empty', 'Please add items to your cart before checking out.');
+        return;
     }
-  };
+
+    try {
+        setLoading(true);
+        await initializePaymentSheet();
+        await openPaymentSheet();
+    } catch (error) {
+        console.error('Payment error:', error);
+        Alert.alert(
+            'Payment Error',
+            'There was a problem processing your payment. Please try again.'
+        );
+    } finally {
+        setLoading(false);
+    }
+};
 
   return (
     <View style={styles.pageContainer}>
-      <View style={styles.titleContainer}>
+    <View style={styles.titleContainer}>
         <Pressable 
-          style={styles.backButton}
-          onPress={() => router.back()}
+            style={styles.backButton}
+            onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back-outline" size={24} color="black" />
+            <Ionicons name="arrow-back-outline" size={24} color="black" />
         </Pressable>
         <Text style={styles.title}>Your Shopping Cart</Text>
-      </View>
-      
-      <View style={styles.itemsContainer}>
-        {items.map(item => (
-          <CartItemComponent 
-            key={item.id} 
-            item={item} 
-            onRemove={() => console.log('Remove item')}
-          />
-        ))}
-      </View>
+    </View>
+    
+    <View style={styles.itemsContainer}>
+        {items.length === 0 ? (
+            <Text style={styles.emptyCartText}>Your cart is empty</Text>
+        ) : (
+            items.map((item, index) => (
+                <CartItemComponent 
+                    key={item.id} 
+                    item={item} 
+                    onRemove={() => removeItem(item.id)}
+                />
+            ))
+        )}
+    </View>
 
-      <View style={styles.footer}>
+    <View style={styles.footer}>
         <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>Total:</Text>
-          <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
         </View>
         <TouchableOpacity 
-          style={[
-            styles.checkoutButton,
-            loading && styles.checkoutButtonDisabled
-          ]}
-          onPress={handleCheckout}
-          disabled={loading || items.length === 0}
+            style={[
+                styles.checkoutButton,
+                (loading || items.length === 0) && styles.checkoutButtonDisabled
+            ]}
+            onPress={handleCheckout}
+            disabled={loading || items.length === 0}
         >
-          <Text style={styles.checkoutButtonText}>
-            {loading ? 'Processing...' : 'Checkout'}
-          </Text>
+            <Text style={styles.checkoutButtonText}>
+                {loading ? 'Processing...' : 'Checkout'}
+            </Text>
         </TouchableOpacity>
-      </View>
     </View>
-  );
+</View>
+);
 };
 
 const styles = StyleSheet.create({
@@ -345,6 +377,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     letterSpacing: 0.3,
+  },
+  emptyCartText: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
