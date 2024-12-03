@@ -65,9 +65,7 @@ interface ClothingItem {
             let items = await response.json();
             let arr = [];
             for (let i=0; i<items.length; i++) {
-                console.log(items[i]);
                 let img = await getImgUrl(items[i].images[0]);
-                console.log(img);
                 arr.push({
                     priceAmount: items[i].is_available_for_sale ? items[i].purchase_price :
                         items[i].is_available_for_rent ? items[i].rental_price : 0,

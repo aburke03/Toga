@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Text } from 'react-native-ui-lib';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getDownloadURL, ref} from "@firebase/storage";
+import {imageDb} from "@/components/firebase";
+import ClothingCard from "@/components/ClothingCard";
+import {EventClothesSelect} from './EventClothesSelect'
 
 interface EventDetail {
     title: string;
@@ -11,6 +16,7 @@ interface EventDetail {
     location: string;
     image_url: string;
     organizer_name: string;
+    event_id: string;
 }
 
 export default function EventDetailScreen() {
@@ -19,6 +25,70 @@ export default function EventDetailScreen() {
     // Hardcoded stats for demonstration
     const memberCount = 156;
     const popularity = 89;
+    const [clothingItems, setClothingItems] = useState<any[]>([]);
+    const [clothesSelectOpen, setClothingOpen] = useState<boolean>(false);
+    const event_id = params.id as string;
+    const images = require.context('../../assets/images', true);
+
+    async function loadFeaturedItems() {
+        if (event_id !== null) {
+            let request_body = {event: event_id};
+            const response = await fetch("https://backend-toga-r5s3.onrender.com/api/events/clothes?"+new URLSearchParams(request_body), {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (!response.ok) {
+                console.error(`HTTP error! status: ${response.status}`);
+            }
+            let items = await response.json();
+            let arr: any[] = []
+            for (let item of items) {
+                const storageRef = ref(imageDb, item.images[0]);
+                const url = await getDownloadURL(storageRef)
+                arr.push({
+                    priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
+                    buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
+                    bookmarked: true,
+                    image: url,
+                    size: item.size,
+                    key: item.clothing_id
+                })
+            }
+            setClothingItems(
+                arr.map((item: any, index: any) => (
+                    <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} id={item.key} />
+                ))
+            );
+        }
+    }
+
+    async function handleAddPress() {
+        setClothingOpen(true);
+    }
+
+    const closeModal = () => {
+        setClothingOpen(false);
+    };
+
+    async function onClothingSelect(item_id: string) {
+        if (item_id !== null) {
+            const request_body: { event: string, clothing_item: string } = {event: event_id, clothing_item: item_id};
+            const response = await fetch("https://backend-toga-r5s3.onrender.com/api/events/clothes/add", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request_body),
+            })
+        }
+        await loadFeaturedItems();
+    }
+
+    useEffect(() => {
+        loadFeaturedItems();
+    }, []);
 
     return (
         <>
@@ -32,7 +102,7 @@ export default function EventDetailScreen() {
                 {/* Header Image Section */}
                 <View style={styles.imageContainer}>
                     <Image
-                        source={{ uri: params.image_url as string }}
+                        source={images("./"+params.image_url)}
                         style={styles.headerImage}
                     />
                     <TouchableOpacity 
@@ -78,7 +148,7 @@ export default function EventDetailScreen() {
                         <Text style={styles.sectionTitle}>Hosted by</Text>
                         <View style={styles.hostInfo}>
                             <View style={styles.orgAvatar}>
-                                <Text style={styles.orgInitial}>{params.organizer_name?.charAt(0)}</Text>
+                                <Text style={styles.orgInitial}>{(params.organizer_name as string).charAt(0)}</Text>
                             </View>
                             <View>
                                 <Text style={styles.hostName}>{params.organizer_name}</Text>
@@ -101,25 +171,17 @@ export default function EventDetailScreen() {
                             showsHorizontalScrollIndicator={false}
                             style={styles.itemsScroll}
                         >
-                            {/* Sample items - replace with actual data */}
-                            {[1, 2, 3].map((item) => (
-                                <TouchableOpacity key={item} style={styles.itemCard}>
-                                    <View style={styles.itemImage} />
-                                    <View style={styles.itemInfo}>
-                                        <Text style={styles.itemPrice}>$20</Text>
-                                        <Text style={styles.itemSize}>Size M</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
+                            {clothingItems}
                         </ScrollView>
                     </View>
                 </View>
 
                 {/* Bottom Action Button */}
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity style={styles.actionButton} onPress={handleAddPress}>
                     <Text style={styles.actionButtonText}>Join Event</Text>
                 </TouchableOpacity>
             </ScrollView>
+            <EventClothesSelect isVisible={clothesSelectOpen} onSelect={onClothingSelect} onClose={closeModal} />
         </>
     );
 }

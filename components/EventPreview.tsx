@@ -65,7 +65,7 @@ export default function EventPreview({
                 event_date: event_begin,
                 location,
                 image_url: image_url || '../assets/images/event1.jpg',
-                organizer_name
+                organizer_name,
             }
         });
     };
