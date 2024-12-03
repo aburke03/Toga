@@ -64,7 +64,8 @@ const Events = () => {
             <View style={styles.header}>
                 <Text style={styles.headerText}>Events</Text>
             </View>
-            <ScrollView 
+            <ScrollView
+                key={events.length} 
                 style={styles.scrollView}
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
