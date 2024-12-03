@@ -36,7 +36,7 @@ const photoPreview = ({
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -44,13 +44,12 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 1,
         width: '95%',
-        backgroundColor: 'darkgray',
         justifyContent: 'center',
         alignItems: "center",
     },
     previewContainer: {
         width: '95%',
-        height: '85%',
+        height: "65%",
         borderRadius: 15
     },
     buttonContainer: {
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     button: {
-        backgroundColor: 'gray',
+        backgroundColor: '#92CAFF',
         borderRadius: 2,
         marginRight: '5%',
         padding: 10,

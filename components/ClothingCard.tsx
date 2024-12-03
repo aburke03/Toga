@@ -51,12 +51,13 @@ export default function ClothingCard(props: any) {
             onPress={() => router.push({
                 pathname: '../(popups)/[id]',
                 params: {
-                    id: props.key,
+                    id: props.id,
                     image: props.image,
                     title: props.title,
                     price: props.priceAmount,
                     size: props.size,
-                    buyType: props.buyType
+                    buyType: props.buyType,
+                    bookmarked: bookmarked
                 }
             })}
         >
@@ -65,10 +66,10 @@ export default function ClothingCard(props: any) {
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 onPress={(e) => {
                     e.stopPropagation();
-                    // Handle bookmark logic here
+                    bookmarkPress();
                 }}
             >
-                <Ionicons name="bookmark-outline" size={24} color="#461D7C" />
+                <Ionicons name={bookmarked?"bookmark":"bookmark-outline"} size={24} color="#461D7C" />
             </TouchableOpacity>
             <Image
                 source={{ uri: props.image }}

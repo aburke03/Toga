@@ -7,7 +7,7 @@ export const CategoryModal: React.FC<{
     onSelect: (value: string) => void;
     selectedOption: string | null;
 }> = ({ isVisible, onClose, onSelect, selectedOption }) => {
-    const options = ['Shirt', 'Pants', 'Footwear', 'Hats', 'Accessories'];
+    const options = ['Shirt', 'Pants', 'Footwear', 'Hats', 'Accessories', 'Dresses'];
 
     const handleSelect = (option: string) => {
         onSelect(option);

@@ -6,11 +6,12 @@ export default function PopupsLayout() {
         <Stack 
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#461D7C',
+                    backgroundColor: '#92CAFF',
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
                     fontWeight: 'bold',
+                    color: "black"
                 },
                 presentation: 'modal',
             }}

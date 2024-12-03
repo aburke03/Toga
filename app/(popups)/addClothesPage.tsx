@@ -9,36 +9,41 @@ import {
     TouchableWithoutFeedback,
     TextInput,
     Modal,
-    Button,
+    Button, Keyboard,
 } from 'react-native';
 import { OptionRow } from '@/components/addingClothes/OptionRow';
-import {router, useRouter} from 'expo-router';
+import {router, Stack, useRouter} from 'expo-router';
 import MyCamera from "@/app/(popups)/MyCamera";
 import {CameraCapturedPicture} from "expo-camera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { imageDb } from "@/components/firebase";
-import {ref, uploadBytes} from "@firebase/storage";
+import {getDownloadURL, ref, uploadBytes} from "@firebase/storage";
+import {RemoveBgResult, RemoveBgError, removeBackgroundFromImageFile, removeBackgroundFromImageUrl} from "remove.bg";
 
 import Compressor from 'compressorjs';
+import {Ionicons} from "@expo/vector-icons";
+import {NumberInput, TextField} from "react-native-ui-lib";
 
 export const AddClothes = () => {
     const [selectedValues, setSelectedValues] = useState<{
         category: string,
         condition: string,
         color: string,
-        theme: string,
+        size: string,
     }>({
             category: "Select",
             condition: "Select",
             color: "Select",
-            theme: "Select",
+            size: "Select",
         });
+    const [name, setName] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
     const [currentOption, setCurrentOption] = useState<string>('');
-    const [text, onChangeText] = useState('Description');
+    const [description, setDescription] = useState('');
     const [takingPicture, setTakingPicture] = useState(false);
     const [picture, setPicture] = useState("https://cdn.builder.io/api/v1/image/assets/TEMP/4b2fb31d9fd7f8776037917f534beb06505f89264458be53b4aec15764c79304")
     const [photo, setPhoto] = useState("");
+    const [price, setPrice] = useState(0);
     const router = useRouter();
 
     const optionRows: any[] = [
@@ -67,16 +72,16 @@ export const AddClothes = () => {
             ],
         },
         {
-            label: 'Theme',
+            label: 'Size',
             options: [
-                { label: 'Select', value: 'theme' },
+                { label: 'Select', value: 'size' },
                 { label: 'Casual', value: 'casual' },
                 { label: 'Formal', value: 'formal' },
             ],
         },
     ];
 
-    async function uploadImage(fileName:string) {
+    async function uploadImage(fileName: string) {
         console.log(fileName)
         try {
             const storageRef = ref(imageDb, 'images/' + fileName);  // Define the storage reference path
@@ -85,11 +90,39 @@ export const AddClothes = () => {
             const blob = await response.blob();
             const uploadTask = await uploadBytes(storageRef, blob);
             console.log(uploadTask.ref.fullPath)
-            return uploadTask.ref.fullPath;
+            const apiKey = '6QmVc1MeSWvEagaBLyy5Ufq9'; // Replace with your API key
+
+            const formData = new FormData();
+            const downloadUrl = await getDownloadURL(storageRef)
+            formData.append('image_url', downloadUrl);
+            formData.append('size', 'preview');
+            formData.append('format', 'jpg');
+
+            try {
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    console.error('remove.bg API error:', await response.text());
+                    return null;
+                }
+                const storageRef2 = ref(imageDb, 'images/transparent' + fileName);
+                const blob2 = await response.blob();
+                const uploadTask2 = await uploadBytes(storageRef, blob2);
+                return uploadTask2.ref.fullPath;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
         } catch (error) {
             console.error('Error uploading file:', error);
         }
     }
+
 
     const handleAddToWardrobe = async () => {
         const imageUrl = await uploadImage(Date.now()+"_image.jpg");
@@ -97,9 +130,9 @@ export const AddClothes = () => {
         const requestBody = {
             category: selectedValues.category,
             condition: selectedValues.condition,
-            description: text,
-            size: "S",
-            title: "denim jacket",
+            description: description,
+            size: selectedValues.size,
+            title: name,
             rental_price: 0,
             purchase_price: 0,
             images: [imageUrl],
@@ -129,7 +162,7 @@ export const AddClothes = () => {
         category: string,
             condition: string,
             color: string,
-            theme: string,
+            size: string,
     }) => {
         setSelectedValues(selected);
         setShowModal(false);
@@ -149,14 +182,20 @@ export const AddClothes = () => {
 
     return (
         <View>
+            <Stack.Screen
+                options={{
+                    title: "Toga",
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            onPress={() => router.replace("/profile")}
+                            style={styles.headerButton}
+                        >
+                            <Ionicons name="arrow-back" size={24} color="black" />
+                        </TouchableOpacity>
+                    )
+                }}
+            />
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={() => router.replace('/profile')}>
-                    <Image
-                        source={{ uri: 'https://cdn.builder.io/api/v1/image/assets/TEMP/76dc4b34dc0f148da5ee5b240ca6b1b833f1819a8fa1b0875c62c63d82654ad2' }}
-                        style={styles.backButton}
-                        accessibilityLabel="backButton"
-                    />
-                </TouchableWithoutFeedback>
 
                 <View style={styles.imageUploadArea}>
                     <TouchableOpacity style={styles.cameraIcon} onPress={() => setTakingPicture(true)}>
@@ -167,24 +206,32 @@ export const AddClothes = () => {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.previewArea} >
-                    <TextInput
-                        style={styles.description}
-                        onChangeText={onChangeText}
-                        value={text}
-                        placeholder="Description"
-                        placeholderTextColor="#888" // Optional: Custom placeholder color
-                        maxLength={200} // Optional: Limit input length
-                        multiline={true} // Optional: Allow multiline input
+                    <TextField
+                        placeholder={'Item Name'}
+                        floatingPlaceholder
+                        onChangeText={text => setName(text)}
+                        showCharCounter
+                        maxLength={30}
+                        style={styles.name}
+                        floatingPlaceholderStyle={styles.floatingPlaceholder}
+                        containerStyle={styles.floatingContainer}
                     />
-                </View>
-                <View style={styles.separator} />
+                    <TextField
+                        placeholder={'Description'}
+                        floatingPlaceholder
+                        onChangeText={text => setDescription(text)}
+                        showCharCounter
+                        maxLength={80}
+                        style={styles.name}
+                        floatingPlaceholderStyle={styles.floatingPlaceholder}
+                        containerStyle={styles.floatingContainer}
+                    />
+                <NumberInput fractionDigits={2} textFieldProps={{style: styles.trailingText}} leadingTextStyle={styles.leadingText} containerStyle={styles.price} initialNumber={0} onChangeNumber={(value) => setPrice(parseFloat(value.userInput))} leadingText={'Sell Price'}/>
+
 
                 <View style={styles.optionsContainer}>
                     <OptionRow handleOptionSelect={handleOptionSelection}/>
                 </View>
-
-                <View style={styles.separator} />
 
                 <View style={styles.actionContainer}>
                     <TouchableOpacity
@@ -233,7 +280,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         position: 'relative',
         display: 'flex',
-        maxWidth: 480,
         width: '100%',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -242,12 +288,39 @@ const styles = StyleSheet.create({
         margin: 0,
         padding: 5,
     },
+    trailingText: {
+        fontSize: 18,
+        paddingHorizontal: "40%",
+        fontWeight: 'bold',
+    },
+    price: {
+        marginTop: 15,
+        marginBottom: -40,
+        width: "112%",
+        justifyContent: 'space-between',
+        left: "15%"
+    },
+    leadingText: {
+        fontSize: 18,
+        fontWeight: "bold"
+    },
+    floatingPlaceholder: {
+        fontSize: 18
+    },
+    floatingContainer: {
+        width: "80%",
+        height: "20%",
+        marginTop: 20,
+        marginBottom: -80
+    },
+    name: {
+        fontSize: 24
+    },
     backButton: {
         aspectRatio: 1,
         objectFit: 'contain',
         width: 55,
         position: 'absolute',
-        zIndex: 1,
         left: 15,
         top: 30,
     },
@@ -261,23 +334,19 @@ const styles = StyleSheet.create({
         borderStyle: 'dashed',
         borderColor: '#828282',
     },
+    headerButton: {
+        paddingHorizontal: 8,
+    },
     previewArea: {
         borderRadius: 5,
         display: 'flex',
         minHeight: 96,
-        marginTop: 39,
         width: 344,
         maxWidth: '100%',
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: '#828282',
-    },
-    separator: {
-        backgroundColor: '#d9d9d9',
-        display: 'flex',
-        minHeight: 10,
-        marginTop: 39,
-        width: '100%',
+        top: -50
     },
     optionsContainer: {
         display: 'flex',
@@ -291,14 +360,13 @@ const styles = StyleSheet.create({
     },
     actionContainer: {
         display: 'flex',
-        marginTop: 39,
         width: 285,
         maxWidth: '100%',
     },
     addButton: {
         borderRadius: 5,
         backgroundColor: '#132260',
-        padding: 16,
+        padding: 8,
         width: '100%',
     },
     addButtonText: {

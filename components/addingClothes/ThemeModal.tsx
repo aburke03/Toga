@@ -7,7 +7,7 @@ export const ThemeModal: React.FC<{
     onSelect: (value: string) => void;
     selectedOption: string | null;
 }> = ({ isVisible, onClose, onSelect, selectedOption }) => {
-    const options = ['Rodeo', 'Camo', 'PinkOut'];
+    const options = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large'];
 
     const handleSelect = (option: string) => {
         onSelect(option);
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '100%',
-        height: '30%',
+        height: '40%',
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,

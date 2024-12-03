@@ -144,7 +144,8 @@ const Closet = () => {
 
 const styles= StyleSheet.create({
     closet: {
-        height: "100%"
+        height: "100%",
+        backgroundColor: "white"
     },
     organizations: {
         flexDirection: 'row',

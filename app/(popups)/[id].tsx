@@ -1,12 +1,45 @@
 import {View, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground} from 'react-native';
 import { Text } from 'react-native-ui-lib';
-import React from 'react';
+import React, {useState} from 'react';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProductDetail = () => {
     const params = useLocalSearchParams();
     console.log(params.image as string);
+
+    const [bookmarked, setBookmarked] = useState<any>(params.bookmarked);
+
+    async function bookmarkPress() {
+        if (bookmarked) {
+            const userId = await AsyncStorage.getItem("user-id");
+            if (userId !== null) {
+                setBookmarked(false);
+                const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: params.id[0]};
+                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/remove", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request_body),
+                })
+            }
+        } else {
+            const userId = await AsyncStorage.getItem("user-id");
+            if (userId !== null) {
+                setBookmarked(true);
+                const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: params.id[0]};
+                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/add", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request_body),
+                })
+            }
+        }
+    }
 
     return (
         <>
@@ -24,10 +57,10 @@ const ProductDetail = () => {
                     headerRight: () => (
                         <View style={styles.headerRightContainer}>
                             <TouchableOpacity 
-                                onPress={() => {/* Add bookmark functionality */}}
+                                onPress={() => {bookmarkPress()}}
                                 style={styles.headerButton}
                             >
-                                <Ionicons name="bookmark-outline" size={24} color="white" />
+                                <Ionicons name={bookmarked?"bookmark":"bookmark-outline"} size={24} color="white" />
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 onPress={() => {/* Add share functionality */}}

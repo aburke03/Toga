@@ -10,14 +10,14 @@ export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: 
         category: string,
         condition: string,
         color: string,
-        theme: string,
+        size: string,
     }) => void}) => {
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [selectedOptions, setSelectedOptions] = useState({
         category: 'Select',
         condition: 'Select',
         color: 'Select',
-        theme: 'Select',
+        size: 'Select',
     });
 
     const openModal = (type: string) => {
@@ -51,10 +51,10 @@ export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: 
                 <Text style={styles.optionLabel}>Color</Text>
                 <Text style={styles.optionValue}>{selectedOptions.color}</Text>
             </TouchableOpacity>
-            {/** Theme Row */}
-            <TouchableOpacity onPress={() => openModal('theme')} style={styles.row}>
-                <Text style={styles.optionLabel}>Theme</Text>
-                <Text style={styles.optionValue}>{selectedOptions.theme}</Text>
+            {/** Size Row */}
+            <TouchableOpacity onPress={() => openModal('size')} style={styles.row}>
+                <Text style={styles.optionLabel}>Size</Text>
+                <Text style={styles.optionValue}>{selectedOptions.size}</Text>
             </TouchableOpacity>
 
             {/** Modals */}
@@ -79,9 +79,9 @@ export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: 
 
             />
             <ThemeModal
-                isVisible={activeModal === 'theme'}
+                isVisible={activeModal === 'size'}
                 onClose={closeModal}
-                onSelect={(value:string) => handleOptionChange('theme', value)}
+                onSelect={(value:string) => handleOptionChange('size', value)}
                 selectedOption={selectedOptions.condition}
 
             />
