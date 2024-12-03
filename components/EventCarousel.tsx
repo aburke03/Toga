@@ -167,11 +167,10 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#000',
-    alignSelf:'center',
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#000000',
+    margin: 20,
   },
   carousel: {
     height: 240,
