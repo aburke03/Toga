@@ -178,7 +178,7 @@ export default function EventDetailScreen() {
 
                 {/* Bottom Action Button */}
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddPress}>
-                    <Text style={styles.actionButtonText}>Join Event</Text>
+                    <Text style={styles.actionButtonText}>Add Item</Text>
                 </TouchableOpacity>
             </ScrollView>
             <EventClothesSelect isVisible={clothesSelectOpen} onSelect={onClothingSelect} onClose={closeModal} />

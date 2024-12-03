@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {getDownloadURL, ref} from "@firebase/storage";
 import {imageDb} from "@/components/firebase";
-import ClothingCard from "@/components/ClothingCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const EventClothesSelect: React.FC<{
@@ -10,7 +9,6 @@ export const EventClothesSelect: React.FC<{
     onClose: () => void;
     onSelect: (value: string) => void;
 }> = ({ isVisible, onClose, onSelect}) => {
-
     const [clothingItems, setClothingItems] = useState<any[]>([]);
 
     async function pullCloset() {
@@ -31,14 +29,19 @@ export const EventClothesSelect: React.FC<{
             for (let item of items) {
                 const storageRef = ref(imageDb, item.images[0]);
                 const url = await getDownloadURL(storageRef)
+                const priceAmount = item.is_available_for_sale ? 
+                    Number(item.purchase_price) || 0 : 
+                    item.is_available_for_rent ? 
+                        Number(item.rental_price) || 0 : 
+                        0;
+                
                 arr.push({
-                    priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
+                    priceAmount,
                     buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
                     bookmarked: item.is_bookmarked,
                     image: url,
                     size: item.size,
-                    key: item.id,
-                    onPress: handleSelect
+                    key: item.id
                 })
             }
             setClothingItems(arr);
@@ -51,35 +54,46 @@ export const EventClothesSelect: React.FC<{
     };
 
     useEffect(() => {
-        pullCloset();
-    }, []);
+        if (isVisible) {
+            pullCloset();
+        }
+    }, [isVisible]);
 
     return (
         <Modal visible={isVisible} transparent={true} animationType="slide">
             <View style={styles.modalContainer}>
-                <ScrollView style={styles.modalContent}>
+                <View style={styles.contentContainer}>
                     <Text style={styles.title}>Add an Item</Text>
-                    <View style={styles.clothingGrid}>
-                    {clothingItems.map((item) => (
-                        <TouchableOpacity key={item.key} style={styles.itemCard} onPress={() => handleSelect(item.key)}>
-                            <View style={styles.itemImage}>
-                                <Image
-                                    source={{ uri: item.image }}
-                                    style={styles.itemImage}
-                                    resizeMode="cover"
-                                />
-                            </View>
-                            <View style={styles.itemInfo}>
-                                <Text style={styles.itemPrice}>{item.priceAmount}</Text>
-                                <Text style={styles.itemSize}>{"Size " + item.size}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                    </View>
-                    <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                    <ScrollView style={styles.scrollContent}>
+                        <View style={styles.clothingGrid}>
+                            {clothingItems.map((item) => (
+                                <TouchableOpacity 
+                                    key={item.key} 
+                                    style={styles.itemCard} 
+                                    onPress={() => handleSelect(item.key)}
+                                >
+                                    <Image
+                                        source={{ uri: item.image }}
+                                        style={styles.itemImage}
+                                        resizeMode="cover"
+                                    />
+                                    <View style={styles.itemInfo}>
+                                        <Text style={styles.itemPrice}>
+                                            ${typeof item.priceAmount === 'number' ? item.priceAmount.toFixed(2) : '0.00'}
+                                        </Text>
+                                        <Text style={styles.itemSize}>Size {item.size}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </ScrollView>
+                    <TouchableOpacity 
+                        onPress={onClose} 
+                        style={styles.closeButton}
+                    >
                         <Text style={styles.closeButtonText}>Cancel</Text>
                     </TouchableOpacity>
-                </ScrollView>
+                </View>
             </View>
         </Modal>
     );
@@ -88,32 +102,34 @@ export const EventClothesSelect: React.FC<{
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        height: '40%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-end',
     },
-    modalContent: {
+    contentContainer: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        maxHeight: '90%',
         width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        paddingTop: 30,
-    },
-    itemsScroll: {
-        marginHorizontal: -20,
-        paddingHorizontal: 20,
-    },
-    itemCard: {
-        width: 160,
-        marginRight: 16,
-        borderRadius: 12,
-        backgroundColor: '#fff',
+        paddingBottom: 34,
+        // Add shadow styles
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: -4,  // Negative value for top shadow
         },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 16,  // For Android
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: '600',
+        textAlign: 'center',
+        marginTop: 20,
+        marginBottom: 16,
+    },
+    scrollContent: {
+        flexGrow: 0,
     },
     clothingGrid: {
         padding: 16,
@@ -122,12 +138,25 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         gap: 16,
     },
+    itemCard: {
+        width: '47%',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+        marginBottom: 8,
+    },
     itemImage: {
         width: '100%',
-        height: 160,
+        aspectRatio: 1,
         backgroundColor: '#f0f0f0',
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
     },
     itemInfo: {
         padding: 12,
@@ -139,40 +168,22 @@ const styles = StyleSheet.create({
     itemSize: {
         fontSize: 14,
         color: '#666',
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        alignSelf: 'center',
-    },
-    optionContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    radioCircle: {
-        height: 20,
-        width: 20,
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: '#555',
-        marginRight: 10,
-    },
-    radioSelected: {
-        backgroundColor: '#555',
-    },
-    radioText: {
-        fontSize: 16,
+        marginTop: 4,
     },
     closeButton: {
-        marginTop: '10%',
-        padding: 10,
-        backgroundColor: '#132260',
-        borderRadius: 5,
-        alignItems: 'center',
+        backgroundColor: '#6BA9DB',
+        marginHorizontal: 16,
+        paddingVertical: 16,
+        borderRadius: 8,
+        marginTop: 16,
+        marginBottom: 8,
     },
     closeButtonText: {
         color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center',
     },
 });
+
+export default EventClothesSelect;
