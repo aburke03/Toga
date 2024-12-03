@@ -16,7 +16,7 @@ const photoPreview = ({
     <SafeAreaView style={styles.container}>
         <View style={styles.topContainer}>
             <TouchableOpacity style={styles.buttonTrash} onPress={handleRetakePhoto}>
-                <Fontisto name="trash" size={36} color="black" />
+                <Fontisto name="trash" size={36} color="white" />
             </TouchableOpacity>
         </View>
         <View style={styles.box}>
@@ -38,7 +38,7 @@ const photoPreview = ({
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#92CAFF',
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
@@ -52,7 +52,10 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     previewContainer: {
-        borderRadius: 15,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
+
+        top: '-4%',
         width: '100%',
         height: '100%',
     },
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: '#92CAFF',
+        backgroundColor: 'white',
         paddingVertical: 20,
         position: 'absolute',
         bottom: 0,
@@ -73,12 +76,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
         borderRadius: 30,
-        backgroundColor: '#fff',
+        backgroundColor: '#92CAFF',
+        bottom: '-10%',
+
     },
     text:{
-        fontSize: 26,
+        fontSize: 16,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
     },
     topContainer: {
         top: 0,
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     }, buttonTrash: {
         alignItems: 'flex-end',
         marginRight: '10%',
+
     }
 
 

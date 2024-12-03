@@ -166,7 +166,7 @@ export const AddClothes = () => {
                             onPress={() => router.replace("/profile")}
                             style={styles.headerButton}
                         >
-                            <Ionicons name="arrow-back" size={24} color="black" />
+                            <Ionicons name="arrow-back" size={24} color="white" />
                         </TouchableOpacity>
                     )
                 }}

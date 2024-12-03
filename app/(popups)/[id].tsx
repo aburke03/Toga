@@ -91,8 +91,8 @@ const ProductDetail = () => {
 
     return (
         <>
-            <Stack.Screen 
-                options={{ 
+            <Stack.Screen
+                options={{
                     title: "Toga",
                     headerLeft: () => (
                         <TouchableOpacity 

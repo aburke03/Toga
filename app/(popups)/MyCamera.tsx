@@ -62,7 +62,7 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
             <View style={styles.topContainer}>
 
                 <TouchableOpacity style={styles.buttonSwap} onPress={toggleCameraFacing}>
-                    <AntDesign name="retweet" size={44} color="white" />
+                    <AntDesign name="retweet" size={44} color="#92CAFF" />
                 </TouchableOpacity>
 
             </View>
@@ -72,7 +72,7 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
                     <View style={styles.buttonBorder}>
                     <View style={styles.blackButton}>
                     <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-                        <AntDesign name="camera" size={44} color="white" />
+                        <AntDesign name="camera" size={44} color="#92CAFF" />
                     </TouchableOpacity>
                         </View>
                 </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignItems: 'center',
-        backgroundColor: '#92CAFF',
+        backgroundColor: 'white',
         paddingVertical: 20,
         position: 'absolute',
         bottom: 0,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     button: {
         padding: 10,
         color: 'white',
-        backgroundColor: 'white',
+        backgroundColor: '#92CAFF',
         borderRadius: 100,
         top: '0%',
         zIndex:1000,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     buttonBorder: {
         padding: 4,
         color: 'white',
-        backgroundColor: 'white',
+        backgroundColor: '#92CAFF',
         borderRadius: 100,
         top: '-50%',
         zIndex:1,
@@ -143,12 +143,13 @@ const styles = StyleSheet.create({
     },
     topContainer: {
         height: '8%',
-        backgroundColor: '#92CAFF',
+        backgroundColor: 'white',
 
     },
     buttonSwap: {
         alignItems: 'flex-end',
         marginRight: '10%',
+        marginTop: '2%',
     },
     background: {
         /*
