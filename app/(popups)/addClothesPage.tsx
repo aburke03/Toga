@@ -113,7 +113,7 @@ export const AddClothes = () => {
                 }
                 const storageRef2 = ref(imageDb, 'images/transparent' + fileName);
                 const blob2 = await response.blob();
-                const uploadTask2 = await uploadBytes(storageRef, blob2);
+                const uploadTask2 = await uploadBytes(storageRef2, blob2);
                 return uploadTask2.ref.fullPath;
             } catch (error) {
                 console.error('Error uploading file:', error);

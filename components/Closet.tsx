@@ -128,7 +128,7 @@ const Closet = () => {
                         <Text key={index} style={styles.org}>{organization}</Text>
                     ))}
                 </View>
-                <View>
+                <View style={styles.scroll}>
                     <FilterBar />
                     <View style={styles.recommendedScroll}>
                         {clothingItems}
@@ -167,6 +167,9 @@ const styles= StyleSheet.create({
         padding: 5,
         justifyContent: "center"
     },
+    scroll: {
+        paddingVertical: 15
+    },
     top: {
         flexDirection: 'row',
         width: '100%',
@@ -202,10 +205,10 @@ const styles= StyleSheet.create({
         fontSize: 16,
     },
     addButton: {
-        backgroundColor: 'blue',
+        backgroundColor: '#92CAFF',
         paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        paddingHorizontal: 30,
+        borderRadius: 100,
         zIndex:10,
         alignSelf: 'center',
         position: 'absolute',
@@ -214,7 +217,7 @@ const styles= StyleSheet.create({
 
     addButtonText: {
         alignSelf: 'center',
-        color: 'white',
+        color: 'black',
         fontSize: 16,
 
     },

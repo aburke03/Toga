@@ -57,7 +57,8 @@ export default function ClothingCard(props: any) {
                     price: props.priceAmount,
                     size: props.size,
                     buyType: props.buyType,
-                    bookmarked: bookmarked
+                    bookmarked: bookmarked,
+                    owner: props.owner_id,
                 }
             })}
         >
@@ -69,7 +70,7 @@ export default function ClothingCard(props: any) {
                     bookmarkPress();
                 }}
             >
-                <Ionicons name={bookmarked?"bookmark":"bookmark-outline"} size={24} color="#461D7C" />
+                <Ionicons name={bookmarked?"bookmark":"bookmark-outline"} size={24} color="#92CAFF" />
             </TouchableOpacity>
             <Image
                 source={{ uri: props.image }}
