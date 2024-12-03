@@ -56,11 +56,12 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../assets/images/toga.png')}
-            style={styles.image}
-            resizeMode="contain"
+
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../../assets/images/toga.png')} 
+          style={styles.image} 
+          resizeMode="contain"
           />
         </View>
 
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#6c47ff',
+    backgroundColor: '#92CAFF',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     padding: 20,
@@ -142,7 +143,6 @@ const styles = StyleSheet.create({
     width: '60%',
     height: undefined,
     aspectRatio: 1,
-    tintColor: '#ffffff',
   },
   inputField: {
     height: 55,
@@ -170,18 +170,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleButtonText: {
-    color: '#6c47ff',
+    color: '#92CAFF',
     fontSize: 16,
     fontWeight: '600',
   },
   loginButton: {
-    backgroundColor: '#6c47ff',
+    backgroundColor: '#92CAFF',
     height: 55,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
-    shadowColor: '#6c47ff',
+    shadowColor: '#92CAFF',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   linkText: {
-    color: '#6c47ff',
+    color: '#92CAFF',
     fontSize: 16,
     fontWeight: '500',
   },
