@@ -27,8 +27,8 @@ export default function InsideEvent() {
                     </TouchableWithoutFeedback>
                     <View style={styles.textbox}>
                         <Text style={styles.eventName}>Rodeo</Text>
-                        <Text style={styles.eventName}>Host: Phi Mu</Text>
-                        <Text style={styles.eventName} >Location: Phi Mu House</Text>
+                        <Text style={styles.eventName}>Host: Alpha Delta Pi</Text>
+                        <Text style={styles.eventName} >Location: Alpha Delta Pi House</Text>
                         <View style={styles.date}>
                             <Text style={styles.dateText} >Nov. 30</Text>
                         </View>

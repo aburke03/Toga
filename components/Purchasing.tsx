@@ -75,7 +75,7 @@ const Purchasing = () => {
                                 </Text>
                             </View>
                             <View style={styles.locationContainer}>
-                                <Text style={styles.locationText}>Pickup Location: Phi Mu House</Text>
+                                <Text style={styles.locationText}>Pickup Location: Alpha Delta Pi House</Text>
                             </View>
                         </View>
 
