@@ -107,7 +107,7 @@ export default function EventDetailScreen() {
                     />
                     <TouchableOpacity 
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => router.push('/events')}
                     >
                         <Ionicons name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
