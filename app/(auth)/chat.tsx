@@ -35,22 +35,23 @@ const Chat = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <CartIcon />
                 <View style={styles.topNav}>
                     <Pressable 
                         style={currState === "purchasing" ? styles.topNavButtonSelected : styles.topNavButton} 
                         onPress={() => changeContent("purchasing")}
                     >
-                        <Text style={styles.topNavButtonText}>Purchasing</Text>
+                        <Text style={currState === "purchasing" ? styles.topNavButtonTextSelected : styles.topNavButtonText}>Purchasing</Text>
                     </Pressable>
                     <Pressable 
                         style={currState === "selling" ? styles.topNavButtonSelected : styles.topNavButton} 
                         onPress={() => changeContent("selling")}
                     >
-                        <Text style={styles.topNavButtonText}>Selling</Text>
+                        <Text style={currState === "selling" ? styles.topNavButtonTextSelected : styles.topNavButtonText}>Selling</Text>
                     </Pressable>
                 </View>
-                {content}
+                <View style={styles.cartButton}>
+                <CartIcon />
+                </View>
             </View>
         </TouchableWithoutFeedback>
     );
@@ -77,26 +78,53 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     topNavButton: {
-        paddingTop: '20%',
+        paddingTop: '30%',
         padding: 0,
         alignSelf: 'center',
         borderBottomWidth: 1,
-        borderColor: '#828282',
+        borderColor: '#E0E0E0',
         flex: 1,
     },
     topNavButtonSelected: {
-        paddingTop: "20%",
+        paddingTop: "30%",
         padding: 0,
         alignSelf: 'center',
         borderBottomWidth: 2,
-        borderColor: '#000000',
+        borderColor: '#92CAFF',
         flex: 1,
     },
     topNavButtonText: {
         fontSize: 18,
         textAlign: 'center',
         paddingBottom: 10,
-    }
+        color: '#666',
+    },
+    topNavButtonTextSelected: {
+        fontSize: 18,
+        textAlign: 'center',
+        paddingBottom: 10,
+        color: '#92CAFF',
+
+    },
+    cartButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#92CAFF',
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        zIndex: 10,
+    },
 });
 
 export default Chat;

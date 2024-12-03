@@ -114,11 +114,10 @@ const Profile = () => {
             <Text style={[
               styles.topNavButtonText,
               currState === "tryOn" && styles.selectedText
-            ]}>Virtual Try-On</Text>
+            ]}>Try-On</Text>
           </Pressable>
         </View>
 
-        {/* Main Content */}
         <View style={styles.contentContainer}>
           {content}
         </View>

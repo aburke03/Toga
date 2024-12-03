@@ -20,10 +20,10 @@ import { CameraCapturedPicture } from "expo-camera";
 
 export const AddClothes = () => {
     const [selectedValues, setSelectedValues] = useState({
-        category: "Select",
-        condition: "Select",
-        color: "Select",
-        size: "Select",
+        category: "Select  >",
+        condition: "Select  >",
+        color: "Select  >",
+        size: "Select  >",
     });
     const [name, setName] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -187,8 +187,8 @@ export const AddClothes = () => {
                 >
                     <Text style={styles.fieldLabel}>Sell Price</Text>
                     <TextField
-                        placeholder="0.00"
-                        value={price}
+                        placeholder= {'0.00'}
+                        placeholderTextColor={'grey'}
                         onChangeText={handlePriceInput}
                         keyboardType="decimal-pad"
                         style={styles.priceInput}

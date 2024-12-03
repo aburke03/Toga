@@ -14,6 +14,11 @@ const photoPreview = ({
     handleUsePhoto: (photo: CameraCapturedPicture) => void;
 }) => (
     <SafeAreaView style={styles.container}>
+        <View style={styles.topContainer}>
+            <TouchableOpacity style={styles.buttonTrash} onPress={handleRetakePhoto}>
+                <Fontisto name="trash" size={36} color="black" />
+            </TouchableOpacity>
+        </View>
         <View style={styles.box}>
             <Image
                 style={styles.previewContainer}
@@ -22,9 +27,6 @@ const photoPreview = ({
         </View>
 
         <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-                <Fontisto name="trash" size={36} color="black" />
-            </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={() => handleUsePhoto(photo)}>
                 <Text style={styles.text}>Use This Photo</Text>
@@ -36,39 +38,59 @@ const photoPreview = ({
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#92CAFF',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
+
     box: {
-        borderRadius: 15,
-        padding: 1,
-        width: '95%',
+        top: '10%',
+        width: '100%',
+        height: '55%',
         justifyContent: 'center',
         alignItems: "center",
+        zIndex: 1,
     },
     previewContainer: {
-        width: '95%',
-        height: "65%",
-        borderRadius: 15
-    },
-    buttonContainer: {
-        marginTop: '4%',
-        flexDirection: 'row',
-        justifyContent: "center",
+        borderRadius: 15,
         width: '100%',
+        height: '100%',
+    },
+
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: '#92CAFF',
+        paddingVertical: 20,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        height: '42%',
     },
     button: {
-        backgroundColor: '#92CAFF',
-        borderRadius: 2,
-        marginRight: '5%',
-        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 20,
+        borderRadius: 30,
+        backgroundColor: '#fff',
     },
     text:{
-        fontSize: 18,
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: 'black',
     },
+    topContainer: {
+        top: 0,
+        position: 'absolute',
+        height: '8%',
+        backgroundColor: '#92CAFF',
+        width: '100%',
+    }, buttonTrash: {
+        alignItems: 'flex-end',
+        marginRight: '10%',
+    }
+
 
 });
 

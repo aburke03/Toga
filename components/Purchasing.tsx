@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     },
     messageButton: {
         flexDirection: 'row',
-        backgroundColor: '#000',
+        backgroundColor: '#92CAFF',
         padding: 12,
         borderRadius: 8,
         justifyContent: 'center',

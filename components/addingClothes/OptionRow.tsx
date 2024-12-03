@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { CategoryModal } from './CategoryModal';
 import { ConditionModal } from './ConditionModal';
 import { ColorModal } from './ColorModal';
-import { ThemeModal } from './ThemeModal';
+import { ThemeModal } from './SizeModal';
 import {CameraCapturedPicture} from "expo-camera";
 
 export const OptionRow = ({handleOptionSelect}: {handleOptionSelect: (selected: {

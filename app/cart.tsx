@@ -15,7 +15,7 @@ export const CartIcon = () => {
       style={styles.iconContainer}
       onPress={() => router.push('/cart')}
     >
-      <Ionicons name="cart-outline" size={24} color="black" />
+      <Ionicons name="cart-outline" size={24} color="white" />
     </Pressable>
   );
 };
@@ -264,8 +264,6 @@ const removeItem = async (itemId: string) => {
 const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
-    right: 20,
-    top: 50,
     zIndex: 1,
   },
   pageContainer: {
@@ -282,7 +280,7 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 8,
     marginLeft: -8,
-    marginRight: 4,
+    marginRight: '10%',
   },
   title: {
     fontSize: 24,
@@ -363,7 +361,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   checkoutButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#92CAFF',
     padding: 16,
     borderRadius: 25,
     alignItems: 'center',
