@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 24,
         fontWeight: '600',
-        color: '#461D7C',
+        color: '#4788B7',
     },
     buyTypeContainer: {
         backgroundColor: '#f0f0f0',
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     ratingCount: {
-        color: '#666',
+        color: '#4788B7',
     },
     contactSellerButton: {
         backgroundColor: 'white',
@@ -264,10 +264,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#461D7C',
+        borderColor: '#6BA9DB',
     },
     contactSellerText: {
-        color: '#461D7C',
+        color: '#6BA9DB',
         fontSize: 14,
         fontWeight: '500',
     },
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     addToCartButton: {
-        backgroundColor: '#461D7C',
+        backgroundColor: '#92CAFF',
         paddingVertical: 16,
         borderRadius: 12,
         alignItems: 'center',

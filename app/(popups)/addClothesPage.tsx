@@ -4,125 +4,79 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ScrollView,
     StyleSheet,
-    TouchableWithoutFeedback,
-    TextInput,
+    ScrollView,
     Modal,
-    Button, Keyboard,
+    Pressable
 } from 'react-native';
-import { OptionRow } from '@/components/addingClothes/OptionRow';
-import {router, Stack, useRouter} from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { router, Stack } from 'expo-router';
+import { TextField } from "react-native-ui-lib";
 import MyCamera from "@/app/(popups)/MyCamera";
-import {CameraCapturedPicture} from "expo-camera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { imageDb } from "@/components/firebase";
-import {getDownloadURL, ref, uploadBytes} from "@firebase/storage";
-import {RemoveBgResult, RemoveBgError, removeBackgroundFromImageFile, removeBackgroundFromImageUrl} from "remove.bg";
-
-import Compressor from 'compressorjs';
-import {Ionicons} from "@expo/vector-icons";
-import {NumberInput, TextField} from "react-native-ui-lib";
+import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
+import { CameraCapturedPicture } from "expo-camera";
 
 export const AddClothes = () => {
-    const [selectedValues, setSelectedValues] = useState<{
-        category: string,
-        condition: string,
-        color: string,
-        size: string,
-    }>({
-            category: "Select",
-            condition: "Select",
-            color: "Select",
-            size: "Select",
-        });
-    const [name, setName] = useState<string>('');
+    const [selectedValues, setSelectedValues] = useState({
+        category: "Select",
+        condition: "Select",
+        color: "Select",
+        size: "Select",
+    });
+    const [name, setName] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [currentOption, setCurrentOption] = useState<string>('');
+    const [currentField, setCurrentField] = useState('');
+    const [currentOptions, setCurrentOptions] = useState<string[]>([]);
     const [description, setDescription] = useState('');
     const [takingPicture, setTakingPicture] = useState(false);
-    const [picture, setPicture] = useState("https://cdn.builder.io/api/v1/image/assets/TEMP/4b2fb31d9fd7f8776037917f534beb06505f89264458be53b4aec15764c79304")
+    const [picture, setPicture] = useState('');
     const [photo, setPhoto] = useState("");
-    const [price, setPrice] = useState(0);
-    const router = useRouter();
+    const [price, setPrice] = useState("0.00");
 
-    const optionRows: any[] = [
-        {
-            label: 'Category',
-            options: [
-                { label: 'Select', value: 'category' },
-                { label: 'Tops', value: 'tops' },
-                { label: 'Bottoms', value: 'bottoms' },
-            ],
-        },
-        {
-            label: 'Condition',
-            options: [
-                { label: 'Select', value: 'condition' },
-                { label: 'New', value: 'new' },
-                { label: 'Used', value: 'used' },
-            ],
-        },
-        {
-            label: 'Color',
-            options: [
-                { label: 'Select', value: 'color' },
-                { label: 'Red', value: 'red' },
-                { label: 'Blue', value: 'blue' },
-            ],
-        },
-        {
-            label: 'Size',
-            options: [
-                { label: 'Select', value: 'size' },
-                { label: 'Casual', value: 'casual' },
-                { label: 'Formal', value: 'formal' },
-            ],
-        },
-    ];
+    const options = {
+        category: ['Tops', 'Bottoms', 'Shoes', 'Accessories'],
+        condition: ['New', 'Like New', 'Good', 'Fair'],
+        color: ['Black', 'White', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Pink', 'Brown', 'Gray'],
+        size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    };
+
+    const handleOptionPress = (field: string) => {
+        setCurrentField(field);
+        setCurrentOptions(options[field as keyof typeof options]);
+        setShowModal(true);
+    };
+
+    const handleOptionSelect = (value: string) => {
+        setSelectedValues(prev => ({
+            ...prev,
+            [currentField]: value
+        }));
+        setShowModal(false);
+    };
+
+    const handlePriceInput = (text: string) => {
+        const filtered = text.replace(/[^0-9.]/g, '');
+        const parts = filtered.split('.');
+        if (parts.length > 2) return;
+        if (parts[1]?.length > 2) return;
+        setPrice(filtered);
+    };
 
     async function uploadImage(fileName: string) {
         console.log(fileName)
         try {
-            const storageRef = ref(imageDb, 'images/' + fileName);  // Define the storage reference path
-            // Upload the file to Firebase Storage
+            const storageRef = ref(imageDb, 'images/' + fileName);
             const response = await fetch(picture);
             const blob = await response.blob();
             const uploadTask = await uploadBytes(storageRef, blob);
-            console.log(uploadTask.ref.fullPath)
-            const apiKey = '6QmVc1MeSWvEagaBLyy5Ufq9'; // Replace with your API key
-
-            const formData = new FormData();
-            const downloadUrl = await getDownloadURL(storageRef)
-            formData.append('image_url', downloadUrl);
-            formData.append('size', 'preview');
-            formData.append('format', 'jpg');
-
-            try {
-                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
-                    method: 'POST',
-                    headers: {
-                        'X-Api-Key': apiKey,
-                    },
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    console.error('remove.bg API error:', await response.text());
-                    return null;
-                }
-                const storageRef2 = ref(imageDb, 'images/transparent' + fileName);
-                const blob2 = await response.blob();
-                const uploadTask2 = await uploadBytes(storageRef2, blob2);
-                return uploadTask2.ref.fullPath;
-            } catch (error) {
-                console.error('Error uploading file:', error);
-            }
+            console.log(uploadTask.ref.fullPath);
+            return uploadTask.ref.fullPath;
         } catch (error) {
             console.error('Error uploading file:', error);
         }
     }
-
 
     const handleAddToWardrobe = async () => {
         const imageUrl = await uploadImage(Date.now()+"_image.jpg");
@@ -134,7 +88,7 @@ export const AddClothes = () => {
             size: selectedValues.size,
             title: name,
             rental_price: 0,
-            purchase_price: 0,
+            purchase_price: parseFloat(price),
             images: [imageUrl],
             owner: user
         }
@@ -149,23 +103,12 @@ export const AddClothes = () => {
                 body: JSON.stringify(requestBody),
             });
 
-            const data = await response.json();  // Wait for the response to be parsed
+            const data = await response.json();
             console.log(data);
             router.replace("/profile");
         } catch (error) {
             console.error("Error uploading image:", error);
         }
-    };
-
-
-    const handleOptionSelection = (selected: {
-        category: string,
-            condition: string,
-            color: string,
-            size: string,
-    }) => {
-        setSelectedValues(selected);
-        setShowModal(false);
     };
 
     const handleTakenPicture = (photo: CameraCapturedPicture) => {
@@ -177,14 +120,18 @@ export const AddClothes = () => {
     };
 
     if (takingPicture) {
-        return <MyCamera handleTakenPicture={handleTakenPicture}/>
+        return <MyCamera handleTakenPicture={handleTakenPicture}/>;
     }
 
     return (
-        <View>
+        <View style={styles.container}>
             <Stack.Screen
                 options={{
                     title: "Toga",
+                    headerStyle: {
+                        backgroundColor: '#92CAFF',
+                    },
+                    headerShadowVisible: false,
                     headerLeft: () => (
                         <TouchableOpacity
                             onPress={() => router.replace("/profile")}
@@ -195,223 +142,254 @@ export const AddClothes = () => {
                     )
                 }}
             />
-            <View style={styles.container}>
-
-                <View style={styles.imageUploadArea}>
-                    <TouchableOpacity style={styles.cameraIcon} onPress={() => setTakingPicture(true)}>
+            
+            <ScrollView style={styles.content}>
+                <TouchableOpacity 
+                    style={styles.imageUploadArea} 
+                    onPress={() => setTakingPicture(true)}
+                >
+                    {picture ? (
                         <Image
                             source={{ uri: picture }}
-                            style={styles.cameraIcon}
-                            accessibilityLabel="center icon"
+                            style={styles.uploadedImage}
                         />
-                    </TouchableOpacity>
-                </View>
-                    <TextField
-                        placeholder={'Item Name'}
-                        floatingPlaceholder
-                        onChangeText={text => setName(text)}
-                        showCharCounter
-                        maxLength={30}
-                        style={styles.name}
-                        floatingPlaceholderStyle={styles.floatingPlaceholder}
-                        containerStyle={styles.floatingContainer}
-                    />
-                    <TextField
-                        placeholder={'Description'}
-                        floatingPlaceholder
-                        onChangeText={text => setDescription(text)}
-                        showCharCounter
-                        maxLength={80}
-                        style={styles.name}
-                        floatingPlaceholderStyle={styles.floatingPlaceholder}
-                        containerStyle={styles.floatingContainer}
-                    />
-                <NumberInput fractionDigits={2} textFieldProps={{style: styles.trailingText}} leadingTextStyle={styles.leadingText} containerStyle={styles.price} initialNumber={0} onChangeNumber={(value) => setPrice(parseFloat(value.userInput))} leadingText={'Sell Price'}/>
+                    ) : (
+                        <Ionicons name="camera" size={48} color="#000" />
+                    )}
+                </TouchableOpacity>
 
+                <TextField
+                    placeholder="Enter the item's title"
+                    value={name}
+                    onChangeText={setName}
+                    maxLength={30}
+                    showCharCounter
+                    containerStyle={styles.textInput}
+                    style={styles.input}
+                    placeholderTextColor="#666"
+                />
 
-                <View style={styles.optionsContainer}>
-                    <OptionRow handleOptionSelect={handleOptionSelection}/>
-                </View>
+                <TextField
+                    placeholder="Describe your item (condition, features, etc.)"
+                    value={description}
+                    onChangeText={setDescription}
+                    maxLength={80}
+                    showCharCounter
+                    multiline
+                    containerStyle={styles.textInput}
+                    style={styles.input}
+                    placeholderTextColor="#666"
+                />
 
-                <View style={styles.actionContainer}>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={handleAddToWardrobe}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add to Wardrobe"
-                    >
-                        <Text style={styles.addButtonText}>Add to Wardrobe</Text>
-                    </TouchableOpacity>
-                </View>
-
-
-                {/* Modal for selecting options */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showModal}
-                    onRequestClose={() => setShowModal(false)}
+                <TouchableOpacity 
+                    style={styles.fieldRow}
+                    onPress={() => {}}
                 >
-                    <View style={styles.modalBackground}>
-                        <View style={styles.modalContainer}>
-                            {optionRows
-                                .find((row) => row.label === currentOption)
-                                ?.options.map((option: any) => (
-                                    <TouchableOpacity
-                                        key={option.value}
-                                        style={styles.modalButton}
-                                        onPress={() => handleOptionSelection(option.value)}
-                                    >
-                                        <Text style={styles.modalButtonText}>{option.label}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            <Button title="Close" onPress={() => setShowModal(false)} />
-                        </View>
+                    <Text style={styles.fieldLabel}>Sell Price</Text>
+                    <TextField
+                        placeholder="0.00"
+                        value={price}
+                        onChangeText={handlePriceInput}
+                        keyboardType="decimal-pad"
+                        style={styles.priceInput}
+                    />
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.fieldRow}
+                    onPress={() => handleOptionPress('category')}
+                >
+                    <Text style={styles.fieldLabel}>Category</Text>
+                    <Text style={styles.fieldValue}>{selectedValues.category}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.fieldRow}
+                    onPress={() => handleOptionPress('condition')}
+                >
+                    <Text style={styles.fieldLabel}>Condition</Text>
+                    <Text style={styles.fieldValue}>{selectedValues.condition}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.fieldRow}
+                    onPress={() => handleOptionPress('color')}
+                >
+                    <Text style={styles.fieldLabel}>Color</Text>
+                    <Text style={styles.fieldValue}>{selectedValues.color}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.fieldRow}
+                    onPress={() => handleOptionPress('size')}
+                >
+                    <Text style={styles.fieldLabel}>Size</Text>
+                    <Text style={styles.fieldValue}>{selectedValues.size}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={handleAddToWardrobe}
+                >
+                    <Text style={styles.addButtonText}>Add to Wardrobe</Text>
+                </TouchableOpacity>
+            </ScrollView>
+
+            <Modal
+                visible={showModal}
+                transparent={true}
+                animationType="slide"
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>{`Select ${currentField}`}</Text>
+                        {currentOptions.map((option, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.modalOption}
+                                onPress={() => handleOptionSelect(option)}
+                            >
+                                <Text style={styles.modalOptionText}>{option}</Text>
+                            </TouchableOpacity>
+                        ))}
+                        <TouchableOpacity 
+                            style={styles.modalCancelButton}
+                            onPress={() => setShowModal(false)}
+                        >
+                            <Text style={styles.modalCancelText}>Cancel</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-            </View>
+                </View>
+            </Modal>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
+        flex: 1,
         backgroundColor: '#f5f5f5',
-        position: 'relative',
-        display: 'flex',
-        width: '100%',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        fontSize: 24,
-        justifyContent: 'flex-start',
-        margin: 0,
-        padding: 5,
     },
-    trailingText: {
-        fontSize: 18,
-        paddingHorizontal: "40%",
-        fontWeight: 'bold',
-    },
-    price: {
-        marginTop: 15,
-        marginBottom: -40,
-        width: "112%",
-        justifyContent: 'space-between',
-        left: "15%"
-    },
-    leadingText: {
-        fontSize: 18,
-        fontWeight: "bold"
-    },
-    floatingPlaceholder: {
-        fontSize: 18
-    },
-    floatingContainer: {
-        width: "80%",
-        height: "20%",
-        marginTop: 20,
-        marginBottom: -80
-    },
-    name: {
-        fontSize: 24
-    },
-    backButton: {
-        aspectRatio: 1,
-        objectFit: 'contain',
-        width: 55,
-        position: 'absolute',
-        left: 15,
-        top: 30,
-    },
-    imageUploadArea: {
-        display: 'flex',
-        height: 300,
-        marginTop: 39,
-        width: 300,
-        maxWidth: '100%',
-        borderWidth: 1,
-        borderStyle: 'dashed',
-        borderColor: '#828282',
+    content: {
+        flex: 1,
+        padding: 16,
     },
     headerButton: {
-        paddingHorizontal: 8,
+        paddingHorizontal: 16,
     },
-    previewArea: {
-        borderRadius: 5,
-        display: 'flex',
-        minHeight: 96,
-        width: 344,
-        maxWidth: '100%',
+    imageUploadArea: {
+        width: '100%',
+        aspectRatio: 1,
         borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#828282',
-        top: -50
+        borderStyle: 'dashed',
+        borderColor: '#ccc',
+        borderRadius: 4,
+        marginVertical: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
     },
-    optionsContainer: {
-        display: 'flex',
-        marginTop: 39,
-        width: 348,
-        maxWidth: '100%',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        fontSize: 20,
+    uploadedImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    textInput: {
+        marginBottom: 24,
+        marginHorizontal: 16,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        minHeight: 50,
+    },
+    placeholderText: {
+        fontSize: 16,
+        color: '#black',
+        marginBottom: 8,
+    },
+    hint: {
+        fontSize: 14,
+        color: '#666',
+        marginTop: 4,
+        marginLeft: 16,
+    },
+    input: {
+        fontSize: 16,
         color: '#000',
     },
-    actionContainer: {
-        display: 'flex',
-        width: 285,
-        maxWidth: '100%',
+    fieldRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 16,
+        paddingHorizontal: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+    },
+    fieldLabel: {
+        fontSize: 18,
+        fontWeight: '500',
+    },
+    fieldValue: {
+        fontSize: 18,
+        color: '#666',
+    },
+    priceInput: {
+        fontSize: 18,
+        textAlign: 'right',
+        color: '#666',
+        minWidth: 60,
     },
     addButton: {
-        borderRadius: 5,
-        backgroundColor: '#132260',
-        padding: 8,
-        width: '100%',
+        backgroundColor: '#4788B7',
+        padding: 16,
+        borderRadius: 8,
+        marginTop: 30,
+        marginBottom: 20,
     },
     addButtonText: {
         color: '#fff',
-        fontFamily: 'Gantari, sans-serif',
-        fontSize: 24,
-        fontWeight: '400',
+        fontSize: 18,
+        textAlign: 'center',
+        fontWeight: '500',
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        padding: 16,
+        maxHeight: '80%',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        marginBottom: 16,
         textAlign: 'center',
     },
-    cameraIcon: {
-        aspectRatio: 1,
-        objectFit: 'cover',
-        width: "100%",
-        height: "100%",
+    modalOption: {
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
     },
-    description: {
-        color: '#828282',
-        fontFamily: 'Gantari, sans-serif',
-        fontWeight: '700',
+    modalOptionText: {
         fontSize: 18,
-        alignSelf: "flex-start"
+        textAlign: 'center',
     },
-
-    // Modal styles
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    modalCancelButton: {
+        marginTop: 16,
+        paddingVertical: 16,
     },
-    modalContainer: {
-        width: '80%',
-        backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
-    },
-    modalButton: {
-        padding: 10,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-        marginBottom: 10,
-    },
-    modalButtonText: {
+    modalCancelText: {
         fontSize: 18,
-        color: '#000',
+        color: '#007AFF',
+        textAlign: 'center',
+        fontWeight: '600',
     },
 });
 

@@ -8,9 +8,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddClothes from "@/app/(popups)/addClothesPage";
 import { imageDb } from "@/components/firebase";
 import {getDownloadURL, ref} from "@firebase/storage";
+import { Ionicons } from '@expo/vector-icons';
 
 const Closet = () => {
-
     const images = require.context('../assets/images', true);
 
     const [clothingItems, setClothingItems] = useState<any[]>([]);
@@ -105,29 +105,9 @@ const Closet = () => {
         setAddClothesPopup(false);
     }
 
-
     return (
         <View style={styles.closet}>
             <ScrollView>
-                <View style={styles.top}>
-                    <Pressable onPress={logout}>
-                        <Image source={images('./profile.png')} style={styles.pfp} />
-                    </Pressable>
-                    <View style={styles.sales}>
-                        <Text style={styles.text}>Sales</Text>
-                        <Text style={styles.text}>{sales}</Text>
-                    </View>
-                    <View style={styles.sales}>
-                        <Text style={styles.text}>Disputes</Text>
-                        <Text style={styles.text}>{disputes}</Text>
-                    </View>
-                </View>
-                <View style={styles.organizations}>
-                    <Text style={styles.name}>{fullName}</Text>
-                    {organizations.map((organization, index) => (
-                        <Text key={index} style={styles.org}>{organization}</Text>
-                    ))}
-                </View>
                 <View style={styles.scroll}>
                     <FilterBar />
                     <View style={styles.recommendedScroll}>
@@ -135,14 +115,17 @@ const Closet = () => {
                     </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity style={styles.addButton} onPress={() => router.navigate('/addClothesPage')}>
-                <Text style={styles.addButtonText}>Add</Text>
+            <TouchableOpacity 
+                style={styles.fabButton} 
+                onPress={() => router.navigate('/addClothesPage')}
+            >
+                <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
         </View>
     );
 };
 
-const styles= StyleSheet.create({
+const styles = StyleSheet.create({
     closet: {
         height: "100%",
         backgroundColor: "white"
@@ -199,27 +182,29 @@ const styles= StyleSheet.create({
     modalContent: {
         backgroundColor: 'white',
         width: '100%',
-
     },
     modalText: {
         fontSize: 16,
     },
-    addButton: {
-        backgroundColor: '#92CAFF',
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        borderRadius: 100,
-        zIndex:10,
-        alignSelf: 'center',
+    fabButton: {
         position: 'absolute',
-        top: "82%",
-    },
-
-    addButtonText: {
-        alignSelf: 'center',
-        color: 'black',
-        fontSize: 16,
-
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#92CAFF',
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        zIndex: 10,
     },
 });
 
