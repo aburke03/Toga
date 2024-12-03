@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Carousel from 'react-native-ui-lib/carousel';
-import { View, Text, StyleSheet, Image, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, Image, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 
-const EventCard = ({name, image, host, days}: {name: string, image: string, host: string, days: string}) => {
-  // Format the date string to a more readable format
+const EventCard = ({name, image, host, days, id, description, location}: {
+  name: string, 
+  image: string, 
+  host: string, 
+  days: string,
+  id: string,
+  description: string,
+  location: string
+}) => {
   const images = require.context('../assets/images', true);
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
@@ -18,8 +25,23 @@ const EventCard = ({name, image, host, days}: {name: string, image: string, host
 
   const formattedDate = formatDate(days);
 
+  const handlePress = () => {
+    router.push({
+      pathname: '/(popups)/eventDetail',
+      params: {
+        id: id,
+        title: name,
+        description: description,
+        event_date: days,
+        location: location,
+        image_url: image,
+        organizer_name: host,
+      }
+    });
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <Image source={images('./' + image)} style={styles.image} />
       <View style={styles.overlay}>
         <View style={styles.dateContainer}>
@@ -32,13 +54,21 @@ const EventCard = ({name, image, host, days}: {name: string, image: string, host
           <Text style={styles.host}>Host: {host}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export function EventCarousel() {
-  const images = require.context('../assets/images', true);
-  const [eventItems, setEventItems] = useState<{ date: string, name: any, host: any, image: any, event_begin: any }[]>([]);
+  const [eventItems, setEventItems] = useState<{ 
+    date: string, 
+    name: string, 
+    host: string, 
+    image: string, 
+    event_begin: string,
+    id: string,
+    description: string,
+    location: string
+  }[]>([]);
 
   async function loadEvents() {
     let user;
@@ -77,11 +107,15 @@ export function EventCarousel() {
       console.error(`HTTP error! status: ${response.status}`);
     } else {
       let items = await response.json();
-      let arr = items.map((item: { date: string, title: any, organizer_name: any, image_url: any, event_begin: any }) => ({
+      let arr = items.map((item: any) => ({
         date: item.event_begin,
         name: item.title,
         host: item.organizer_name,
         image: item.image_url,
+        event_begin: item.event_begin,
+        id: item.id,
+        description: item.description,
+        location: item.location
       }));
       setEventItems(arr);
     }
@@ -116,6 +150,9 @@ export function EventCarousel() {
               image={item.image}
               host={item.host}
               days={item.date}
+              id={item.id}
+              description={item.description}
+              location={item.location}
             />
           ))}
         </Carousel>
@@ -123,7 +160,6 @@ export function EventCarousel() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
