@@ -83,9 +83,7 @@ const removeItem = async (itemId: string) => {
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
   // Replace with your computer's local IPv4 address and ensure you're running the server in a separate terminal
-  const API_URL = 'http://192.168.1.171:8080';
- // pft ip: http://167.96.188.125:8080
-  
+  const API_URL = 'http://167.96.183.138:8080';
 
   const fetchPaymentSheetParams = async () => {
     try {

@@ -5,6 +5,7 @@ import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CartItem, CART_STORAGE_KEY } from '../types';
+import Home from '../(auth)/home';
 
 const ProductDetail = () => {
     const params = useLocalSearchParams();
@@ -96,7 +97,7 @@ const ProductDetail = () => {
                     title: "Toga",
                     headerLeft: () => (
                         <TouchableOpacity 
-                            onPress={() => router.back()}
+                            onPress={() => router.replace('/home')}
                             style={styles.headerButton}
                         >
                             <Ionicons name="arrow-back" size={24} color="white" />

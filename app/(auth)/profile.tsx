@@ -5,6 +5,8 @@ import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
 import Bookmarked from "@/components/Bookmarked";
 import {useFocusEffect} from "expo-router";
+import {router} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = () => {
   const [content, setContent] = useState(<Closet />)
@@ -43,6 +45,11 @@ const Profile = () => {
         break;
     }
   }
+  async function logout() {
+    await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("user-id");
+    router.replace('/login');
+}
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -50,10 +57,12 @@ const Profile = () => {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.profileInfo}>
+            <Pressable onPress={logout}>
             <Image 
               source={{ uri: 'https://placekitten.com/100/100' }}
               style={styles.avatar}
             />
+            </Pressable>
             <View style={styles.nameContainer}>
               <Text style={styles.username}>{profileData.username}</Text>
               <View style={styles.groupBadge}>

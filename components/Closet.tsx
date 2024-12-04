@@ -24,7 +24,7 @@ const Closet = () => {
     function cardPress() {
         console.log('cardPressed');
     }
-
+    
     async function logout() {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("user-id");
