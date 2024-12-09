@@ -7,7 +7,6 @@ import {
     StyleSheet,
     ScrollView,
     Modal,
-    Pressable
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
@@ -32,7 +31,6 @@ export const AddClothes = () => {
     const [description, setDescription] = useState('');
     const [takingPicture, setTakingPicture] = useState(false);
     const [picture, setPicture] = useState('');
-    const [photo, setPhoto] = useState("");
     const [price, setPrice] = useState("0.00");
 
     const options = {
@@ -65,18 +63,17 @@ export const AddClothes = () => {
     };
 
     async function uploadImage(fileName: string) {
-        console.log(fileName)
         try {
-            const storageRef = ref(imageDb, 'images/' + fileName);  // Define the storage reference path
-            // Upload the file to Firebase Storage
             const response = await fetch(picture);
-            const blob = await response.blob();
-            const uploadTask = await uploadBytes(storageRef, blob);
-            console.log(uploadTask.ref.fullPath);
-            const apiKey = '6QmVc1MeSWvEagaBLyy5Ufq9'; // Replace with your API key
+
+            const firebaseStorageRef = ref(imageDb, 'images/' + fileName);
+            const firebaseBlob = await response.blob();
+            await uploadBytes(firebaseStorageRef, firebaseBlob);
+            const downloadUrl = await getDownloadURL(firebaseStorageRef);
+
+            const apiKey = "6QmVc1MeSWvEagaBLyy5Ufq9";
 
             const formData = new FormData();
-            const downloadUrl = await getDownloadURL(storageRef);
             formData.append('image_url', downloadUrl);
             formData.append('size', 'preview');
             formData.append('format', 'jpg');
@@ -94,21 +91,22 @@ export const AddClothes = () => {
                     console.error('remove.bg API error:', await response.text());
                     return null;
                 }
-                const storageRef2 = ref(imageDb, 'images/transparent' + fileName);
-                const blob2 = await response.blob();
-                const uploadTask2 = await uploadBytes(storageRef2, blob2);
-                console.log(uploadTask2.ref.fullPath);
-                return uploadTask2.ref.fullPath;
+
+                const removebgStorageRef = ref(imageDb, 'images/transparent' + fileName);
+                const removebgBlob = await response.blob();
+                const uploadTask = await uploadBytes(removebgStorageRef, removebgBlob);
+                return uploadTask.ref.fullPath;
             } catch (error) {
-                console.error('Error uploading file:', error);
+                console.error('Error removing background:', error);
             }
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error('Error uploading file to firebase:', error);
         }
     }
 
     const handleAddToWardrobe = async () => {
         const imageUrl = await uploadImage(Date.now()+"_image.jpg");
+
         const user = await AsyncStorage.getItem("user-id");
         const requestBody = {
             category: selectedValues.category,
@@ -142,9 +140,6 @@ export const AddClothes = () => {
 
     const handleTakenPicture = (photo: CameraCapturedPicture) => {
         setPicture(photo.uri);
-        if (photo.base64 != undefined && photo.base64 !== "") {
-            setPhoto(photo.base64);
-        }
         setTakingPicture(false);
     };
 

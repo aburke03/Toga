@@ -5,13 +5,8 @@ import Purchasing from "@/components/Purchasing";
 import Selling from "@/components/Selling";
 
 const Chat = () => {
-    const [content, setContent] = useState<React.ReactNode>(null);
+    const [content, setContent] = useState<React.ReactNode>(null); // Contains either the purchasing component or the selling component
     const [currState, setCurrState] = useState("purchasing");
-
-    // Add useEffect for initial content
-    useEffect(() => {
-        setContent(<Purchasing key={Date.now()} />);
-    }, []);
 
     function changeContent(route: string) {
         setCurrState(route);

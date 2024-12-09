@@ -1,20 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable } from 'react-native';
-
-export const LogoutButton = () => {
-
-    function doLogout() {
-        console.log('logout');
-    }
-
-  return (
-    <Pressable onPress={doLogout} style={{ marginRight: 10 }}>
-      <Ionicons name="log-out-outline" size={24} color={'#fff'} />
-    </Pressable>
-  );
-};
 
 const TabsPage = () => {
 

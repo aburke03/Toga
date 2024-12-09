@@ -1,37 +1,18 @@
 import React, {useEffect, useState} from "react";
-import {Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Button} from 'react-native-ui-lib'
+import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {FilterBar} from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 import {router} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AddClothes from "@/app/(popups)/addClothesPage";
 import { imageDb } from "@/components/firebase";
 import {getDownloadURL, ref} from "@firebase/storage";
 import { Ionicons } from '@expo/vector-icons';
 
 const Closet = () => {
-    const images = require.context('../assets/images', true);
 
     const [clothingItems, setClothingItems] = useState<any[]>([]);
-    const [organizations, setOrganization] = useState(["LSU", "Acacia"]);
-    const [sales, setSales] = useState(10);
-    const [disputes, setDisputes] = useState(3);
-    const [imgUrl, setImgUrl] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [userID, setUserID] = useState("");
 
-    function cardPress() {
-        console.log('cardPressed');
-    }
-    
-    async function logout() {
-        await AsyncStorage.removeItem("token");
-        await AsyncStorage.removeItem("user-id");
-        router.replace('/login');
-    }
-
-    async function pullProfile() {
+    async function validateLogin() {
         let user = ""
         const token = await AsyncStorage.getItem("token");
         if (token !== null) {
@@ -48,9 +29,6 @@ const Closet = () => {
                     console.error(`HTTP error! status: ${response.status}`);
                 } else {
                     const data = await response.json();
-                    setFullName(data.full_name);
-                    setImgUrl(data.profile_picture_url);
-                    setOrganization(data.organization_names)
                     user = data.id;
                 }
             } catch (e) {
@@ -59,7 +37,11 @@ const Closet = () => {
         } else {
             router.replace('/login');
         }
-        let request_body = {user: user};
+        return user;
+    }
+
+    async function pullClothes(userId: string) {
+        let request_body = {user: userId};
         const response = await fetch("https://backend-toga-r5s3.onrender.com/api/items?"+new URLSearchParams(request_body), {
             method: "GET",
             headers: {
@@ -85,25 +67,19 @@ const Closet = () => {
         }
         setClothingItems(
             arr.map((item: any, index: any) => (
-                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={cardPress} size={item.size} id={item.key} />
+                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} onPress={() => {}} size={item.size} id={item.key} />
             ))
         );
-        setUserID(user);
+    }
+
+    async function pullProfile() {
+        const user = await validateLogin();
+        await pullClothes(user);
     }
 
     useEffect(() => {
         pullProfile();
     }, []);
-
-    const [addClothesPopup, setAddClothesPopup] = useState(false);
-
-    const openPopup = () => {
-        setAddClothesPopup(true);
-    }
-
-    const closePopup = () => {
-        setAddClothesPopup(false);
-    }
 
     return (
         <View style={styles.closet}>

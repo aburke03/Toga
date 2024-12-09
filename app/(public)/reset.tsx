@@ -1,6 +1,6 @@
 import { View, StyleSheet, TextInput, Button, Keyboard, TouchableWithoutFeedback, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { Stack, useRouter } from 'expo-router'; // Import Stack and useRouter for navigation
+import { Stack } from 'expo-router';
 
 const PwReset = () => {
   const [emailAddress, setEmailAddress] = useState('');

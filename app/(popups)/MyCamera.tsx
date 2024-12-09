@@ -1,7 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import {CameraView, useCameraPermissions, CameraType, CameraCapturedPicture} from 'expo-camera';
 import { useRef, useState } from 'react';
-import {Button, PixelRatio, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PhotoPreview from "@/components/addingClothes/photoPreview";
 import React from 'react';
 
@@ -12,15 +12,11 @@ const MyCamera = ({handleTakenPicture}: {handleTakenPicture: (photo: CameraCaptu
     const cameraRef = useRef<CameraView | null>(null);
     const [photo, setPhoto] = useState<any>(null);
 
-    const targetPixels = 500;
-
     const handleRetakePhoto = () => setPhoto(null);
 
     const handleUsePhoto = (photo: CameraCapturedPicture) => {
         handleTakenPicture(photo);
     }
-
-    const handleReturn = () => {alert('send back pic and got to add clothes')};
 
     if (!permission) {
         return <View />;

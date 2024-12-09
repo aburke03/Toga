@@ -3,21 +3,10 @@ import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-nat
 import { Text } from 'react-native-ui-lib';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getDownloadURL, ref} from "@firebase/storage";
 import {imageDb} from "@/components/firebase";
 import ClothingCard from "@/components/ClothingCard";
 import {EventClothesSelect} from './EventClothesSelect'
-
-interface EventDetail {
-    title: string;
-    description: string;
-    event_date: string;
-    location: string;
-    image_url: string;
-    organizer_name: string;
-    event_id: string;
-}
 
 export default function EventDetailScreen() {
     const params = useLocalSearchParams();
@@ -29,6 +18,27 @@ export default function EventDetailScreen() {
     const [clothesSelectOpen, setClothingOpen] = useState<boolean>(false);
     const event_id = params.id as string;
     const images = require.context('../../assets/images', true);
+
+    async function setClothes(items: any[]) {
+        let arr: any[] = []
+        for (let item of items) {
+            const storageRef = ref(imageDb, item.images[0]);
+            const url = await getDownloadURL(storageRef)
+            arr.push({
+                priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
+                buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
+                bookmarked: true,
+                image: url,
+                size: item.size,
+                key: item.clothing_id
+            })
+        }
+        setClothingItems(
+            arr.map((item: any, index: any) => (
+                <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} id={item.key} />
+            ))
+        );
+    }
 
     async function loadFeaturedItems() {
         if (event_id !== null) {
@@ -43,24 +53,7 @@ export default function EventDetailScreen() {
                 console.error(`HTTP error! status: ${response.status}`);
             }
             let items = await response.json();
-            let arr: any[] = []
-            for (let item of items) {
-                const storageRef = ref(imageDb, item.images[0]);
-                const url = await getDownloadURL(storageRef)
-                arr.push({
-                    priceAmount: item.is_available_for_sale ? item.purchase_price : item.is_available_for_rent ? item.rental_price : 0,
-                    buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
-                    bookmarked: true,
-                    image: url,
-                    size: item.size,
-                    key: item.clothing_id
-                })
-            }
-            setClothingItems(
-                arr.map((item: any, index: any) => (
-                    <ClothingCard key={index} image={item.image} bookmarked={item.bookmarked} buyType={item.buyType} priceAmount={item.priceAmount} size={item.size} id={item.key} />
-                ))
-            );
+            setClothes(items);
         }
     }
 
@@ -75,7 +68,7 @@ export default function EventDetailScreen() {
     async function onClothingSelect(item_id: string) {
         if (item_id !== null) {
             const request_body: { event: string, clothing_item: string } = {event: event_id, clothing_item: item_id};
-            const response = await fetch("https://backend-toga-r5s3.onrender.com/api/events/clothes/add", {
+            await fetch("https://backend-toga-r5s3.onrender.com/api/events/clothes/add", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

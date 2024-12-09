@@ -9,7 +9,31 @@ export const EventClothesSelect: React.FC<{
     onClose: () => void;
     onSelect: (value: string) => void;
 }> = ({ isVisible, onClose, onSelect}) => {
+
     const [clothingItems, setClothingItems] = useState<any[]>([]);
+
+    async function setClothes(items: any[]) {
+        let arr: any[] = []
+        for (let item of items) {
+            const storageRef = ref(imageDb, item.images[0]);
+            const url = await getDownloadURL(storageRef)
+            const priceAmount = item.is_available_for_sale ?
+                Number(item.purchase_price) || 0 :
+                item.is_available_for_rent ?
+                    Number(item.rental_price) || 0 :
+                    0;
+
+            arr.push({
+                priceAmount,
+                buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
+                bookmarked: item.is_bookmarked,
+                image: url,
+                size: item.size,
+                key: item.id
+            })
+        }
+        setClothingItems(arr);
+    }
 
     async function pullCloset() {
         const userId = await AsyncStorage.getItem("user-id");
@@ -25,26 +49,7 @@ export const EventClothesSelect: React.FC<{
                 console.error(`HTTP error! status: ${response.status}`);
             }
             let items = await response.json();
-            let arr: any[] = []
-            for (let item of items) {
-                const storageRef = ref(imageDb, item.images[0]);
-                const url = await getDownloadURL(storageRef)
-                const priceAmount = item.is_available_for_sale ? 
-                    Number(item.purchase_price) || 0 : 
-                    item.is_available_for_rent ? 
-                        Number(item.rental_price) || 0 : 
-                        0;
-                
-                arr.push({
-                    priceAmount,
-                    buyType: item.is_available_for_sale ? "Sale" : item.is_available_for_rent ? "Rent" : "none",
-                    bookmarked: item.is_bookmarked,
-                    image: url,
-                    size: item.size,
-                    key: item.id
-                })
-            }
-            setClothingItems(arr);
+            await setClothes(items);
         }
     }
 

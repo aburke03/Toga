@@ -22,6 +22,7 @@ const Events = () => {
 
     const fetchEvents = async () => {
         try {
+            setLoading(true);
             const token = await AsyncStorage.getItem("token");
             const userId = await AsyncStorage.getItem("user-id");
 
@@ -38,14 +39,11 @@ const Events = () => {
                 }
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             const data = await response.json();
             setEvents(data);
             
         } catch (error) {
+            setLoading(false)
             console.error('Error fetching events:', error);
             setError('Failed to load events');
             setEvents([]);

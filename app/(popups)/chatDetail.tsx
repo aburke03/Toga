@@ -25,11 +25,13 @@ interface Message {
 
 export default function ChatDetail() {
   const params = useLocalSearchParams();
+
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState();
+  const [newMessage, setNewMessage] = useState<string>("");
   const [userId, setUserId] = useState<string | null>(null);
-  const flatListRef = useRef<FlatList>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     loadMessages();
@@ -75,7 +77,7 @@ export default function ChatDetail() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch messages");
+        console.error(Error("Failed to fetch messages"));
       }
 
       const data = await response.json();
@@ -112,7 +114,7 @@ export default function ChatDetail() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to send message");
+        console.error(new Error("Failed to send message"));
       }
 
       const data = await response.json();
@@ -183,7 +185,7 @@ export default function ChatDetail() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={[
             styles.messagesList,
-            { paddingBottom: keyboardHeight + 60 }, // Add extra padding when keyboard is shown
+            { paddingBottom: keyboardHeight + 60 },
           ]}
           onLayout={() => flatListRef.current?.scrollToEnd()}
         />
@@ -192,7 +194,7 @@ export default function ChatDetail() {
           style={[
             styles.inputContainer,
             Platform.OS === "ios" && {
-              bottom: keyboardHeight, // Move input above keyboard on iOS
+              bottom: keyboardHeight,
               position: "absolute",
               left: 0,
               right: 0,
@@ -206,7 +208,6 @@ export default function ChatDetail() {
             onChangeText={setNewMessage}
             placeholder="Type a message..."
             multiline
-            maxHeight={100}
           />
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <Ionicons name="send" size={24} color="#461D7C" />

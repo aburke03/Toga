@@ -1,5 +1,5 @@
-import {Modal, TouchableOpacity, Image} from 'react-native';
-import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable, ScrollView} from 'react-native';
+import {Image} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Pressable} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import Closet from "@/components/Closet";
 import TryOn from "@/components/TryOn";
@@ -12,7 +12,7 @@ const Profile = () => {
   const [content, setContent] = useState(<Closet />)
   const [currState, setCurrState] = useState("closet")
 
-  // Mock data for the profile
+  // Hard coded profile data
   const profileData = {
     username: "John Doe",
     group: "Alpha Delta Pi",
@@ -25,9 +25,6 @@ const Profile = () => {
     useCallback(() => {
       setContent(<Closet />);
       setCurrState("closet");
-      return () => {
-        console.log('This route is now unfocused.');
-      };
     }, [])
   );
 
@@ -45,6 +42,7 @@ const Profile = () => {
         break;
     }
   }
+
   async function logout() {
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("user-id");
@@ -54,6 +52,7 @@ const Profile = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.profileInfo}>

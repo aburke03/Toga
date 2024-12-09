@@ -1,18 +1,15 @@
-import {StyleSheet, View, ScrollView, TouchableOpacity, Dimensions, Image} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import { Text } from 'react-native-ui-lib';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {EventCarousel} from "@/components/EventCarousel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {router, useFocusEffect} from "expo-router";
+import {router} from "expo-router";
 import {getDownloadURL, ref} from "@firebase/storage";
 import {imageDb} from "@/components/firebase";
-import { Ionicons } from '@expo/vector-icons';
 import {FilterBar} from "@/components/FilterBar";
 import ClothingCard from "@/components/ClothingCard";
 
 const Home = () => {
-
-    const images = require.context('../../assets/images', true);
 
 interface ClothingItem {
     priceAmount: number;
@@ -28,9 +25,11 @@ interface ClothingItem {
 
     const [clothingCards, setClothingCards] = useState<ClothingItem[]>([]);
 
-    async function loadPage() {
+    async function checkLogin() {
         let user:any;
         const token = await AsyncStorage.getItem("token");
+
+        // Gather User's ID and validate login token
         if (token !== null) {
             try {
                 const response = await fetch("https://backend-toga-r5s3.onrender.com/api/users/profile", {
@@ -51,8 +50,16 @@ interface ClothingItem {
         } else {
             router.replace('/login');
         }
+        return user.id;
+    }
 
-        const request_body = {organization: user.id};
+    async function getImgUrl(img: string) {
+        const storageRef = ref(imageDb, img);
+        return await getDownloadURL(storageRef)
+    }
+
+    async function pullItems(userId: string) {
+        const request_body = {organization: userId};
         const response = await fetch("https://backend-toga-r5s3.onrender.com/api/items?"+new URLSearchParams(request_body), {
             method: "GET",
             headers: {
@@ -84,9 +91,9 @@ interface ClothingItem {
         }
     }
 
-    async function getImgUrl(img: string) {
-        const storageRef = ref(imageDb, img);
-        return await getDownloadURL(storageRef)
+    async function loadPage() {
+        const userId = await checkLogin();
+        await pullItems(userId);
     }
 
     useEffect(() => {

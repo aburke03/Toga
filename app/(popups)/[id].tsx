@@ -5,10 +5,10 @@ import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CartItem, CART_STORAGE_KEY } from '../types';
-import Home from '../(auth)/home';
 
 const ProductDetail = () => {
     const params = useLocalSearchParams();
+    const [bookmarked, setBookmarked] = useState<any>(params.bookmarked);
 
     const handleAddToCart = async () => {
         try {
@@ -58,15 +58,13 @@ const ProductDetail = () => {
         }
     };
 
-    const [bookmarked, setBookmarked] = useState<any>(params.bookmarked);
-
     async function bookmarkPress() {
         if (bookmarked) {
             const userId = await AsyncStorage.getItem("user-id");
             if (userId !== null) {
                 setBookmarked(false);
                 const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: params.id[0]};
-                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/remove", {
+                await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/remove", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
@@ -79,7 +77,7 @@ const ProductDetail = () => {
             if (userId !== null) {
                 setBookmarked(true);
                 const request_body: { user: string, clothing_item: string } = {user: userId, clothing_item: params.id[0]};
-                const response = await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/add", {
+                await fetch("https://backend-toga-r5s3.onrender.com/api/bookmarks/add", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',

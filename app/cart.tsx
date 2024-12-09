@@ -106,7 +106,7 @@ const removeItem = async (itemId: string) => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Server error response:', errorText);
-        throw new Error(`Server responded with status: ${response.status}`);
+        console.error(Error(`Server responded with status: ${response.status}`));
       }
   
       const responseData = await response.json();
@@ -155,7 +155,6 @@ const removeItem = async (itemId: string) => {
 
       if (error) {
         console.error('Error initializing payment sheet:', error);
-        throw error;
       }
     } catch (error) {
       console.error('Error in initializePaymentSheet:', error);
@@ -169,7 +168,6 @@ const removeItem = async (itemId: string) => {
   
       if (error) {
         Alert.alert(`Error code: ${error.code}`, error.message);
-        throw error;
       }
       
       Alert.alert(
@@ -227,7 +225,7 @@ const removeItem = async (itemId: string) => {
         {items.length === 0 ? (
             <Text style={styles.emptyCartText}>Your cart is empty</Text>
         ) : (
-            items.map((item, index) => (
+            items.map((item) => (
                 <CartItemComponent 
                     key={item.id} 
                     item={item} 

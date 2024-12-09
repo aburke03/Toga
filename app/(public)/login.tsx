@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = () => {
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [secureText, setSecureText] = useState(true);
 
   async function signIn(userInfo: {email: string, password: string}) {
@@ -40,7 +39,6 @@ const Login = () => {
   }
 
   const onSignInPress = async () => {
-    setLoading(true);
     try {
       await signIn({
         email: emailAddress,
@@ -48,8 +46,6 @@ const Login = () => {
       });
     } catch (err: any) {
       alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
     }
   };
 

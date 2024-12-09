@@ -1,5 +1,4 @@
 import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { useState } from 'react';
 import {router, Stack} from 'expo-router';
 import React from 'react';
@@ -9,7 +8,6 @@ const Register = () => {
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [secureText, setSecureText] = useState(true); 
   const [passwordsMatch, setPasswordsMatch] = useState(true); 
   const [isValidEmail, setIsValidEmail] = useState(true); 
@@ -69,8 +67,6 @@ const Register = () => {
 
     } catch (err: any) {
       alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
     }
   };
 

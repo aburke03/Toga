@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { Text } from 'react-native'; // Fallback UI if fonts are not loaded
+import { Text } from 'react-native';
 
 export default function PopupsLayout() {
     const [fontsLoaded] = useFonts({
