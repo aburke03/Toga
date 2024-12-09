@@ -22,7 +22,6 @@ const Register = () => {
     }).then((response) => console.log(response)).then(() => {router.replace("/login")}).catch(error => console.log(error));
   }
 
-  // Password validation logic
   const validatePassword = (password: string) => {
     setPassword(password);
     const hasUppercase = /[A-Z]/.test(password);
@@ -32,7 +31,6 @@ const Register = () => {
     setPasswordValid(hasUppercase && hasSpecialChar && hasMinLength);
   };
 
-  // Validate the email input in real-time
   const validateEmail = (email: string) => {
     setEmailAddress(email);
     if (email === '') {
@@ -44,7 +42,6 @@ const Register = () => {
     }
   };
 
-  // Handle retyping password and checking for a match
   const handleRetypePassword = (text: string) => {
     setRetypePassword(text);
     if (text !== password && text.length > 0) {
@@ -57,7 +54,6 @@ const Register = () => {
   const onSignUpPress = async () => {
 
     try {
-      // Create the user on Clerk
       await signUp({
         email: emailAddress,
         password: password,

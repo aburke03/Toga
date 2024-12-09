@@ -21,7 +21,7 @@
     "@stripe/stripe-react-native": "0.38.6",
     "compressjs": "^1.0.3",
     "compressorjs": "^1.2.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "expo": "^52.0.14",
     "expo-camera": "~16.0.8",
     "expo-constants": "~17.0.3",

@@ -12,7 +12,6 @@ const ProductDetail = () => {
 
     const handleAddToCart = async () => {
         try {
-            // Create cart item from params
             const cartItem: CartItem = {
                 id: params.id as string,
                 title: params.title as string,
@@ -22,11 +21,8 @@ const ProductDetail = () => {
                 image: params.image as string
             };
 
-            // Get existing cart items
             const existingCartJson = await AsyncStorage.getItem(CART_STORAGE_KEY);
             const existingCart: CartItem[] = existingCartJson ? JSON.parse(existingCartJson) : [];
-
-            // Check if item already exists in cart
             const itemExists = existingCart.some(item => item.id === cartItem.id);
 
             if (itemExists) {
@@ -34,7 +30,6 @@ const ProductDetail = () => {
                 return;
             }
 
-            // Add new item to cart
             const updatedCart = [...existingCart, cartItem];
             await AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
 

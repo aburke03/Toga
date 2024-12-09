@@ -9,7 +9,6 @@ export default function PopupsLayout() {
     });
 
     if (!fontsLoaded) {
-        // Optional: Display a loading indicator or fallback UI
         return <Text>Loading...</Text>;
     }
 

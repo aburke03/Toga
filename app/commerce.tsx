@@ -6,7 +6,7 @@ const Commerce = () => {
   const router = useRouter();
 
   const onNextPress = () => {
-    router.push('/Signup'); // Navigate to the Signup screen
+    router.push('/Signup');
   };
 
   return (

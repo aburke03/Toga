@@ -6,7 +6,7 @@ const CampusEvents = () => {
   const router = useRouter();
 
   const onNextPress = () => {
-    router.push('/commerce'); // Navigate to the Commerce screen
+    router.push('/commerce');
   };
 
   return (

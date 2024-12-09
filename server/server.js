@@ -4,7 +4,7 @@ const cors = require('cors');
 
 //stripe test secret key
 const stripe = require("stripe")(
-  'sk_test_51QN4V9I08saIli9VwOb3buBMyQFiJIIYkQ1Mqp9VGqPvTD0D2IIT4ZQrO4RscCcdJrVL3L15SSoJStfQ3NofRC5200cEYvdcGS'
+  process.env.STRIPE_TEST_SECRET_KEY
 );
 
 const PORT = 8080;
@@ -17,13 +17,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Accept'],
 }));
 
-// Simple test route
 app.get('/test', (req, res) => {
   console.log('Test endpoint hit');
   res.json({ message: 'Server is running' });
 });
 
-// Console logs to payment-sheet route
 app.post('/payment-sheet', async (req, res) => {
   console.log('Payment-sheet endpoint hit at:', new Date().toISOString());
   console.log('Request headers:', req.headers);
@@ -38,7 +36,7 @@ app.post('/payment-sheet', async (req, res) => {
     
     const ephemeralKey = await stripe.ephemeralKeys.create(
       {customer: customer.id},
-      {apiVersion: '2023-10-16'}  // Updated API version
+      {apiVersion: '2023-10-16'}
     );
     console.log('Ephemeral key created');
     
@@ -67,7 +65,6 @@ app.post('/payment-sheet', async (req, res) => {
   }
 });
 
-// Add error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ error: err.message });

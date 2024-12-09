@@ -6,7 +6,6 @@ import { useStripe } from '@stripe/stripe-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CartItem, CART_STORAGE_KEY } from './types';
 
-// CartIcon component
 export const CartIcon = () => {
   const router = useRouter();
 
@@ -20,7 +19,6 @@ export const CartIcon = () => {
   );
 };
 
-// CartItem component
 const CartItemComponent = ({ item, onRemove }: { item: CartItem, onRemove: () => void }) => (
   <View style={styles.cartItem}>
       {item.image ? (
@@ -45,14 +43,12 @@ const CartItemComponent = ({ item, onRemove }: { item: CartItem, onRemove: () =>
   </View>
 );
 
-// Main Cart page component
 const Cart = () => {
   const router = useRouter();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
 
-  // Load cart items on mount
   useEffect(() => {
       loadCartItems();
   }, []);
@@ -82,7 +78,6 @@ const removeItem = async (itemId: string) => {
 
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
-  // Replace with your computer's local IPv4 address and ensure you're running the server in a separate terminal
   const API_URL = 'http://167.96.183.138:8080';
 
   const fetchPaymentSheetParams = async () => {

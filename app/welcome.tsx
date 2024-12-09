@@ -6,14 +6,14 @@ const Welcome = () => {
   const router = useRouter();
 
   const onNextPress = () => {
-    router.push('/CampusEvents'); // Navigate to Campus Events screen
+    router.push('/CampusEvents');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Toga</Text>
       <Image
-        source={require('../assets/images/toga.png')} // Ensure this path is correct
+        source={require('../assets/images/toga.png')}
         style={styles.image}
       />
       <Text style={styles.subtitle}>Your campus closet for every occasion</Text>

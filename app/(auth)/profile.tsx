@@ -12,7 +12,6 @@ const Profile = () => {
   const [content, setContent] = useState(<Closet />)
   const [currState, setCurrState] = useState("closet")
 
-  // Hard coded profile data
   const profileData = {
     username: "John Doe",
     group: "Alpha Delta Pi",

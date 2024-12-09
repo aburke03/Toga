@@ -5,7 +5,7 @@ import Purchasing from "@/components/Purchasing";
 import Selling from "@/components/Selling";
 
 const Chat = () => {
-    const [content, setContent] = useState<React.ReactNode>(null); // Contains either the purchasing component or the selling component
+    const [content, setContent] = useState<React.ReactNode>(null);
     const [currState, setCurrState] = useState("purchasing");
 
     function changeContent(route: string) {
@@ -20,7 +20,6 @@ const Chat = () => {
         }
     }
 
-    // Force refresh when component mounts or updates
     useEffect(() => {
         if (currState === 'purchasing') {
             setContent(<Purchasing key={Date.now()} />);

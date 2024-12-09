@@ -21,15 +21,15 @@ const InitialLayout = () => {
         });
 
         if (response.ok) {
-          router.replace('/home'); // Valid token, go to Home
+          router.replace('/home');
         } else {
           console.error('Invalid token, redirecting to login');
-          await AsyncStorage.clear(); // Clear storage on error
+          await AsyncStorage.clear();
           router.replace('/login');
         }
       } else {
         console.log('No token found, redirecting to Welcome');
-        router.replace('/welcome'); // No token, go to Welcome
+        router.replace('/welcome');
       }
     } catch (error) {
       console.error('Error in loadStorage:', error);

@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD1fW7eBYcpphEWmOfjYNFIJMtBeODhwJA",
+    apiKey: process.env.FIREBASE_KEY,
     authDomain: "toga-efe41.firebaseapp.com",
     projectId: "toga-efe41",
     storageBucket: "toga-efe41.firebasestorage.app",

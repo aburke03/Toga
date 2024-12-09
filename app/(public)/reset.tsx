@@ -5,23 +5,15 @@ import { Stack } from 'expo-router';
 const PwReset = () => {
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
-  const [retypePassword, setRetypePassword] = useState(''); // State for retype password
+  const [retypePassword, setRetypePassword] = useState(''); 
   const [code, setCode] = useState('');
   const [successfulCreation, setSuccessfulCreation] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(true); // To check if passwords match
-  const [secureText, setSecureText] = useState(true); // For show/hide password
-  const [passwordValid, setPasswordValid] = useState(false); // Password validation state
+  const [passwordsMatch, setPasswordsMatch] = useState(true); 
+  const [secureText, setSecureText] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(false);
 
-  // Request a password reset code by email
-  const onRequestReset = async () => {
 
-  };
 
-  // Reset the password with the code and the new password
-  const onReset = async () => {
-  };
-
-  // Password validation logic
   const validatePassword = (password: string) => {
     setPassword(password);
     const hasUppercase = /[A-Z]/.test(password);
@@ -31,7 +23,6 @@ const PwReset = () => {
     setPasswordValid(hasUppercase && hasSpecialChar && hasMinLength);
   };
 
-  // Handle retyping password and checking for a match
   const handleRetypePassword = (text: string) => {
     setRetypePassword(text);
     if (text !== password && text.length > 0) {
@@ -58,7 +49,7 @@ const PwReset = () => {
               placeholderTextColor={'grey'}
             />
 
-            <Button onPress={onRequestReset} title="Send Reset Email" color={'#92CAFF'} />
+            <Button title="Send Reset Email" color={'#92CAFF'} />
           </>
         )}
 
@@ -109,7 +100,6 @@ const PwReset = () => {
               )}
             </View>
             <Button
-              onPress={onReset}
               title="Reset Password"
               color={'#92CAFF'}
               disabled={!passwordValid || !passwordsMatch || !password || !retypePassword}
