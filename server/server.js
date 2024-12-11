@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-//stripe test secret key
+//stripe test secret key (current key rolled, generate new key in future for intended use)
 const stripe = require("stripe")(
   process.env.STRIPE_TEST_SECRET_KEY
 );

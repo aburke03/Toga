@@ -78,6 +78,7 @@ const removeItem = async (itemId: string) => {
 
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
+  // Change this to your own IPV4 address or backend URL for intended functionality (port stays on 8080)
   const API_URL = 'http://167.96.183.138:8080';
 
   const fetchPaymentSheetParams = async () => {
